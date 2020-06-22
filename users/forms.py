@@ -1,0 +1,298 @@
+from allauth.account.adapter import get_adapter
+from allauth.account.forms import SignupForm
+from allauth.account.utils import setup_user_email
+from django import forms
+from django.forms import ModelForm
+from multiupload.fields import MultiMediaField
+from .models import (CustomUser, UserRole, Categories, ProviderCategories, UserVideos)
+from .utils import group_obj
+
+
+class ClientSignupForm(SignupForm):
+
+    def save(self, request):
+        user = super(ClientSignupForm, self).save(request)
+        role = UserRole.objects.get(name=UserRole.CLIENT)
+        user.user_role.add(role)
+        return user
+
+
+# Professional Signup Form override with allauth SignupForm
+class ProfessionalSignupForm(SignupForm):
+    role = forms.ModelChoiceField(
+        queryset=UserRole.objects.exclude(name=UserRole.CLIENT),
+        required=True
+    )
+
+    def save(self, request):
+        adapter = get_adapter(request)
+        user = adapter.new_user(request)
+        adapter.save_user(request, user, self)
+        self.custom_signup(request, user)
+        setup_user_email(request, user, [])
+        role = self.cleaned_data['role']
+        user.is_client = False
+        group_obj(user=user)
+        user.save()
+        if str(role) == UserRole.LOCALITE:
+            user_role = UserRole.objects.get(name=UserRole.LOCALITE)
+            user.user_role.add(user_role)
+        else:
+            user_role = UserRole.objects.get(name=UserRole.PROVIDER)
+            user.user_role.add(user_role)
+        return user
+
+
+# Localite profile
+class ProfessionalAccountForm(ModelForm):
+    profile_image = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(
+            attrs={
+                'accept': 'image/*'
+            }
+        )
+    )
+
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        super(ProfessionalAccountForm, self).__init__(*args, **kwargs)
+        self.fields['state'].required = True
+        self.fields['country'].required = True
+        self.fields['phone_number'].required = True
+        self.fields['phone_number'].widget.attrs.update({
+            'autocomplete': 'off', 'type': 'tel',
+            'pattern': "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+
+        })
+
+    class Meta:
+        model = CustomUser
+        fields = ['bio', 'phone_number', 'state', 'country', 'language',
+                  'profession', 'profile_image', 'is_private']
+        help_texts = {
+            'phone_number': 'Use Formate Like This 999-999-9999 '
+        }
+
+    def save(self, commit=True):
+        instance = super(ProfessionalAccountForm, self).save()
+        profile_image = self.request.FILES.get('profile_image', None)
+        if profile_image:
+            instance.profile_image = profile_image
+            instance.save()
+        return instance
+
+
+# Localite account
+class UpdateProfessionalAccountForm(ModelForm):
+    profile_image = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(
+            attrs={
+                'accept': 'image/*'
+            }
+        )
+    )
+    role = forms.ModelChoiceField(
+        queryset=UserRole.objects.exclude(name=UserRole.LOCALITE),
+        required=False
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'bio', 'phone_number', 'state',
+                  'country', 'language', 'profession', 'profile_image', 'is_private']
+        help_texts = {
+            'phone_number': 'Use Formate Like This 999-999-9999 '
+        }
+
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        super(UpdateProfessionalAccountForm, self).__init__(*args, **kwargs)
+        self.fields['role'].queryset = UserRole.objects.exclude(id__in=self.instance.user_role.all())
+        self.fields['phone_number'].widget.attrs.update({
+            'autocomplete': 'off', 'type': 'tel',
+            'pattern': "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+
+        })
+
+    def save(self, commit=True):
+        instance = super(UpdateProfessionalAccountForm, self).save(commit=False)
+        role = self.cleaned_data['role']
+        profile_image = self.request.FILES.get('profile_image', None)
+
+        if role:
+            if str(role) == UserRole.PROVIDER:
+                user_role = UserRole.objects.get(name=UserRole.PROVIDER)
+                instance.user_role.add(user_role)
+                self.request.session['role_flag'] = UserRole.PROVIDER
+            elif str(role) == UserRole.CLIENT:
+                user_role = UserRole.objects.get(name=UserRole.CLIENT)
+                instance.user_role.add(user_role)
+
+        if profile_image:
+            instance.profile_image = profile_image
+            instance.save()
+        return instance
+
+
+# client account
+class UpdateAccountForm(ModelForm):
+    profile_image = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(
+            attrs={
+                'accept': 'image/*'
+            }
+        )
+    )
+    role = forms.ModelChoiceField(
+        queryset=UserRole.objects.exclude(name=UserRole.PROVIDER),
+        required=False
+    )
+
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        super(UpdateAccountForm, self).__init__(*args, **kwargs)
+        self.fields['role'].queryset = UserRole.objects.exclude(id__in=self.instance.user_role.all())
+
+    class Meta:
+        model = CustomUser
+        fields = ["username", "email", 'profile_image']
+
+    def save(self, commit=True):
+        instance = super(UpdateAccountForm, self).save(commit=False)
+        role = self.cleaned_data['role']
+        profile_image = self.request.FILES.get('profile_image', None)
+
+        if role:
+            if str(role) == UserRole.PROVIDER:
+                user_role = UserRole.objects.get(name=UserRole.PROVIDER)
+                instance.user_role.add(user_role)
+                self.request.session['role_flag'] = UserRole.PROVIDER
+            elif str(role) == UserRole.LOCALITE:
+                user_role = UserRole.objects.get(name=UserRole.LOCALITE)
+                instance.user_role.add(user_role)
+                self.request.session['role_flag'] = UserRole.LOCALITE
+
+        if profile_image:
+            instance.profile_image = profile_image
+            instance.save()
+        return instance
+
+
+class UserChoiceForm(ModelForm):
+    class Meta:
+        model = UserRole
+        fields = ['name']
+        widgets = {
+            'name': forms.RadioSelect(),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(UserChoiceForm, self).__init__(*args, **kwargs)
+        self.fields['name'].choices = self.fields['name'].choices[1:]
+
+
+# provider profile
+class ProviderAccountForm(ModelForm):
+    categories = forms.ModelChoiceField(
+        queryset=Categories.objects.all(),
+        required=True,
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ['country', 'state', 'phone_number']
+        help_texts ={
+            'phone_number': 'Use Formate Like This 999-999-9999 '
+        }
+
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        super(ProviderAccountForm, self).__init__(*args, **kwargs)
+        self.fields['state'].required = True
+        self.fields['country'].required = True
+        self.fields['phone_number'].required = True
+        self.fields['phone_number'].widget.attrs.update({
+            'autocomplete': 'off', 'type':'tel',
+            'pattern': "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+
+        })
+
+    def save(self, commit=True):
+        instance = super(ProviderAccountForm, self).save()
+        categories = self.cleaned_data['categories']
+        if not instance.providercategories_set.filter(category=categories).exists():
+            ProviderCategories.objects.create(
+                category=categories,
+                provider=instance
+            )
+        return instance
+
+
+# provider account
+class UpdateProviderAccountForm(ModelForm):
+    profile_image = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(
+            attrs={
+                'accept': 'image/*'
+            }
+        )
+    )
+    role = forms.ModelChoiceField(
+        queryset=UserRole.objects.exclude(name=UserRole.PROVIDER),
+        required=False
+    )
+    categories = forms.ModelChoiceField(
+        queryset=Categories.objects.all(),
+        required=False,
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'bio', 'phone_number', 'state',
+                  'country', 'language', 'profile_image']
+        help_texts = {
+            'phone_number': 'Use Formate Like This 999-999-9999 '
+        }
+
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        super(UpdateProviderAccountForm, self).__init__(*args, **kwargs)
+        self.fields['role'].queryset = UserRole.objects.exclude(id__in=self.instance.user_role.all())
+        self.fields['phone_number'].widget.attrs.update({
+            'autocomplete': 'off', 'type': 'tel',
+            'pattern': "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+        })
+
+    def save(self, commit=True):
+        instance = super(UpdateProviderAccountForm, self).save()
+        role = self.cleaned_data['role']
+        categories = self.cleaned_data['categories']
+        profile_image = self.request.FILES.get('profile_image', None)
+
+        if role:
+            if str(role) == UserRole.LOCALITE:
+                user_role = UserRole.objects.get(name=UserRole.LOCALITE)
+                instance.user_role.add(user_role)
+                self.request.session['role_flag'] = UserRole.LOCALITE
+            elif str(role) == UserRole.CLIENT:
+                user_role = UserRole.objects.get(name=UserRole.CLIENT)
+                instance.user_role.add(user_role)
+
+        if categories:
+            if not instance.providercategories_set.filter(category=categories).exists():
+                ProviderCategories.objects.create(
+                    category=categories,
+                    provider=instance
+                )
+
+        if profile_image:
+            instance.profile_image = profile_image
+            instance.save()
+        return instance
+
+class ClientToAdminRequestForm(forms.Form):
+    videos  =MultiMediaField(min_num=1, max_num=3, max_file_size=1024*1024*1024*5, media_type='video')

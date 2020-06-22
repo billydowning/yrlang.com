@@ -1,0 +1,36 @@
+from django.db import models
+from users.models import CustomUser
+
+class Room(models.Model):
+	creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="creator")
+	partner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="partner")
+	date_created = models.DateField(auto_now=True)
+
+	def __str__(self):
+		return self.creator.email + self.partner.email
+
+	@classmethod
+	def create(cls, creator, partner):
+		return cls.objects.create(creator=creator, partner=partner)
+
+class Message(models.Model):
+	room = models.ForeignKey(Room, on_delete=models.CASCADE)
+	content = models.TextField()
+	author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="author")
+	reciepent = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="reciepent")
+	date_created = models.DateTimeField(auto_now=True)
+	is_read = models.BooleanField(default=False)
+
+	def __str__(self):
+		return self.content
+
+	
+	def create(self, room, author,reciepent):
+		self.room = room
+		self.author = author
+		self.reciepent = reciepent
+		self.save()
+		return self
+
+	def get_time(self):
+		return self.date_created.time()

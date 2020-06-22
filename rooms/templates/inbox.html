@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h4 class="page_main_header">Messages</h4>
+
+        <div class="all_mgs">
+            {% for msg in unread_messages %}
+            <a href="{% url 'chatroom' msg.message.room.id %}">
+                <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m uk-padding-small msg_inbox">
+
+                    <img class="uk-border-circle uk-margin-small uk-padding-remove" width="25" height="25" src="">
+                   <div class="msg_texts">
+                        <p class="uk-padding-remove use_name">{{ msg.chat_partner.username }}</p>
+                        <p>{{ msg.message.content }}</p>
+                        <p class="date_time">{{ msg.message.date_created }}</p>
+                       <div class="uk-card-badge uk-label">New</div>
+                   </div>
+                </div>
+            </a>
+            <br>
+        {% endfor %}
+        {% for msg in read_messages %}
+            <a href="{% url 'chatroom' msg.message.room.id %}">
+                <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m uk-padding-small msg_inbox">
+                    <img class="uk-border-circle uk-margin-small uk-padding-remove" width="25" height="25" src="">
+                    <div class="msg_texts">
+                        <p class="uk-padding-remove use_name">{{ msg.chat_partner.username }}</p>
+                        <p>{{ msg.message.content }}</p>
+                        <p class="date_time">{{ msg.message.date_created }}</p>
+                    </div>
+                    
+                </div>
+            </a>
+            <br>
+        {% endfor %}
+        </div>
+</div>
+{% endblock content %}

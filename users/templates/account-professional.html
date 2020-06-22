@@ -1,0 +1,229 @@
+{% extends "layout.html" %}
+{% load check_role %}
+{% block content %}
+<div class="content-section container mt-5">
+    <a class="button secondaryAction page_main_header mb-5" href="{% url 'account_change_password' %}">Change Password?</a>
+    <div class="media">{% if request.user.profile_image %}
+        <div class="profile_d row">
+              <div class="col-12 col-md-3 col-lg-2">
+                  <img class="uk-border-circle" width="40" height="40" src="{{ request.user.profile_image.url }}">
+        {% else %}
+        <img class="uk-border-circle" width="40" height="40" src="{{ avtar }}">
+        {% endif %}
+              </div>
+       <div class="col-12 col-md-9 col-lg-10">
+         <div class="media-body text-left w-100">
+            <h2>{{ current_user.username }}</h2>
+            <div class="row">
+                <div class="col-12  col-md-6 col-lg-4">
+                    <p>Profession: {% for profession in current_user.profession.all %}
+                        {{ profession }}
+                        {% endfor %}</p>
+                </div>
+                <div class="col-12  col-md-6 col-lg-4">
+                    <p>Bio: {{ current_user.bio }}</p>
+                </div>
+                <div class="col-12  col-md-6 col-lg-4">
+                    <p>email: {{ current_user.email }}</p>
+                </div>
+                <div class="col-12  col-md-6 col-lg-4">
+                    <p>Phone: {{ current_user.phone_number }}</p>
+                </div>
+                <div class="col-12  col-md-6 col-lg-4">
+                    <p>Location: {{ current_user.state }} - {{ current_user.country }}</p>
+                </div>
+                <div class="col-12  col-md-6 col-lg-4">
+                     <p>Speaks:
+            {% for lang in current_user.language.all %}
+            {{ lang }}</p>
+                </div>
+            </div>
+           
+            {% endfor %}
+        </div>
+       </div>
+        </div>
+    </div>
+    <div class="col-12">
+    <form method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Account Info</legend>
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+
+                    {{ form.username.label }}
+                    {% if form.username.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.username.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.username }}
+                    {% endif %}
+                </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                {{ form.email.label }}
+                {% if form.email.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.email }}
+                {% endif %}
+            </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6">
+                     <div class="form-group">
+                        {{ form.phone_number.label }}
+                        {% if form.phone_number.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.phone_number.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.phone_number }}
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                     <div class="form-group">
+                        {{ form.profession.label }}
+                        {% if form.profession.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.profession.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.profession }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                    {{ form.country.label }}
+                    {% if form.country.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.country.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.country }}
+                    {% endif %}
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                    {{ form.state.label }}
+                    {% if form.state.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.state.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.state }}
+                    {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6">
+                     <div class="form-group">
+                {{ form.bio.label }}
+                {% if form.bio.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.bio.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.bio }}
+                {% endif %}
+            </div>
+                </div>
+                <div class="col-12 col-md-6">
+                     <div class="form-group">
+                        {{ form.language.label }}
+                        {% if form.language.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.language.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.language }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        {{ form.profile_image.label }}
+                        {% if form.profile_image.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.profile_image.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.profile_image }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="form-group">
+                        {{ form.role.label }}
+                        {% if form.role.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.role.errors %}
+                            <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        {{ form.role }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="form-group">
+                    {{ form.is_private.label }}
+                    {% if form.is_private.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.is_private.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.is_private }}
+                    {% endif %}
+                </div>
+            </div>
+        </fieldset>
+        <div class="form-group">
+            <button class="btn" button="submit">Update</button>
+        </div>
+    </form>
+</div>
+</div>
+{% endblock content %}

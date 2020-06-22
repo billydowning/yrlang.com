@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% load socialaccount %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Client Signup" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+    <div class="col-12 col-md-6 m-auto">
+
+        <h1>{% trans "Customer Sign Up" %}</h1>
+
+        <p>{% blocktrans %}Already have an account ? Then please <a href="{{ login_url }}">sign in</a>.
+          {% endblocktrans %}
+        </p>
+        <p>
+            <ui>
+                <li class="fa fa-google" aria-hidden="true"><a href="{% provider_login_url 'google' process='login' %}">&nbsp Signup With Google</a></li><br>
+                <li class="fa fa-facebook-square" aria-hidden="true"><a href="#">&nbsp Signup With Facebook</a></li>
+            </ui>
+
+          <center> <div class="login-or">{% trans 'or' %}</div></center>
+        </p>
+        <form class="signup" id="signup_form" method="POST" action="{% url 'client_signup_view' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+            {% endif %}
+            <button type="submit">{% trans "Sign Up" %} &raquo;</button>
+        </form>
+
+
+    </div>
+</div>
+</div>
+{% endblock %}

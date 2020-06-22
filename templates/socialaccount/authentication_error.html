@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container ">
+<div class="row">
+    <div class="col-12 col-md-6 m-auto">
+
+        <h1>Social Network Login Failure</h1>
+
+        <p>An error occurred while attempting to login via your social network account.</p>
+        <pre>
+            Try to Login again.
+        </pre>
+        <a href="{% url 'account_login' %}">Login Again</a>
+    </div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+{% load check_role %}
+{% block content %}
+<div class="content-section container mt-5">
+
+    <div class="media">{% if request.user.profile_image %}
+        <div class="profile_d row">
+              <div class="col-12 col-md-3 col-lg-2">
+                  <img class="uk-border-circle" width="40" height="40" src="{{ request.user.profile_image.url }}">
+        {% else %}
+        <img class="uk-border-circle" width="40" height="40" src="{{ avtar }}">
+        {% endif %}
+              </div>
+       <div class="col-12 col-md-9 col-lg-10">
+         <div class="media-body text-left w-100">
+            <h2>{{ current_user.username }}</h2>
+            <div class="row">
+                <div class="col-12  col-md-6 col-lg-4">
+                    <p>Profession: {% for profession in current_user.profession.all %}
+                        {{ profession }}
+                        {% endfor %}</p>
+                </div>
+                <div class="col-12  col-md-6 col-lg-4">
+
+                    <p>Bio: {% if current_user.bio %} {{ current_user.bio }} {% else %} No Bio {% endif %}</p>
+
+
+                </div>
+                <div class="col-12  col-md-6 col-lg-4">
+                    <p>email: {{ current_user.email }}</p>
+                </div>
+                <div class="col-12  col-md-6 col-lg-4">
+
+                    <p>Phone:{% if current_user.phone_number %} {{ current_user.phone_number }}{% else %} No Number Found {% endif %}</p>
+
+                </div>
+                <div class="col-12  col-md-6 col-lg-4">
+                    <p>Location:{% if current_user.state and current_user.country %} {{ current_user.state }} -
+                        {{ current_user.country }} {% endif %}</p>
+                </div>
+                <div class="col-12  col-md-6 col-lg-4">
+                     <p>Speaks:{%if current_user.language %}
+            {% for lang in current_user.language.all %}
+            {{ lang }}
+
+            {% endfor %}{% else %}No Language
+             {% endif %}</p>
+                </div>
+            </div>
+
+        </div>
+       </div>
+        </div>
+    </div>
+     <a href="{% url 'create_provider_appointments' current_user.id %}" class="uk-button uk-button-text btn theme_btn">Request Appointment</a>
+
+</div>
+{% endblock content %}

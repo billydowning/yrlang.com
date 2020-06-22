@@ -1,0 +1,142 @@
+{% load static check_role check_request %}
+{% is_provider user_role=request.session.user_role as provider_checked %}
+{% is_localite user_role=request.session.user_role as localite_checked %}
+{% is_client user_role=request.session.user_role as client_checked %}
+{% provider user as pro %}
+{% localite user as loc %}
+{% provider_request_sent user as provider_request_checked %}
+{% localite_request_sent  user as localite_request_checked %}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <div class="uk-card-body pl-0 pr-0">
+                <div class="">
+                    <div class="profile_listing_outer mt-3">
+
+                        <div class="row">
+                            <div class="col-12">
+                                <h1 class="page_main_header mb-3">Near By Localites</h1>
+                                {% if localites %}
+                                {% for localite in localites %}
+                                <div class="profile_main_outer">
+                                    <div class="user_img_details_sec">
+                                        <div class="user_profile_rating">
+                                            <div class="profile_im">
+                                                {% if localite.profile_image %}
+                                                <img src="{{ localite.profile_image.url }}">
+                                                {% else %}
+                                                <img src="{{ avtar}}">
+                                                {% endif %}
+                                            </div>
+                                            <div class="name_rate">
+                                                <h5>{{ localite.username|title }}</h5>
+                                                <p>
+                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+
+
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="price_Book Visit!">
+                                            <h5>$ 50 <span>Per Day</span></h5>
+                                            {%if request.user.is_authenticated %}
+                                            <a href="{% url 'request_appointment' localite.id %}">
+                                                <button class="btn theme_btn" type="button">Book Visit!</button>
+                                            </a>
+                                            &nbsp; <a href="{% url 'contact' localite.id %}">
+                                            <button class="btn theme_btn" type="button">Contact</button>
+                                        </a>
+                                            {% else %}<a href="{% url 'account_login' %}">
+                                            <button class="btn theme_btn" type="button">Book Visit!</button>
+                                        </a>
+                                            &nbsp; <a href="{% url 'account_login'  %}">
+                                            <button class="btn theme_btn" type="button">Contact</button>
+                                        </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <ul class="about_user_pro">
+                                        <li>
+                                            <span>State:</span>{{ localite.state }} - {{ localite.country }}
+                                            <div class="div_sp pl-5">
+                                                <span>Profession:</span> {% for profession in localite.profession.all %}{{ profession.name }},{%endfor%}
+                                            </div>
+                                        </li>
+                                        <li><span>Bio:</span>{{ localite.bio }}</li>
+
+                                    </ul>
+                                </div>
+                                {% endfor %}
+                                <div class="text-center mt-5">
+                                    <a href="{% url 'main:localite_list' %}" class="view_all_link"> View All</a>
+                                </div>
+                                {% else %}
+                                <h3>No Localites Found .</h3>
+                                {% endif %}
+                            </div>
+                            <div class="col-12 mt-5">
+                                <h1 class="page_main_header mb-3"> Near By Providers</h1>
+                                {% if providers %}
+                                {% for professional in providers %}
+                                <div class="profile_main_outer">
+                                    <div class="user_img_details_sec">
+                                        <div class="user_profile_rating">
+                                            <div class="profile_im">
+                                                {% if professional.profile_image %}
+                                                <img src="{{ professional.profile_image.url }}">
+                                                {% else %}
+                                                <img src="{{ avtar}}">
+                                                {% endif %}
+                                            </div>
+                                            <div class="name_rate">
+                                                <h5>{{ professional.username|title }}</h5>
+                                                <p>
+                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="price_hire">
+                                            <a href="{% url 'create_provider_appointments' professional.id %}">
+                                                <button class="btn theme_btn" type="button">Book Appointment!</button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <ul class="about_user_pro">
+                                        <li>
+                                            <span>City:</span>{{ professional.state }} - {{ professional.country }}
+                                            <div class="div_sp pl-5">
+                                                <span>categories:</span> {% for profession in professional.providercategories_set.all %}{{ profession.category }},{%endfor%}
+                                            </div>
+                                        </li>
+                                        <li><span>Bio:</span>{{ professional.bio }}</li>
+
+                                    </ul>
+                                </div>
+                                {% endfor %}
+                                <div class="text-center mt-5">
+                                    <a href="{% url 'main:provider_list' %}" class="view_all_link"> View All</a>
+                                </div>
+                                {% else %}
+                                <h3>No Provider Found .</h3>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+
+        </div>
+    </div>
+</div>
+

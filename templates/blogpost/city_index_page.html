@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% load wagtailcore_tags %}
+
+
+
+
+{% block content %}
+{% if page.title %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+
+            <h1>{{ page.title }}</h1>
+            <p>{{ page.introduction }}</p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row ">
+        {% for city in citys %}
+            <div class="col-md-6">
+                <a href="{% pageurl city %}">
+                <h1 class="title">
+
+                    <span class="sub-title">{{ city.title }}</span>
+
+                </h1></a>
+
+            </div>
+        {% endfor %}
+</div>
+</div>
+{% else %}
+<h1 class="center"> No city Found</h1>
+{% endif %}
+
+
+{% endblock%}

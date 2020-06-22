@@ -1,0 +1,325 @@
+{% load static check_role %}
+{% is_provider user_role=request.session.user_role as provider_checked %}
+{% is_localite user_role=request.session.user_role as localite_checked %}
+{% is_client user_role=request.session.user_role as client_checked %}
+
+
+
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>
+
+		</title>
+
+		<!-- Font Awesome -->
+		<link href="{% static 'css/fontawesome-all.css' %}" rel="stylesheet" />
+		<!-- Bootstrap core CSS -->
+		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+		<!-- custom styles-->
+		<link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+	</head>
+	<body>
+		<div id="wrapper">
+			<header>
+
+			</header>
+			<div id="content">
+				<!-- slider section -->
+					<section class="slider_section">
+						<div class="container">
+							<div class="row">
+								<div class="col-12 col-lg-10 m-auto">
+									<div class="slider_text">
+										<h4>Never be a stranger in a new city again. Live more comfortably, like a local!</h4>
+										<button class="btn main_btn white_btn" type="button">GET STARTED </button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</section>
+
+				<!-- slider section end -->
+
+				<!-- why us section  -->
+				<section class="why_us_section">
+					<div class="container">
+						<div class="row">
+							<div class="col-12 col-lg-10 m-auto">
+								<div class="why_us_text">
+									<h4 class="page_title_st">Why YrLang?<span class="bottom_border"></span></h4>
+									<p>Chances are (if you haven't already) that you will one day find yourself in a foreign country without proper knowledge of the local language. Where do you begin your journey and how can you be certain you will end up where you would like to be at the end of the day? Flashback to 2018, on our adventure as US expats in Berlin -we had learned some Deutsch, researched the city, watched EasyGerman, the works. Nothing quite prepares you for the nuances of everyday life as a non-native - and we figure we are not unique in our challenges. That's why we created YrLang (think of it as You're Speaking My Language -just a lot easier to say).</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!-- why us section end -->
+				<section class="our_solution">
+					<div class="container">
+						<div class="row">
+							<div class="col-12 mb-5">
+								<h4 class="page_title_st text-center">Our Solution <span class="bottom_border"></span></h4>
+								<p  class="text-center">We're a hub for digital nomads, expats, and just about every kind of traveler. We provide a community space that connects locals with fluent second language skills in multiple foreign cities to our community of adventure seekers/ location-independent/ remote lifers -creating a comfortable space to broaden your travel experiences.</p>
+							</div>
+						</div>
+						<div class="lsiting_solutions">
+							<div class="row">
+								<div class="col-12 col-md-4">
+									<div class="solutions_div">
+										<h5>YrLang  Localites</h5>
+										<p>Connect with a local guide that speaks your language fluently</p>
+									</div>
+								</div>
+								<div class="col-12 col-md-4">
+									<div class="solutions_div">
+										<h5>YrLang Connect</h5>
+										<p>Find a service provider that speaks your language  fluently</p>
+									</div>
+								</div>
+								<div class="col-12 col-md-4">
+									<div class="solutions_div">
+										<h5>YrLang  iTINS </h5>
+										<p>Build a personalized itinerary for your next adventure with one of our Localites </p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!-- /solution end -->
+				<!-- srch city -->
+				<section class="search_city">
+					<div class="container">
+						<div class="srch_city_outer">
+							<div class="row mb-5">
+								<div class="col-12">
+									<h4 class="page_title_st mb-3">How It Works <span class="bottom_border"></span></h4>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12 col-md-4">
+									<div class="serching_city_div">
+										<img src="{% static 'images/search.png' %}">
+										<h5> Search by City</h5>
+									</div>
+								</div>
+								<div class="col-12 col-md-4">
+									<div class="serching_city_div">
+										<img src="{% static 'images/local.png' %}">
+										<h5> Choose a Localite or Provider</h5>
+									</div>
+								</div>
+								<div class="col-12 col-md-4">
+									<div class="serching_city_div">
+										<img src="{% static 'images/credit-card.png' %}">
+										<h5> Book & Pay</h5>
+									</div>
+								</div>
+							</div>
+							<div class="row mt-5">
+								<div class="col-12 text-center">
+									<button class="btn main_btn white_btn" type="button">Join us today </button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!-- srch city end -->
+				<!-- getting started -->
+				<section class="getting_started_section">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+								<div class="page_main_hd">
+									<h4>Getting started? <span class="bottom_line"></span></h4>
+								</div>
+							</div>
+						</div>
+						<div class="getting_start_step_outer">
+							<div class="row">
+								<div class="col-12 col-md-4">
+									<div class="start_inner">
+										<p class="blog_count">1</p>
+										<h5>choose your language preference</h5>
+										<p>we understand that sometimes people just feel more comfortable reading in their native language, so we make it easy -just choose your language preference from the drop-down menu</p>
+									</div>
+								</div>
+								<div class="col-12 col-md-4">
+									<div class="start_inner">
+										<p class="blog_count">2</p>
+										<h5>search our active cities </h5>
+										<p>our goal is to build  a community of Localites and Providers in every major city around the world and in multiple languages, so you can rest easy knowing  we’ve got you covered wherever your next move takes you</p>
+									</div>
+								</div>
+								<div class="col-12 col-md-4">
+									<div class="start_inner">
+										<p class="blog_count">3</p>
+										<h5>checkout our Localite profiles + find the right Localite for you</h5>
+										<p>we understand that sometimes people just feel more comfortable reading in their native language, so we make it easy -just choose your language preference from the drop-down menu</p>
+									</div>
+								</div>
+								<div class="col-12 col-md-4">
+									<div class="start_inner">
+										<p class="blog_count">4</p>
+										<h5>register with us to create your User Profile</h5>
+										<p>it’s easy: just sign up and we create a one-stop dashboard where you can manage everything (your bookings, your payments, your preferences), plus we built-in an IM feature so communication is seamless</p>
+									</div>
+								</div>
+								<div class="col-12 col-md-4">
+									<div class="start_inner">
+										<p class="blog_count">5</p>
+										<h5>book your Localite and pay</h5>
+										<p>once you find your perfect Localite just request either a half, full, or multi- day in their availability calendar, clarify a few details before approval, and pay</p>
+									</div>
+								</div>
+								<div class="col-12 col-md-4">
+									<div class="start_inner">
+										<p class="blog_count">6</p>
+										<h5>Our goal is to make connecting with individuals in foreign cities who speak your language easier.</h5>
+										<p>Need a travel companion that takes the guesswork out of speaking to locals?<a href="" class="page_link">book a Localite</a></p>
+
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row mt-5">
+							<div class="col-12 text-center">
+								<button class="btn main_btn" type="button">Join us today </button>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!-- getting started end -->
+
+				<!-- blog section -->
+				<section class="bog_section">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+								<h4>Our Blog, The Brucke  <span class="bottom_line"></span></h4>
+								<p>We want to share our journey, and help you along yours -that’s why we came up with our blog, <strong>The Brücke</strong>. It means bridge in Deutsch and captures the essence of what we see for YrLang -its purpose is to help you cross language barriers and connect more with where you are and where you want to be,  while also sharing some of our ‘life’ lessons as former expats in Berlin.</p>
+							</div>
+						</div>
+						<div class="blog_outer_section">
+							<div class="row">
+								<div class="col-12 col-md-4">
+									<div class="blog_img">
+										<div class="blog_img_container">
+											<img src="{% static 'images/city_banner.jpg' %}">
+										</div>
+										<div class="blog_text">
+											<h5>Blog Name</h5>
+											<p>You will read about it in blogs (usually Americans) about the checkout experience in Germany, but nothing except speed & some standard Deutsch will prepare you for supermarket checkout in Berlin...</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-md-4">
+									<div class="blog_img">
+										<div class="blog_img_container">
+											<img src="{% static 'images/city_banner.jpg' %}">
+										</div>
+										<div class="blog_text">
+											<h5>Blog Name</h5>
+											<p>You will read about it in blogs (usually Americans) about the checkout experience in Germany, but nothing except speed & some standard Deutsch will prepare you for supermarket checkout in Berlin...</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-md-4">
+									<div class="blog_img">
+										<div class="blog_img_container">
+											<img src="{% static 'images/city_banner.jpg' %}">
+										</div>
+										<div class="blog_text">
+											<h5>Blog Name</h5>
+											<p>You will read about it in blogs (usually Americans) about the checkout experience in Germany, but nothing except speed & some standard Deutsch will prepare you for supermarket checkout in Berlin...</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!-- blog section end -->
+
+				<!-- populr city -->
+				<section class="popular_city_section">
+					<div class="container">
+						<div class="row mb-5">
+							<div class="col-12">
+								<h4>Popular Cities<span class="bottom_line"></span></h4>
+							</div>
+						</div>
+						<div class="popular_city">
+							<div class="row">
+								<div class="col-12 col-md-4 pr-0">
+									<div class="popular_city_outer">
+										<div class="city_container">
+											<img src="{% static 'images/srach_city.jpg' %}">
+										</div>
+										<div class="about_city">
+											<h4>Paris</h4>
+											<p>There’s more (much more) to the ‘city of love’ than croissants, cafés, and art. Explore the Paris catacombs underground, stroll through immaculate gardens at Versailles, or venture into a full day adventure through the Louvre (pack snacks -you will thank us later)..</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-md-4 p-0">
+									<div class="popular_city_outer">
+										<div class="city_container">
+											<img src="{% static 'images/city_banner.jpg' %}">
+										</div>
+										<div class="about_city">
+											<h4>Berlin</h4>
+											<p>As a living monument to the perseverance of the human spirit -Berlin is as raw as they come. Having been divided physically and ideologically by the Berlin Wall for a near half -century, the reunification of the city allowed citizens to openly let their freak flags fly...</p>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-md-4 pl-0">
+									<div class="popular_city_outer">
+										<div class="city_container">
+											<img src="{% static 'images/srach_city.jpg' %}">
+										</div>
+										<div class="about_city">
+											<h4>Milan</h4>
+											<p>If you love fashion, then you already know about Milan, a modern city in Italy's northern Lombardy region, that serves as a global capital of fashion and design, and (it may surprise you) is also home to the national stock exchange...</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!-- populr city end -->
+			</div>
+
+		</div> <!-- wrapper_end -->
+
+		<!-- SCRIPTS -->
+		<script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+		<!-- Bootstrap core JavaScript -->
+		<script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
+		<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+
+
+
+		<script>
+			//set content bottom padding
+			$("#content").css("padding-bottom", $(".footer").outerHeight()+'px');
+
+			// height
+			// var highestBox = 0;
+			// jQuery('.start_inner').each(function() {
+			//   if (jQuery(this).height() > highestBox) {
+			//     highestBox = jQuery(this).height();
+			//   }
+			// });
+
+			// jQuery('.start_inner').height(highestBox);
+		</script>
+	</body>
+
+
+

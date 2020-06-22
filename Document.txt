@@ -1,0 +1,7 @@
+in the Post app there is a multiple models file that are , i'm going to use 
+
+
+just you have to register created call into the __init__.py into models folder 
+
+
+ref :- https://www.webforefront.com/django/modelsoutsidemodels.html

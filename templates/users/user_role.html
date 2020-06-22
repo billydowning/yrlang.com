@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+{% load check_role %}
+
+{% load static %}
+
+{% block calendar_extras %}
+<script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+<script>
+    $(document).ready(function(){
+        var func = function (role){
+            $.ajax({
+                url:'{% url 'user-role-select' %}',
+                type: "POST",
+                headers:{
+                    "X-CSRFToken": '{{ csrf_token }}'
+                },
+                data:{
+                        role: role
+                },
+                success:function(response){
+                    window.location.href = response.url;
+                }
+            });
+        };
+
+        $("#client").click(function(){
+            func($("#client").val());
+        });
+        $("#localite").click(function(){
+            func($("#localite").val());
+        });
+        $("#provider").click(function(){
+            func($("#provider").val());
+        });
+    });
+</script>
+{% endblock calendar_extras %}
+
+{%block content %}
+<div class="content-section container mt-5">
+    <h2 class="page_main_header">Select Your Role</h2>
+    {% provider user as pro %}
+    {% client user as clt %}
+    {% localite user as loc %}
+
+        <div class="select_user">
+            <div class="row">
+                {% if clt %}
+                <div class="col-12 col-md-4">
+                    <div class="porovider_outer">
+                        <input type="radio" name="name" id="client" value="client">
+                        <div class="img_con">
+                            <img src="/media/role_images/yrlang.png" width="320" height="300">
+                        </div>
+                        <div class="name_selected">
+                            Customer
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if pro %}
+                <div class="col-12 col-md-4">
+                    <div class="porovider_outer">
+                        <input type="radio" name="name" id="provider" value="provider">
+                        <div class="img_con">
+                            <img src="/media/images/homepage_hero_M2x.2e16d0ba.fill-320x300.jpg">
+                        </div>
+                        <div class="name_selected">
+                            Provider
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% if loc %}
+                <div class="col-12 col-md-4">
+                    <div class="porovider_outer">
+                        <input type="radio" name="name" id="localite" value="localite">
+                        <div class="img_con">
+                            <img src="/media/role_images/provider-png-9.png" width="320" height="300">
+                        </div>
+                        <div class="name_selected">
+                            Localite
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+{% load check_role %}
+{% block content %}
+
+<div class="content-section container mt-5">
+    <a class="button secondaryAction" href="{% url 'account_change_password' %}">Change Password?</a>
+    <div class="media">
+        {% if request.user.profile_image %}
+        <img class="uk-border-circle" width="40" height="40" src="{{ request.user.profile_image.url }}">
+        {% else %}
+        <img class="uk-border-circle" width="40" height="40" src="{{ avtar }}">
+        {% endif %}
+
+        <div class="media-body">
+            <h2 class="page_main_header">{{ request.user.username }}</h2>
+        </div>
+    </div>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Account Info</legend>
+            <div class="form-group">
+                {{ form.username.label }}
+                {% if form.username.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.name.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.username }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.email.label }}
+                {% if form.email.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.email }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.role.label }}
+                {% if form.role.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.role.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.role }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.profile_image.label }}
+                {% if form.profile_image.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.profile_image.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.profile_image }}
+                {% endif %}
+            </div>
+            {% provider user as p %}
+            {% if p is False %}
+                <div class="form-group">
+                    {{ form.provider.label }}
+                    {% if form.provider.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.provider.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.provider }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn" type="submit">Update</button>
+        </div>
+    </form>
+</div>
+{% endblock content %}

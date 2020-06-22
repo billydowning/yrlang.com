@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <div>
+    <h2>Invoice creaded by {{ payee.name }} for {{ invoice.title }} in the amount of {{ invoice.amount }}</h2>
+    <p>Created on {{ invoice.date_created }}</p>
+    <!-- <button type="button" class="btn btn-primary" id="custom-button">Pay with Card</button> -->
+  </div>
+  
+  {% if request.user.id == invoice.payor.id and invoice.is_paid == False %}
+  <form action="{% url 'charge' invoice.id %}" method="post">
+  {% csrf_token %}
+  <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+          data-key="{{ key }}"
+          data-description="A Django Charge"
+          data-amount="{{amount}}"
+          data-locale="auto"></script>
+</form>
+<h4>Pay with PayPal</h4>
+    {{ form.render }}
+{% endif %}
+</div>
+{% endblock content %}

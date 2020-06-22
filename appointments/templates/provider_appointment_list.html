@@ -1,0 +1,402 @@
+{% extends 'layout.html' %}
+{% load  check_role check_status %}
+{% block content %}
+
+{% is_provider user_role=request.session.user_role as provider_checked %}
+{% is_client user_role=request.session.user_role as client_checked %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="page_main_header my-3">Your appointments...</h1>
+            <br>
+            {% if appointments %}
+
+            <div uk-filter="target: .js-filter">
+                <ul class="uk-subnav uk-subnav-pill">
+                    <li class="uk-active" uk-filter-control="[data-status='requested']"><a href="#">Requested</a></li>
+                    <li uk-filter-control="[data-status='canceled']"><a href="#">Canceled</a></li>
+                    <li uk-filter-control="[data-status='complated']"><a href="#">Complated</a></li>
+
+                    <li uk-filter-control="[data-status='approved']"><a href="#">Approved</a></li>
+
+                </ul>
+                <ul class="js-filter uk-child-width-1-1 uk-text-left" uk-grid>
+
+                    <li data-status="requested">
+                        <div class="profile_listing_outer mt-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    {% if appointments %}
+                                    {% for appointment in appointments %}
+                                    {% if appointment.status|is_requested %}
+                                    <div class="profile_main_outer">
+                                        <div class="user_img_details_sec">
+                                            <div class="user_profile_rating">
+                                                <div class="profile_im">
+                                                    {% if provider_checked %}
+                                                    {% if appointment.requestor.profile_image %}
+                                                    <img src="{{ appointment.requestor.profile_image.url }}">
+                                                    {% else %}
+                                                    <img src="{{ avtar}}">
+                                                    {%endif %}
+
+                                                    {% else %}
+                                                    {% if appointment.requestee.profile_image %}
+                                                    <img src="{{appointment.requestee.profile_image.url}}">
+                                                    {% else %}
+                                                    <img src="{{ avtar}}">
+                                                    {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="name_rate">
+                                                    {% if provider_checked %}
+                                                    <h5>{{ appointment.requestor.username|title}}</h5>
+                                                    {% else %}
+                                                    <h5>{{ appointment.requestee.username|title}} </h5>
+                                                    {% endif %}
+                                                    <p>
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="price_hire">
+                                                <h5>Request on<span>{{ appointment.request_date }}</span></h5>
+                                            </div>
+                                        </div>
+                                        <div class="right_details_sec">
+                                            <ul class="about_user_pro">
+                                                <li>
+                                                    <span>Preferred Language:</span>
+                                                    {% for laguage in appointment.requestor.language.all %} {{laguage}},
+                                                    {%endfor%}
+                                                </li>
+                                                <li><span>Message:</span>{{ appointment.client_comment }}
+                                                </li>
+                                                <li><span>Status:</span>{{ appointment.get_status_display }}
+                                                </li>
+                                                <li class="li_flex">
+                                                    {% if provider_checked %}
+                                                    {% if appointment.status|is_approved %}
+                                                <li class="li_flex">
+                                                    <a href="">
+                                                        <button class="btn theme_btn" type="button">Edit</button>
+                                                    </a>
+                                                    <span>OR</span>
+                                                    <a href="" class="cancel">Cancel</a>
+                                                </li>
+                                                {% elif appointment.status|is_requested %}
+                                                <li class="li_flex">
+                                                    <a href="{{ appointment.get_absolute_url }}">
+                                                        <button class="btn theme_btn" type="button">Confirm</button>
+                                                    </a>
+                                                    <span>OR</span>
+                                                    <a href="" class="cancel">Cancel</a>
+                                                </li>
+                                                {% endif %}
+                                                {% elif client_checked %}
+                                                {% if appointment.status|is_requested %}
+                                                <a href="{% url 'edit_provider_appointment' appointment.id %}">
+                                                    <button class="btn theme_btn" type="button">Edit</button>
+                                                </a>
+                                                {% endif %}
+                                                {% endif %}
+
+                                                </li>
+                                            </ul>
+                                            <div class="calander_div">
+<!--                                                <a href=""><i class="fa fa-calendar-o" aria-hidden="true"></i></a>-->
+
+                                                          <span class="fa-stack fa-3x">
+                                                            <i class="fa fa-calendar-o fa-stack-2x"></i>
+                                                            <strong class="fa-stack-1x calendar-text">{{ appointment.request_date.day }}  </strong>
+                                                          </span>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor%}
+                                    {% else %}
+                                    <h3>No Appoitment Found </h3>
+                                    {% endif %}
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </li>
+
+
+                    <li data-status="canceled">
+                        <div class="profile_listing_outer mt-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    {% if appointments %}
+                                    {% for appointment in appointments %}
+                                    {% if appointment.status|is_canceled %}
+                                    <div class="profile_main_outer">
+                                        <div class="user_img_details_sec">
+                                            <div class="user_profile_rating">
+                                                <div class="profile_im">
+                                                    {% if provider_checked %}
+                                                    {% if appointment.requestor.profile_image %}
+                                                    <img src="{{ appointment.requestor.profile_image.url }}">
+                                                    {% else %}
+                                                    <img src="{{ avtar}}">
+                                                    {%endif %}
+
+                                                    {% else %}
+                                                    {% if appointment.requestee.profile_image %}
+                                                    <img src="{{appointment.requestee.profile_image.url}}">
+                                                    {% else %}
+                                                    <img src="{{ avtar}}">
+                                                    {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="name_rate">
+                                                    {% if provider_checked %}
+                                                    <h5>{{ appointment.requestor.username|title}}</h5>
+                                                    {% else %}
+                                                    <h5>{{ appointment.requestee.username|title}} </h5>
+                                                    {% endif %}
+                                                    <p>
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="price_hire">
+                                                <h5>Request on<span>{{ appointment.request_date }}</span></h5>
+                                            </div>
+                                        </div>
+                                        <div class="right_details_sec">
+                                            <ul class="about_user_pro">
+                                                <li>
+                                                    <span>Preferred Language:</span>
+                                                    {% for laguage in appointment.requestor.language.all %} {{laguage}},
+                                                    {%endfor%}
+                                                </li>
+                                                <li><span>Reason:</span>{{ appointment.provider_comment }}
+                                                </li>
+
+                                                <li><span>Status:</span>{{ appointment.get_status_display }}
+                                                </li>
+                                                <li class="li_flex">
+<!--                                                   buttons here-->
+                                                </li>
+                                            </ul>
+                                            <div class="calander_div">
+<!--                                                <a href=""><i class="fa fa-calendar-o" aria-hidden="true"></i></a>-->
+                                                <div class="stacked-icons">
+                                                          <span class="fa-stack fa-3x">
+                                                            <i class="fa fa-calendar-o fa-stack-2x"></i>
+                                                            <strong class="fa-stack-1x calendar-text">{{ appointment.request_date.day }}  </strong>
+                                                          </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor%}
+                                    {% else %}
+                                    <h3>No Appoitment Found </h3>
+                                    {% endif %}
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </li>
+
+
+                    <li data-status="complated">
+                        <div class="profile_listing_outer mt-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    {% if appointments %}
+                                    {% for appointment in appointments %}
+                                    {% if appointment.status|is_complated %}
+                                    <div class="profile_main_outer">
+                                        <div class="user_img_details_sec">
+                                            <div class="user_profile_rating">
+                                                <div class="profile_im">
+                                                    {% if provider_checked %}
+                                                    {% if appointment.requestor.profile_image %}
+                                                    <img src="{{ appointment.requestor.profile_image.url }}">
+                                                    {% else %}
+                                                    <img src="{{ avtar}}">
+                                                    {%endif %}
+
+                                                    {% else %}
+                                                    {% if appointment.requestee.profile_image %}
+                                                    <img src="{{appointment.requestee.profile_image.url}}">
+                                                    {% else %}
+                                                    <img src="{{ avtar}}">
+                                                    {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="name_rate">
+                                                    {% if provider_checked %}
+                                                    <h5>{{ appointment.requestor.username|title}}</h5>
+                                                    {% else %}
+                                                    <h5>{{ appointment.requestee.username|title}} </h5>
+                                                    {% endif %}
+                                                    <p>
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="price_hire">
+                                                <h5>Request on<span>{{ appointment.request_date }}</span></h5>
+                                            </div>
+                                        </div>
+                                        <div class="right_details_sec">
+                                            <ul class="about_user_pro">
+                                                <li>
+                                                    <span>Preferred Language:</span>
+                                                    {% for laguage in appointment.requestor.language.all %} {{laguage}},
+                                                    {%endfor%}
+                                                </li>
+                                                <li><span>Reason:</span>{{ appointment.provider_comment }}
+                                                </li>
+
+                                                <li><span>Status:</span>{{ appointment.get_status_display }}
+                                                </li>
+                                                <li class="li_flex">
+                                                    <!--                                                        <button class="btn theme_btn" type="button">Confirm</button>-->
+                                                    <!--                                                    <span>OR</span>-->
+                                                    <!--                                                    <a href="" class="cancel">Cancel</a>-->
+                                                </li>
+                                            </ul>
+                                            <div class="calander_div">
+<!--                                                <a href=""><i class="fa fa-calendar-o" aria-hidden="true"></i></a>-->
+                                                <div class="stacked-icons">
+                                                          <span class="fa-stack fa-3x">
+                                                            <i class="fa fa-calendar-o fa-stack-2x"></i>
+                                                            <strong class="fa-stack-1x calendar-text">{{ appointment.approved_date.date.day }}  </strong>
+                                                          </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor%}
+                                    {% else %}
+                                    <h3>No Appoitment Found </h3>
+                                    {% endif %}
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li data-status="approved">
+                        <div class="profile_listing_outer mt-3">
+                            <div class="row">
+                                <div class="col-12">
+                                    {% if appointments %}
+                                    {% for appointment in appointments %}
+                                    {% if appointment.status|is_approved %}
+                                    <div class="profile_main_outer">
+                                        <div class="user_img_details_sec">
+                                            <div class="user_profile_rating">
+                                                <div class="profile_im">
+                                                    {% if provider_checked %}
+                                                    {% if appointment.requestor.profile_image %}
+                                                    <img src="{{ appointment.requestor.profile_image.url }}">
+                                                    {% else %}
+                                                    <img src="{{ avtar}}">
+                                                    {%endif %}
+
+                                                    {% else %}
+                                                    {% if appointment.requestee.profile_image %}
+                                                    <img src="{{appointment.requestee.profile_image.url}}">
+                                                    {% else %}
+                                                    <img src="{{ avtar}}">
+                                                    {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                                <div class="name_rate">
+                                                    {% if provider_checked %}
+                                                    <h5>{{ appointment.requestor.username}}</h5>
+                                                    {% else %}
+                                                    <h5>{{ appointment.requestee.username}} </h5>
+                                                    {% endif %}
+                                                    <p>
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="price_hire">
+                                                <h5>Request on<span>{{ appointment.request_date }}</span></h5>
+                                            </div>
+                                        </div>
+                                        <div class="right_details_sec">
+                                            <ul class="about_user_pro">
+                                                <li>
+                                                    <span>Preferred Language:</span>
+                                                    {% for laguage in appointment.requestor.language.all %} {{laguage}},
+                                                    {%endfor%}
+                                                </li>
+                                                <li><span>Instruction :</span>{{ appointment.provider_comment }}
+                                                </li>
+                                                <li><span>Status:</span>{{ appointment.get_status_display }}
+                                                </li>
+                                                <li><span>Approved Date:</span>{{ appointment.approved_date }}
+                                                </li>
+                                                <li class="li_flex">
+                                                    <!--                                                        <button class="btn theme_btn" type="button">Confirm</button>-->
+                                                    <!--                                                    <span>OR</span>-->
+                                                    <!--                                                    <a href="" class="cancel">Cancel</a>-->
+                                                    {% if provider_checked %}
+
+                                                    <a href="{{ appointment.get_absolute_url }}">
+                                                        <button class="btn theme_btn" type="button">Edit</button>
+                                                    </a>
+
+                                                    {% elif client_checked %}
+
+                                                <a href="{% url 'edit_provider_appointment' appointment.id %}">
+                                                    <button class="btn theme_btn" type="button">Detail</button>
+                                                </a>
+
+                                                {% endif %}
+                                                </li>
+                                            </ul>
+                                            <div class="calander_div">
+<!--                                                <a href=""><i class="fa fa-calendar-o" aria-hidden="true"></i>-->
+<!--                                                    <strong class="fa-stack-1x calendar-text">27</strong>-->
+<!--                                                </a>-->
+
+                                                <div class="stacked-icons">
+                                                          <span class="fa-stack fa-3x">
+                                                            <i class="fa fa-calendar-o fa-stack-2x"></i>
+                                                            <strong class="fa-stack-1x calendar-text">{{ appointment.approved_date.date.day }}  </strong>
+                                                          </span>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                        {% endfor%}
+                                        {% else %}
+                                        <h3>No Appoitment Found </h3>
+                                        {% endif %}
+
+
+                                    </div>
+                                </div>
+                            </div>
+                    </li>
+
+
+                </ul>
+            </div>
+            {% else %}
+            <h3>No Appointment Found .</h3>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

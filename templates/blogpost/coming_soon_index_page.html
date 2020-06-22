@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+
+{% block content %}
+{% if page.title %}
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-md-12">
+            {% if page.title  %}
+            <h1>{{ page.title }}</h1>
+            <h3>{{ page.introduction }}</h3>
+            {% endif  %}
+        </div>
+    </div>
+</div>
+<div class="container mt-3">
+    {% for coming in comingsoon %}
+    {% with coming=coming.specific %}
+    <div class="tr">
+        <a href="{% pageurl coming %}">
+            {% with coming.first_image as first_image %}
+             {% if first_image %}{% image first_image fill-100x100 %}{% endif %}
+            {% endwith %}
+        </a>
+        <a href="{% pageurl coming %}">
+            <h3 class="title">
+
+                <span class="sub-title">{{ coming.title }}</span>
+
+            </h3>
+        </a>
+        <p>{{ coming.date }}</p>
+        <p>{{ coming.time }}</p>
+    </div>
+    {% endwith %}
+    {% endfor %}
+</div>
+{% else %}
+<h1 class="center"> No Coming soon </h1>
+{% endif %}
+
+
+{% endblock%}

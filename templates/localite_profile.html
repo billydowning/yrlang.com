@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+<form class="login profile_form" method="POST" enctype="multipart/form-data">
+	<div class="row">
+		<div class="col-12 col-md 10 col-lg-6 m-auto">
+			{% csrf_token %}
+			{{form.as_p}}
+<button class="primaryAction" type="submit">Save</button>
+		</div>
+	</div>
+
+</form>
+<script>
+$(function(){
+
+  $("#id_phone_number").prop("type", "tel");
+
+});
+
+</script>
+{% endblock %}

@@ -1,0 +1,249 @@
+{% extends "layout.html" %}
+
+{% load static check_status %}
+
+{% block calendar_extras %}
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+      crossorigin="anonymous">
+
+<link href="{% static 'calender_assets/fullcalendar.min.css' %}" rel='stylesheet'/>
+<link href="{% static 'calender_assets/fullcalendar.print.min.css' %}" rel='stylesheet' media='print'/>
+<script src="{% static 'calender_assets/moment.min.js' %}"></script>
+<script src="{% static 'calender_assets/jquery.min.js' %}"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+<script src="{% static 'calender_assets/fullcalendar.min.js' %}"></script>
+
+<script>
+
+  $(document).ready(function() {
+    var block_data = [];
+    var event_data = [];
+    var default_date = undefined;
+
+    {% for event in events %}
+        {% if event.status|is_confirmed %}
+            {% for booking in event.booking.all %}
+                    event_data.push({
+                        start: '{{ booking.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ booking.start_time|time:'H:i:s' }}'),
+                        end: '{{ booking.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ booking.end_time|time:'H:i:s' }}'),
+                        rendering: 'background',
+                        overlap: false,
+                        color: '#8d99ae',
+                    });
+                    var id = '{{ booking.date|date:'m-d' }}' + '-{{ booking.start_time|time:'H' }}';
+                    block_data.push(id)
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+    
+    {% for booking in appointment.booking.all %}
+        {% if booking.confirmed is False %}
+            event_data.push({
+                start: '{{ booking.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ booking.start_time|time:'H:i:s' }}'),
+                end: '{{ booking.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ booking.end_time|time:'H:i:s' }}'),
+                rendering: 'background',
+                overlap: false,
+                color: '#ffff3f',
+            });
+            if (default_date == undefined){
+                default_date = moment('{{ booking.date|date:'Y-m-d' }}').format('YYYY-MM-DD');
+            }
+        {% endif %}
+    {% endfor %}
+
+      $('#calendar').fullCalendar({
+        editable: false,
+        customButtons: {
+        submit: {
+          text: 'Approved!',
+          click: function() {
+            $('#confirmForm').modal('show');
+            $('#cancelNote').prop('required', true);
+          }
+        },
+        cancel: {
+          text: 'Cancel!',
+          click: function() {
+            $('#cancelForm').modal('show');
+          }
+        }
+        },
+        header: {
+          left: 'prev,next, submit, cancel',
+          center: 'title',
+          right: 'month,agendaWeek,agendaDay'
+        },
+        defaultView: 'agendaWeek',
+        height: 440,
+        slotDuration: '06:00:00',
+        minTime: "06:00:00",
+        defaultDate: default_date,
+        events: event_data,
+      });
+
+      function getTimeFormat(time) {
+        if(time == '00:00:00'){
+            return '23:59:59';
+        }
+        else{
+            return time;
+        }
+      }
+
+      $('#cancelBtn').click(function(){
+        if ($('#cancelNote').val() != ''){
+            $.ajax({
+                url:'{% url 'save_bookings' %}',
+                type: 'POST',
+                headers:{
+                    "X-CSRFToken": '{{ csrf_token }}'
+                },
+                data:{
+                        booking_id: '{{ appointment.id }}',
+                        note: $('#cancelNote').val(),
+                        flag: 'false'
+                },
+                success:function(response){
+                    window.location.href = response.url;
+                }
+             });
+        }
+      });
+
+    $('#confirmBtn').click(function(){
+        $.ajax({
+            url:'{% url 'save_bookings' %}',
+            type: 'POST',
+            headers:{
+                "X-CSRFToken": '{{ csrf_token }}'
+            },
+            data:{
+                    booking_id: '{{ appointment.id }}',
+                    note: $('#confirmNote').val(),
+                    flag: 'true',
+
+            },
+            success:function(response){
+                window.location.href = response.url;
+            }
+        });
+    });
+
+  });
+
+</script>
+
+<style>
+
+  body {
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  #calendar {
+    max-width: auto;
+    margin: 0 auto;
+  }
+  .uk-navbar-item, .uk-navbar-nav>li>a, .uk-navbar-toggle{font-size:14px}
+  .fc-past{
+    color: #8d99ae;
+  }
+
+</style>
+{% endblock calendar_extras %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+    <div class="col-1">
+    </div>
+    <div class="col-10">
+        <div class="req_appontment_form">
+        <div class="alert alert-danger my-3" id="alert" role="alert" hidden>
+        </div>
+        <div id='calendar'></div>
+        </div>
+    </div>
+    <div class="col-1">
+    </div>
+    </div>
+</div>
+
+<div class="modal hide fade" id="myModal">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">×</a>
+    <h3>Modal header</h3>
+  </div>
+  <div class="modal-body">
+    <p>One fine body…</p>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn">Close</a>
+    <a href="#" class="btn btn-primary">Save changes</a>
+  </div>
+</div>
+
+<!-- Cancel Modal -->
+<div class="modal fade" id="cancelForm" tabindex="-1" role="dialog" aria-labelledby="cancelFormTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <form action="">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Cancel Are Sure ...!!!</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+               <div class="form-group">
+                <label for="cancelNote">Notes</label>
+                <textarea class="form-control" id="cancelNote" rows="3" required></textarea>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" id="cancelBtn" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal fade" id="confirmForm" tabindex="-1" role="dialog" aria-labelledby="confirmFormTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmFormTitle">Confirm Booking</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+           <div class="form-group">
+            <label for="cancelNote">Notes</label>
+            <textarea class="form-control" id="confirmNote" rows="3" required></textarea>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="confirmBtn" class="btn btn-primary" data-dismiss="modal">Confirm Booing</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

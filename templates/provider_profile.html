@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block content %}
+<form class="login" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+        {{ form.categories.label }}
+        {% if form.categories.errors %}
+        <div class="invalid-feedback">
+            {% for error in form.categories.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        {{ form.categories }}
+        {% endif %}
+    </div>
+    <div class="form-group">
+        {{ form.phone_number.label }}
+        {% if form.phone_number.errors %}
+        <div class="invalid-feedback">
+            {% for error in form.phone_number.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        {{ form.phone_number }}
+        {{ form.phone_number.help_text }}
+        {% endif %}
+    </div>
+    <div class="form-group">
+        {{ form.country.label }}
+        {% if form.country.errors %}
+        <div class="invalid-feedback">
+            {% for error in form.country.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        {{ form.country }}
+        {% endif %}
+    </div>
+    <div class="form-group">
+        {{ form.state.label }}
+        {% if form.state.errors %}
+        <div class="invalid-feedback">
+            {% for error in form.state.errors %}
+            <span>{{ error }}</span>
+            {% endfor %}
+        </div>
+        {% else %}
+        {{ form.state }}
+        {% endif %}
+    </div>
+    <button class="primaryAction" type="submit">Save</button>
+</form>
+
+
+<script>
+$(function(){
+
+  $("#id_phone_number").prop("type", "tel");
+
+});
+
+</script>
+{% endblock %}

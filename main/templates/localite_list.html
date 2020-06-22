@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+
+    <div class="col-12">
+        <h1 class="page_main_header my-3">Localites</h1>
+        {% if localites %}
+        {% for localite in localites %}
+        <div class="profile_main_outer">
+            <div class="user_img_details_sec">
+                <div class="user_profile_rating">
+                    <div class="profile_im">
+                        {% if localite.profile_image %}
+                        <img src="{{ localite.profile_image.url }}">
+                        {% else %}
+                        <img src="{{ avtar}}">
+                        {% endif %}
+                    </div>
+                    <div class="name_rate">
+                        <h5>{{ localite.username|title }}</h5>
+                        <p>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star-o" aria-hidden="true"></i>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="price_hire">
+                    <h5>$ 50 <span>Per Day</span></h5>
+                    {%if request.user.is_authenticated %}
+                    <a href="{% url 'request_appointment' localite.id %}">
+                        <button class="btn theme_btn" type="button">Book Visit!</button>
+                    </a>
+                    &nbsp; <a href="{% url 'contact' localite.id %}">
+                    <button class="btn theme_btn" type="button">Contact</button>
+                </a>
+                    {% else %}<a href="{% url 'account_login' %}">
+                    <button class="btn theme_btn" type="button">Book Visit!</button>
+                </a>
+                    &nbsp; <a href="{% url 'account_login'  %}">
+                    <button class="btn theme_btn" type="button">Contact</button>
+                </a>
+                    {% endif %}
+                </div>
+
+            </div>
+
+            <ul class="about_user_pro">
+                <li>
+                    <span>State:</span>{{ localite.state }} - {{ localite.country }}
+                    <div class="div_sp pl-5">
+                        <span>Profession:</span> {% for profession in localite.profession.all %}{{ profession.name }},{%endfor%}
+                    </div>
+                </li>
+                <li><span>Bio:</span>{{ localite.bio }}</li>
+            </ul>
+
+        </div>
+        {% endfor %}
+        {% else %}
+        <h3>No Localites Found .</h3>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

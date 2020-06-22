@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container mt-5">
+    <div class="content-section">
+    <form method="POST" action="">
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Contacting - {{ recipient.name }}</legend>
+            <div class="form-group">
+                {% csrf_token %}
+                {% if form.content.errors %}
+                    {{ form.content }}
+                    <div class="invalid-feedback">
+                        {% for error in form.content.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.content }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            <button class="btn" type="submit">Save</button>
+        </div>
+    </form>
+</div>
+</div>
+{% endblock content %}

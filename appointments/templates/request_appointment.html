@@ -1,0 +1,227 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block calendar_extras %}
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+      crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+<link href="{% static 'calender_assets/fullcalendar.min.css' %}" rel='stylesheet'/>
+<link href="{% static 'calender_assets/fullcalendar.print.min.css' %}" rel='stylesheet' media='print'/>
+<script src="{% static 'calender_assets/moment.min.js' %}"></script>
+<script src="{% static 'calender_assets/jquery.min.js' %}"></script>
+<script src="{% static 'calender_assets/fullcalendar.min.js' %}"></script>
+
+<script>
+
+  $(document).ready(function() {
+    var booking_data = [];
+    var block_data = [];
+    var del_data = {};
+    var event_data = [];
+
+    {% for booking in customuser.requestee.all %}
+        {% for event in booking.booking.all %}
+            {% if event.confirmed is True %}
+                event_data.push({
+                    start: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.start_time|time:'H:i:s' }}'),
+                    end: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.end_time|time:'H:i:s' }}'),
+                    rendering: 'background',
+                    overlap: false,
+                    color: '#8d99ae',
+                });
+                var id = '{{ event.date|date:'m-d' }}' + '-{{ event.start_time|time:'H' }}';
+                block_data.push(id)
+            {% else %}
+                event_data.push({
+                    start: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.start_time|time:'H:i:s' }}'),
+                    end: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.end_time|time:'H:i:s' }}'),
+                    rendering: 'background',
+                    overlap: false,
+                    color: '#8d99ae',
+                });
+                var id = '{{ event.date|date:'m-d' }}' + '-{{ event.start_time|time:'H' }}';
+                block_data.push(id)
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+
+  $('#calendar').fullCalendar({
+    customButtons: {
+    submit: {
+      text: 'Save Booking!',
+      click: function() {
+        if (booking_data.length != 0){
+        var json_array = []
+        $.each(booking_data, function(index, value){
+            json_array.push(JSON.stringify(value))
+        });
+         $.ajax({
+            url:'{% url 'save_bookings' %}',
+            type: 'POST',
+            headers:{
+                "X-CSRFToken": '{{ csrf_token }}'
+            },
+            data:{
+                    booking_data: json_array,
+                    localite: '{{ customuser.id }}'
+            },
+            success:function(response){
+                window.location.href = response.url;
+            }
+         });
+        }
+        else{
+            alert('PLZZZZ... Select dates...!!!');
+        }
+      }
+    }
+    },
+    selectable: true,
+    header: {
+      left: 'prev,next submit',
+      center: 'title',
+      right: 'month,agendaWeek,agendaDay'
+    },
+    defaultView: 'agendaWeek',
+    height: 440,
+    slotDuration: '06:00:00',
+    minTime: "06:00:00",
+    allDaySlot: false,
+    selectConstraint: {
+       start: moment().format('YYYY-MM-DD'),
+       end: moment().add(1, "M").format('YYYY-MM-DD')
+    },
+    select: function(startDate, endDate) {
+      var view = $('#calendar').fullCalendar('getView');
+      if (view.name == 'month'){
+        $('#calendar').fullCalendar('changeView','agenda');
+        $('#calendar').fullCalendar('gotoDate',startDate);
+      }
+      else{
+        if (jQuery.inArray(startDate.format('MM-DD-HH'), block_data) != -1){
+           $('#calendar').fullCalendar('unselect');
+           return false;
+        }
+        else if (getKeyByValue(del_data, startDate.format('YYYY-MM-DD HH:mm:ss')) === undefined){
+          id = startDate.format('MM-DD-HH')
+          del_data[id] = startDate.format('YYYY-MM-DD HH:mm:ss');
+          event_data.push({
+            id: id,
+            start: startDate.format('YYYY-MM-DD HH:mm:ss'),
+            end: endDate.format('YYYY-MM-DD HH:mm:ss'),
+            overlap: false,
+            rendering: 'background',
+          });
+          booking_data.push({
+            id: id,
+            date: startDate.format('YYYY-MM-DD'),
+            start: startDate.format('HH:mm:ss'),
+            end: endDate.format('HH:mm:ss'),
+          });
+          $('#calendar').fullCalendar('removeEventSource', event_data);
+          $('#calendar').fullCalendar('addEventSource', event_data);
+          $('#calendar').fullCalendar('refetchEvents');
+        }
+        else{
+            key = getKeyByValue(del_data, startDate.format('YYYY-MM-DD HH:mm:ss'));
+            delete del_data[key]
+
+            index = getEventIndex(booking_data, key);
+            booking_data.splice(index, 1);
+
+            index = getEventIndex(event_data, key);
+            event_data.splice(index, 1);
+
+            $('#calendar').fullCalendar('removeEventSource', event_data);
+            $('#calendar').fullCalendar('addEventSource', event_data);
+            $('#calendar').fullCalendar('refetchEvents');
+        }
+      }
+    },
+    events: event_data,
+  });
+
+  function getTimeFormat(time) {
+    if(time == '00:00:00'){
+        return '23:59:59';
+    }
+    else{
+        return time;
+    }
+  }
+
+  function getEventIndex(data, key) {
+    ind = undefined;
+    $.each(data, function(index, value) {
+        if (value.id == key){
+            ind = index;
+            return false;
+        }
+    });
+    return ind;
+  }
+
+  function getKeyByValue(object, value) {
+    return Object.keys(object).find(key => object[key] === value);
+  }
+
+
+  });
+
+
+</script>
+
+<style>
+
+  body {
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  #calendar {
+    max-width: auto;
+    margin: 0 auto;
+  }
+  .uk-navbar-item, .uk-navbar-nav>li>a, .uk-navbar-toggle{font-size:14px}
+  .fc-past{
+    color: #8d99ae;
+  }
+
+
+</style>
+{% endblock calendar_extras %}
+
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+    <div class="col-3">
+    </div>
+    <div class="col-6">
+        <div class="req_appontment_form">
+        <div class="alert alert-danger my-3" id="alert" role="alert" hidden>
+        </div>
+        <div id='calendar'></div>
+        </div>
+    </div>
+    <div class="col-3">
+    </div>
+    </div>
+</div>
+
+{% endblock content %}
