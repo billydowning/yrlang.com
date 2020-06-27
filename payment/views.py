@@ -1,11 +1,17 @@
-from django.shortcuts import render
+from django.shortcuts import render, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import FormView, View, TemplateView
+from django.views.generic import FormView, View, TemplateView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from paypal.standard.forms import PayPalPaymentsForm
+from django.contrib import messages
 from django.conf import settings
 from django.shortcuts import render, reverse
+
+from .models import PaymentAccount
+from .forms import PaymentAccountForm
+
+from paypal.standard.forms import PayPalPaymentsForm
+
 
 
 # Create your views here.
@@ -56,3 +62,25 @@ class PaymentCancelView(TemplateView):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super(PaymentCancelView, self).dispatch( request, *args, **kwargs)
+
+
+class PaymentAccountView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    template_name = 'payment/payment_account.html'
+    form_class = PaymentAccountForm
+
+    def test_func(self):
+        if self.request.user.is_localite_user(self.request.session.get('user_role')) or \
+                self.request.user.is_provider_user(self.request.session.get('user_role')):
+            return True
+        else:
+            return False
+
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.user = self.request.user
+        post.save()
+        messages.success(self.request, "Your Payment Account is Added!")
+        return HttpResponseRedirect('/')
+
+    def form_invalid(self, form):
+        return super(PaymentAccount, self).form_invalid(form=form)

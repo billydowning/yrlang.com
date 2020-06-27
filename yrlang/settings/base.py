@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'rooms',
     'blogpost',
     'invoices',
+    'payment',
 
     # django-wagtail
     'wagtail.contrib.forms',
