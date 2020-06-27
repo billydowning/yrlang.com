@@ -1,4 +1,6 @@
 {% load static check_role %}
+<!--wagtail tags-->
+{% load wagtailcore_tags wagtailimages_tags %}
 {% is_provider user_role=request.session.user_role as provider_checked %}
 {% is_localite user_role=request.session.user_role as localite_checked %}
 {% is_client user_role=request.session.user_role as client_checked %}
@@ -206,39 +208,28 @@
 						</div>
 						<div class="blog_outer_section">
 							<div class="row">
+								{% for blog in blog_list %}
 								<div class="col-12 col-md-4">
+
 									<div class="blog_img">
+										<a href="{% slugurl blog.slug %}">
 										<div class="blog_img_container">
-											<img src="{% static 'images/city_banner.jpg' %}">
-										</div>
+											 {% with blog.image as image %}
+												{% if image %}{% image image fill-350x200 %}
+												{% else %}<img src="{% static 'images/city_banner.jpg' %}">
+												{% endif %}
+											{% endwith %}
+
+										</div></a>
 										<div class="blog_text">
-											<h5>Blog Name</h5>
-											<p>You will read about it in blogs (usually Americans) about the checkout experience in Germany, but nothing except speed & some standard Deutsch will prepare you for supermarket checkout in Berlin...</p>
+											<h5>{{blog.title}}</h5>
+											<p>{{blog.introduction|truncatechars:80}}</p>
 										</div>
 									</div>
 								</div>
-								<div class="col-12 col-md-4">
-									<div class="blog_img">
-										<div class="blog_img_container">
-											<img src="{% static 'images/city_banner.jpg' %}">
-										</div>
-										<div class="blog_text">
-											<h5>Blog Name</h5>
-											<p>You will read about it in blogs (usually Americans) about the checkout experience in Germany, but nothing except speed & some standard Deutsch will prepare you for supermarket checkout in Berlin...</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-12 col-md-4">
-									<div class="blog_img">
-										<div class="blog_img_container">
-											<img src="{% static 'images/city_banner.jpg' %}">
-										</div>
-										<div class="blog_text">
-											<h5>Blog Name</h5>
-											<p>You will read about it in blogs (usually Americans) about the checkout experience in Germany, but nothing except speed & some standard Deutsch will prepare you for supermarket checkout in Berlin...</p>
-										</div>
-									</div>
-								</div>
+								{% endfor %}
+
+
 							</div>
 						</div>
 					</div>

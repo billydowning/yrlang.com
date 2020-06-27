@@ -9,7 +9,7 @@ from django import forms
 
 
 class BruckePage(Page):
-    introduction = RichTextField(null=True, blank=True )
+    introduction = models.TextField(help_text="About Your blog", null=True, blank=True )
     image = models.ForeignKey('wagtailimages.Image',
                               null=True,
                               blank=True,
@@ -25,6 +25,8 @@ class BruckePage(Page):
 
     ]
     parent_page_types = ['BruckeIndexPage']
+
+    subpage_types = []
 
 
 class BruckeIndexPage(Page):

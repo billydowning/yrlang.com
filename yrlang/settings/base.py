@@ -125,7 +125,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 #custome context processor
-                'custome_context_processor.city_list.city_list_view',
+                'custome_context_processor.home_page_listing.city_list_view',
+                'custome_context_processor.home_page_listing.post_list_view'
             ],
         },
     },
