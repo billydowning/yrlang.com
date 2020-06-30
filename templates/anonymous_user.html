@@ -246,39 +246,27 @@
 						</div>
 						<div class="popular_city">
 							<div class="row">
+								{% for city in city_list %}
 								<div class="col-12 col-md-4 pr-0">
 									<div class="popular_city_outer">
+										<a href="{% slugurl city.slug %}">
 										<div class="city_container">
-											<img src="{% static 'images/srach_city.jpg' %}">
+											{% with city.main_image as main_image %}
+            							{% if main_image %}{% image main_image fill-365x500 %}
+											{% else %}
+												<img src="{% static 'images/srach_city.jpg' %}">{% endif %}
+        									{% endwith %}
+
 										</div>
+										</a>
 										<div class="about_city">
-											<h4>Paris</h4>
-											<p>There’s more (much more) to the ‘city of love’ than croissants, cafés, and art. Explore the Paris catacombs underground, stroll through immaculate gardens at Versailles, or venture into a full day adventure through the Louvre (pack snacks -you will thank us later)..</p>
+											<h4>{{city.title}}</h4>
+											<p>{{city.introduction|truncatechars:120}}</p>
 										</div>
 									</div>
 								</div>
-								<div class="col-12 col-md-4 p-0">
-									<div class="popular_city_outer">
-										<div class="city_container">
-											<img src="{% static 'images/city_banner.jpg' %}">
-										</div>
-										<div class="about_city">
-											<h4>Berlin</h4>
-											<p>As a living monument to the perseverance of the human spirit -Berlin is as raw as they come. Having been divided physically and ideologically by the Berlin Wall for a near half -century, the reunification of the city allowed citizens to openly let their freak flags fly...</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-12 col-md-4 pl-0">
-									<div class="popular_city_outer">
-										<div class="city_container">
-											<img src="{% static 'images/srach_city.jpg' %}">
-										</div>
-										<div class="about_city">
-											<h4>Milan</h4>
-											<p>If you love fashion, then you already know about Milan, a modern city in Italy's northern Lombardy region, that serves as a global capital of fashion and design, and (it may surprise you) is also home to the national stock exchange...</p>
-										</div>
-									</div>
-								</div>
+								{% endfor%}
+
 							</div>
 						</div>
 					</div>
