@@ -124,7 +124,7 @@
                     {% is_provider user_role=request.session.user_role as provider_checked %}
                     {% is_localite user_role=request.session.user_role as localite_checked %}
 
-                    <li><a href="{% url 'main:index' %}"> Explore</a></li>
+                    <li><a href="{% url 'main:home' %}"> Explore</a></li>
                     <li>
                         <a href="{{ rooms.inbox }}">
                             {{ Messages }}
@@ -228,6 +228,7 @@
                     {% endif %}
 
                     {% else %}
+                    <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
                     <li><a href="{% url 'account_login' %}"><i class="fa fa-sign-in top_0"
                                                                aria-hidden="true"> </i><span>Login</span></a></li>
                     <li><a href="{% url 'client_signup_view' %}"><i class="fa fa-user-plus top_0"

@@ -100,7 +100,7 @@
     {% endif %}
 
     {% if request.user.is_anonymous %}
-    {% include 'anonymous_user.html' %}
+    {% include 'client_home.html' %}
     {% endif %}
     {% if client_checked %}
     {% include 'client_home.html' %}
