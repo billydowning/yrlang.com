@@ -213,5 +213,5 @@ WAGTAIL_SITE_NAME = 'Yr.lang CMS'
 WAGTAILEMBEDS_RESPONSIVE_HTML = True
 
 # paypal Settings
-PAYPAL_RECEIVER_EMAIL = 'akashsuthar232@gmail.com' # This is the email where all the notification will be sent
+PAYPAL_RECEIVER_EMAIL = '' # This is the email where all the notification will be sent
 PAYPAL_TEST = True
