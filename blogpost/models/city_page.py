@@ -22,6 +22,13 @@ class CityPage(Page):
                               help_text='select the city name instate of state '
                               )
 
+    def main_image(self):
+        gallery_item = self.gallery_image.first()
+        if gallery_item:
+            return gallery_item.image
+        else:
+            return None
+
     content_panels = Page.content_panels + [
         FieldPanel('introduction'),
         FieldPanel('state'),

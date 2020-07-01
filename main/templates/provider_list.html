@@ -5,6 +5,14 @@
     {% if providers %}
 
     <div class="col-12 my-3">
+        <div class="search_person img_banner_padding">
+            {% if request.get_full_path == "/provider/" %}
+        <input id="search" type="text" placeholder="Search By City">
+                    <button id="btn_search" type="submit" onclick="getInputValue();">Search</button>
+            {% else %}
+             <button id="btn_view_all" class="btn btn-theme" type="submit" onclick="viewAll();" >View All</button>
+            {% endif %}
+        </div>
         <h1 class="page_main_header mb-3"> Providers</h1>
         {% if providers %}
         {% for professional in providers %}
@@ -166,4 +174,17 @@
     </div>
     {% endif %}
 </div>
+<script>
+        function getInputValue(){
+            // Selecting the input element and get its value
+            var inputVal = document.getElementById("search").value;
+
+           if(inputVal){ window.location = "/provider/"+inputVal}
+
+
+        }
+          function viewAll(){
+          window.location = "/provider/"
+         }
+</script>
 {% endblock %}

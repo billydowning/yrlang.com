@@ -3,6 +3,15 @@
 <div class="container">
 
     <div class="col-12">
+        <div class="search_person img_banner_padding">
+            {% if request.get_full_path == "/localites/" %}
+        <input id="search" type="text" placeholder="Search By City">
+                    <button id="btn_search" type="submit" onclick="getInputValue();">Search</button>
+            {% else %}
+             <button id="btn_view_all" class="btn btn-theme" type="submit" onclick="viewAll();" >View All</button>
+            {% endif %}
+        </div>
+
         <h1 class="page_main_header my-3">Localites</h1>
         {% if localites %}
         {% for localite in localites %}
@@ -66,5 +75,19 @@
     </div>
 
 </div>
+<script>
+        function getInputValue(){
+            // Selecting the input element and get its value
+            var inputVal = document.getElementById("search").value;
+
+           if(inputVal){ window.location = "/localites/"+inputVal}
+
+
+        }
+         function viewAll(){
+          window.location = "/localites/"
+         }
+
+</script>
 
 {% endblock %}
