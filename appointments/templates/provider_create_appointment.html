@@ -79,9 +79,15 @@
        end: moment().add(1, "M").format('YYYY-MM-DD')
     },
     select: function(startDate, endDate) {
+        var temp = moment(startDate).add(1, "d").format('YYYY-MM-DD');
         if (jQuery.inArray(startDate.format('YYYY-MM-DD'), block_data) != -1){
            $('#calendar').fullCalendar('unselect');
            return false;
+        }
+        else if (moment(temp).format('YYYY-MM-DD') != endDate.format('YYYY-MM-DD')){
+            booking_data = [];
+            $('#calendar').fullCalendar('unselect');
+            return false;
         }
         else{
             booking_data = [];

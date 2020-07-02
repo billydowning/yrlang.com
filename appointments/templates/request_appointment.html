@@ -111,43 +111,56 @@
         $('#calendar').fullCalendar('gotoDate',startDate);
       }
       else{
-        if (jQuery.inArray(startDate.format('MM-DD-HH'), block_data) != -1){
-           $('#calendar').fullCalendar('unselect');
-           return false;
+        var temp1 = moment(startDate).add(1, "d").format('YYYY-MM-DD');
+        var temp2 = moment(startDate).add(6, "h").format('YYYY-MM-DD HH:mm:ss');
+        if(moment(temp2).format('HH:mm:ss') != endDate.format('HH:mm:ss')){
+            $('#calendar').fullCalendar('unselect');
+            return false;
         }
-        else if (getKeyByValue(del_data, startDate.format('YYYY-MM-DD HH:mm:ss')) === undefined){
-          id = startDate.format('MM-DD-HH')
-          del_data[id] = startDate.format('YYYY-MM-DD HH:mm:ss');
-          event_data.push({
-            id: id,
-            start: startDate.format('YYYY-MM-DD HH:mm:ss'),
-            end: endDate.format('YYYY-MM-DD HH:mm:ss'),
-            overlap: false,
-            rendering: 'background',
-          });
-          booking_data.push({
-            id: id,
-            date: startDate.format('YYYY-MM-DD'),
-            start: startDate.format('HH:mm:ss'),
-            end: endDate.format('HH:mm:ss'),
-          });
-          $('#calendar').fullCalendar('removeEventSource', event_data);
-          $('#calendar').fullCalendar('addEventSource', event_data);
-          $('#calendar').fullCalendar('refetchEvents');
+        else if (startDate.format('YYYY-MM-DD') != endDate.format('YYYY-MM-DD') & moment(temp1).format('YYYY-MM-DD') != endDate.format('YYYY-MM-DD')){
+            $('#calendar').fullCalendar('unselect');
+            return false;
         }
         else{
-            key = getKeyByValue(del_data, startDate.format('YYYY-MM-DD HH:mm:ss'));
-            delete del_data[key]
+            if (jQuery.inArray(startDate.format('MM-DD-HH'), block_data) != -1){
+               $('#calendar').fullCalendar('unselect');
+               return false;
+            }
+            else if (getKeyByValue(del_data, startDate.format('YYYY-MM-DD HH:mm:ss')) === undefined){
+              id = startDate.format('MM-DD-HH')
+              del_data[id] = startDate.format('YYYY-MM-DD HH:mm:ss');
+              event_data.push({
+                id: id,
+                start: startDate.format('YYYY-MM-DD HH:mm:ss'),
+                end: endDate.format('YYYY-MM-DD HH:mm:ss'),
+                overlap: false,
+                rendering: 'background',
+              });
+              booking_data.push({
+                id: id,
+                date: startDate.format('YYYY-MM-DD'),
+                start: startDate.format('HH:mm:ss'),
+                end: endDate.format('HH:mm:ss'),
+              });
+              $('#calendar').fullCalendar('removeEventSource', event_data);
+              $('#calendar').fullCalendar('addEventSource', event_data);
+              $('#calendar').fullCalendar('refetchEvents');
+            }
+            else{
+                key = getKeyByValue(del_data, startDate.format('YYYY-MM-DD HH:mm:ss'));
+                delete del_data[key]
 
-            index = getEventIndex(booking_data, key);
-            booking_data.splice(index, 1);
+                index = getEventIndex(booking_data, key);
+                booking_data.splice(index, 1);
 
-            index = getEventIndex(event_data, key);
-            event_data.splice(index, 1);
+                index = getEventIndex(event_data, key);
+                event_data.splice(index, 1);
 
-            $('#calendar').fullCalendar('removeEventSource', event_data);
-            $('#calendar').fullCalendar('addEventSource', event_data);
-            $('#calendar').fullCalendar('refetchEvents');
+                $('#calendar').fullCalendar('removeEventSource', event_data);
+                $('#calendar').fullCalendar('addEventSource', event_data);
+                $('#calendar').fullCalendar('refetchEvents');
+                $('#calendar').fullCalendar('unselect');
+            }
         }
       }
     },
