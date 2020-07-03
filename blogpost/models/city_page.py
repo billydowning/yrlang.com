@@ -6,6 +6,7 @@ from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel
 from users.models import CustomUser, Country, UserRole
 from django import forms
+from .brucke_page import (BruckePage)
 
 
 class CityPage(Page):
@@ -58,6 +59,7 @@ class CityPage(Page):
         context['providers'] = CustomUser.objects.filter(user_role__name=UserRole.PROVIDER,
                                                      is_private=False,state=state).\
             exclude(id=request.user.id).order_by('?')[:2]
+        context['brukes'] = BruckePage.objects.filter(state=self.state)[:3]
         return context
 
     parent_page_types = ['CityIndexPage']
