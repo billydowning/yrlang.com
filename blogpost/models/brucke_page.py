@@ -6,10 +6,14 @@ from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel
 from users.models import CustomUser, Country
 from django import forms
+# from .city_page import CityPage
 
 
 class BruckePage(Page):
-    introduction = models.TextField(help_text="About Your blog", null=True, blank=True )
+    introduction = models.TextField(help_text="About Your blog", null=True, blank=True)
+    date = models.DateField(auto_now=True)
+    bruke_content = RichTextField(blank=True,
+                                 help_text='describe the thing that we are allow to do ')
     image = models.ForeignKey('wagtailimages.Image',
                               null=True,
                               blank=True,
@@ -17,9 +21,16 @@ class BruckePage(Page):
                               related_name='+',
                               help_text='Landscape mode only; horizontal width between 1000px and 3000px.'
                               )
+    state = models.ForeignKey("users.State", blank=True,
+                              null=True, on_delete=models.SET_NULL,
+                              related_name='+',
+                              help_text='select the city name instate of state '
+                              )
 
     content_panels = Page.content_panels + [
         FieldPanel('introduction'),
+        FieldPanel('state'),
+        FieldPanel('bruke_content'),
         ImageChooserPanel('image'),
         InlinePanel('related_posts', label="Related Post"),
 
@@ -27,6 +38,11 @@ class BruckePage(Page):
     parent_page_types = ['BruckeIndexPage']
 
     subpage_types = []
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        # context['city_page'] = CityPage.objects.filter(state=self.state)
+        return context
 
 
 class BruckeIndexPage(Page):

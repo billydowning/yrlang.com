@@ -390,6 +390,20 @@ $(document).ready(function() {
             </div>
         </div>
     </div>
+
+    <div class="row my-5">
+        {% for bruke in brukes %}
+            <div class="col-4">
+
+                <h5 class="page_main_header">
+                    <a href="{% pageurl bruke %}">
+                        {{ bruke }}
+                        <div class="my-2">{% image bruke.image width-400 %}</div>
+                    </a>
+                </h5>
+            </div>
+        {% endfor %}
+    </div>
     <h2 class="mt-5"><a href="{{ page.get_parent.url }}" class="theme_btn">Back</a></h2>
 </div>
 
