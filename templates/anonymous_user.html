@@ -198,14 +198,15 @@
 				<!-- getting started end -->
 
 				<!-- blog section -->
+				{% if blog_list %}
 				<section class="bog_section">
 					<div class="container">
 						<div class="row">
 							<div class="col-12">
-								{% if blog_list %}
+
 								<h4>Our Blog, The Brucke  <span class="bottom_line"></span></h4>
 								<p>We want to share our journey, and help you along yours -that’s why we came up with our blog, <strong>The Brücke</strong>. It means bridge in Deutsch and captures the essence of what we see for YrLang -its purpose is to help you cross language barriers and connect more with where you are and where you want to be,  while also sharing some of our ‘life’ lessons as former expats in Berlin.</p>
-								{% endif %}
+
 							</div>
 						</div>
 						<div class="blog_outer_section">
@@ -236,17 +237,18 @@
 						</div>
 					</div>
 				</section>
+				{% endif %}
 				<!-- blog section end -->
 
 				<!-- populr city -->
-
+					{% if city_list %}
 				<section class="popular_city_section">
 					<div class="container">
 						<div class="row mb-5">
 							<div class="col-12">
-								{% if city_list %}
+
 								<h4>Popular Cities<span class="bottom_line"></span></h4>
-								{% endif %}
+
 							</div>
 						</div>
 						<div class="popular_city">
@@ -276,6 +278,7 @@
 						</div>
 					</div>
 				</section>
+				{% endif %}
 				<!-- populr city end -->
 				<section class="why_yr_section">
 					<div class="container">
@@ -429,14 +432,15 @@
 				</section>
 				<!-- join us today -->
 				<!-- blog section -->
+				{% if blog_list%}
 				<section class="bog_section bottom_blog_design">
 					<div class="container">
 						<div class="row">
 							<div class="col-12">
-								{% if blog_list%}
+
 								<h4>Our Blog, The Brucke  <span class="bottom_line"></span></h4>
 								<p>We want to share our journey, and help you along yours -that’s why we came up with our blog, <strong>The Brücke</strong>. It means bridge in Deutsch and captures the essence of what we see for YrLang -its purpose is to help you cross language barriers and connect more with where you are and where you want to be,  while also sharing some of our ‘life’ lessons as former expats in Berlin.</p>
-								{% endif  %}
+
 							</div>
 						</div>
 						<div class="blog_outer_section">
@@ -465,6 +469,7 @@
 						</div>
 					</div>
 				</section>
+				{% endif  %}
 				<!-- blog section end -->
 
 			</div>
