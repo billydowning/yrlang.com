@@ -1,12 +1,12 @@
+from django.db import models
+
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.core.models import Page, Orderable
-from django.db import models
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel
-from users.models import CustomUser, Country
-from django import forms
-# from .city_page import CityPage
+
+from users.models import CustomUser, UserRole
 
 
 class BruckePage(Page):
@@ -41,7 +41,14 @@ class BruckePage(Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        # context['city_page'] = CityPage.objects.filter(state=self.state)
+        context['localite'] = query = CustomUser.objects.filter(
+            is_client=False, is_private=False,
+            state__name__icontains=self.state,
+            user_role__name=UserRole.LOCALITE)
+        context['provider'] = query = CustomUser.objects.filter(
+            is_client=False, is_private=False,
+            state__name__icontains=self.state,
+            user_role__name=UserRole.PROVIDER)
         return context
 
 
