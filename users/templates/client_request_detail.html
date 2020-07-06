@@ -39,6 +39,8 @@
 
     </div>
     {% if req.status == 'requested'  %}
+    <button><a href="{% url 'verify_client_request' req.id %}">Verify</a></button>
+    {% elif req.status == 'verified' %}
     <form action="{{req.get_detail}}" method="post">
         {% csrf_token %}
         <button type="submit"  class="btn btn-theme">Approved</button>
