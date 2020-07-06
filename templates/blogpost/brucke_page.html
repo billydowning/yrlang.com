@@ -1,28 +1,30 @@
 {% extends "layout.html" %}
 {% load wagtailcore_tags wagtailimages_tags static %}
 
+
 {% block extra_css %}
 .star-line {
-      width: 94.8%;
-      height: 40px;
-      border: none;
-      margin: auto;
-      margin-top: 5%;
-      margin-bottom: 5%;
-      background-repeat: repeat-x;
-      background-position: center;
-      background-color: transparent;
-      background-image: url({% static 'images/line.png' %});
+width: 94.8%;
+height: 40px;
+border: none;
+margin: auto;
+margin-top: 5%;
+margin-bottom: 5%;
+background-repeat: repeat-x;
+background-position: center;
+background-color: transparent;
+background-image: url({% static 'images/line.png' %});
 }
 {% endblock extra_css %}
 
 {% block content %}
 <div class="container">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-10">
 
             <div class="row mx-1 mt-5">
-                <div class="mr-3">THE BRUKE</div>|
+                <div class="mr-3">THE BRUKE</div>
+                |
                 <div class="ml-3">{{ page.date|date:'F d, Y' }}</div>
             </div>
 
@@ -33,58 +35,79 @@
             {% if page.bruke_content %}
             <p class="my-5">{{ page.bruke_content|richtext }}</p>
             {% endif %}
+            <hr class="star-line" style="border: none;">
+
+            {% if page.image %}
+            <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                    {% if page.introduction %}
+                    <h3><b>{{ page.introduction }}</b></h3>
+                    {% endif %}
+                    {% image page.image width-400 as phot %}
+                    <img src="{{ phot.url }}" height="200" width="800" alt="">
+                </div>
+                <div class="col-2"></div>
+            </div>
+            {% endif %}
 
         </div>
-        <hr class="star-line" style="border: none;">
+
 
         <div>
             {% with related_posts=page.related_posts.all %}
 
-                {% if related_posts %}
-                <hr size="2">
-                    {% for posts in related_posts %}
+            {% if related_posts %}
+            <hr size="2">
+            {% for posts in related_posts %}
 
 
-                        <h3>{{ posts.title }}</h3>
-                        {% with posts.image as image %}
-                            <center>{% if image %}{% image image fill-400x250 %}{% endif %}</center>
-                        {% endwith %}
-                        <p>{{ posts.body|richtext }}</p>
-                        {% if posts.check_out %}
-                            <b><h5>Check out</h5></b>
-                            <p>{{ posts.check_out}}</p>
-                        {% endif %}
-                        {% if posts.walking_distance %}
-                           <b> <h5>Walking Distance </h5></b>
-                            <p>{{ posts.walking_distance}}</p>
-                        {% endif %}
-                    {% endfor %}
+            <h3>{{ posts.title }}</h3>
+            {% with posts.image as image %}
+            <center>{% if image %}{% image image fill-400x250 %}{% endif %}</center>
+            {% endwith %}
+            <p>{{ posts.body|richtext }}</p>
+            {% if posts.check_out %}
+            <b><h5>Check out</h5></b>
+            <p>{{ posts.check_out}}</p>
+            {% endif %}
+            {% if posts.walking_distance %}
+            <b><h5>Walking Distance </h5></b>
+            <p>{{ posts.walking_distance}}</p>
+            {% endif %}
+            {% endfor %}
 
-                {% endif%}
+            {% endif%}
             {% endwith %}
         </div>
 
 
-    </div>
-    {% if page.image %}
-        <div class="row">
-            <div class="col-2"></div>
-            <div class="col-8">
-                {% if page.introduction %}
-                    <h3><b>{{ page.introduction }}</b></h3>
-                {% endif %}
-                {% image page.image width-400 as phot %}
-                <img src="{{ phot.url }}" height="200" width="800" alt="">
-            </div>
-            <div class="col-2"></div>
-        </div>
-    {% endif %}
+        <div class="col-md-2 scroll">
+            <!--start-->
+            <h1 class="my-5">Localites</h1>
+            {% for obj in localite %}
+            <a href="">
+                <p class="mt-3 mb-0">{{ obj.username }}</p>
+                <img src="{{ obj.profile_image.url }}" alt="">
+            </a>
+            {% endfor %}
 
-    {% for city in city_page %}
-        <h5 class="page_main_header">
-            <a href="{% pageurl city %}">{{ city }}</a>
-        </h5>
-    {% endfor %}
+            <h1 class="my-5">Providers</h1>
+            {% for obj in provider %}
+            <a href="">
+                <p class="mt-3 mb-0">{{ obj.username }}</p>
+                {% if obj.profile_image %}
+                <img src="{{ obj.profile_image.url }}" alt="">
+                {% else %}
+                <img src="{% static 'images/image_1.jpeg' %}" alt="">
+                {% endif %}
+            </a>
+            {% endfor %}
+            <!--end-->
+
+    </div>
+
+
 </div>
 
 <center><h2><a href="{{ page.get_parent.url }}">Back</a></h2></center>
