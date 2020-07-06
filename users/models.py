@@ -157,11 +157,13 @@ class UserRoleRequest(models.Model):
     REQUESTED = 'requested'
     APPROVED = 'approved'
     CANCELED = 'canceled'
+    VERIFIED = 'verified'
 
     STATUS_CHOICES = [
         (REQUESTED, 'Requested By Client'),
         (APPROVED, 'Approved By Admin'),
         (CANCELED, 'Canceled By Admin'),
+        (VERIFIED, 'Verified By Admin')
     ]
 
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='request_user')
