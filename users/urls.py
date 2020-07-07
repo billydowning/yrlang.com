@@ -14,5 +14,6 @@ urlpatterns = [
     path("request_for_localite", views.CreateRequestForLocalite.as_view(), name='request_for_localite'),
     path("request-detail/<int:pk>", views.AprovedClientRequestView.as_view(), name='client_request_detail'),
     path("request-list", views.UserRequestListView.as_view(), name='client_request_list'),
+    path('public-profile/<int:pk>/', views.PublicProfile.as_view(), name='public_profile'),
     path("verify-client-request/<int:id>", views.VerifyClientRequestView.as_view(), name='verify_client_request'),
 ]
