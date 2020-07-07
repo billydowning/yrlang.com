@@ -310,3 +310,9 @@ class RequestUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         obj = self.get_object()
         context['videos'] = UserVideos.objects.filter(object_id=obj.id, content_type= content_type_obj)
         return context
+
+
+class PublicProfile(DetailView):
+    model = CustomUser
+    template_name = 'users/public_profile.html'
+    context_object_name = 'user'
