@@ -1,6 +1,6 @@
 import datetime
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import (DetailView, UpdateView, TemplateView,
@@ -273,7 +273,7 @@ class UserRequestListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         return self.model.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED)
 
 
-class RequestUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'client_request_detail.html'
     model = UserRoleRequest
     fields = ['reason']
@@ -305,11 +305,23 @@ class RequestUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.render_to_response(self.get_context_data(form=form))
 
     def get_context_data(self, **kwargs):
-        context = super(RequestUpdateView, self).get_context_data(**kwargs)
-        content_type_obj =  ContentType.objects.get_for_model(UserRoleRequest)
+        context = super(AprovedClientRequestView, self).get_context_data(**kwargs)
+        content_type_obj = ContentType.objects.get_for_model(UserRoleRequest)
         obj = self.get_object()
-        context['videos'] = UserVideos.objects.filter(object_id=obj.id, content_type= content_type_obj)
+        context['videos'] = UserVideos.objects.filter(object_id=obj.id, content_type=content_type_obj)
         return context
+
+
+class VerifyClientRequestView(LoginRequiredMixin, UserPassesTestMixin, View):
+
+    def test_func(self):
+        return self.request.user.is_staff
+
+    def get(self, request, *args, **kwargs):
+        instance = get_object_or_404(UserRoleRequest, pk=self.kwargs.get('id'))
+        instance.status = UserRoleRequest.VERIFIED
+        instance.save()
+        return redirect('client_request_detail', pk= instance.id)
 
 
 class PublicProfile(DetailView):
