@@ -91,6 +91,7 @@ INSTALLED_APPS = [
 
     # paypal
     'paypal.standard.ipn',
+    'webpush',
 
 ]
 
@@ -226,3 +227,9 @@ PAYPAL_TEST = True
 CRONJOBS = [
     ('*/5 * * * *', 'cron_tabs.task_reminder.appointment_reminder_before_24H'),
     ]
+
+WEBPUSH_SETTINGS = {
+    "VAPID_PUBLIC_KEY":"BPFHKZ8EDMVFgfPZ6P8vrbLGP0sNlaNMs6ss5x1WZ9HlNdrNVZcsZToBnfvo4-pbSQQxQLv8VxHUnt_-1wKLWBk",
+    "VAPID_PRIVATE_KEY":"eyH6m2JH3pDaT6m9nX58y0KejEICQ_nwOHdJEegAn9s",
+    "VAPID_ADMIN_EMAIL": "trootechak@gmail.com"
+}

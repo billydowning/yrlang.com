@@ -1,7 +1,7 @@
 from appointments.models import Appointment, ProviderAppointment
 from main.models import Notification
 import datetime
-from users.models import CustomUser
+from webpush import send_user_notification
 
 def appointment_reminder_before_24H():
 
@@ -15,17 +15,21 @@ def appointment_reminder_before_24H():
     if appointmnet_res:
         appointment_name = "Appointment For Localite"
         payload_data = {
-            "reason": 'your have a appoitment to visit Tommorow '
+            "head": "Reminder !",
+            "body": "your have an appoitment to visit Tommorow "
         }
         for data in appointmnet_res:
             Notification.objects.create(user=data.requestee,
                                         name=appointment_name, payload=payload_data)
+            send_user_notification(user=data.requestee, payload=payload_data, ttl=100)
 
     if provider_appointmnet_res:
         appointment_name = "Appointment For Provider"
         payload_data = {
-            "reason": 'your have a appoitment to visit Tommorow '
+            "head": "Reminder !",
+            "body":"your have an appoitment to visit Tommorow "
         }
         for data in provider_appointmnet_res:
             Notification.objects.create(user=data.requestee,
                                         name=appointment_name, payload=payload_data)
+            send_user_notification(user=data.requestee, payload=payload_data, ttl=100)

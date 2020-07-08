@@ -6,6 +6,9 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.views.generic import (DetailView, UpdateView, TemplateView,
                                   FormView, View, ListView, CreateView)
 from django.urls import reverse_lazy
+#for notification
+from webpush import send_user_notification
+
 from allauth.account.views import SignupView
 from django.contrib.contenttypes.models import ContentType
 from .forms import (
@@ -299,6 +302,11 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
             if req.requested_for.name == UserRole.LOCALITE:
                 req.user.user_role.add(req.requested_for)
             messages.success(self.request, "Request Approved successfully!")
+            payload_data = {
+                "head": "Alert !",
+                "body": "Your Request is Accepted."
+            }
+            send_user_notification(user=req.user, payload=payload_data, ttl=100)
             return HttpResponseRedirect('/')
 
     def form_invalid(self, form):
@@ -321,6 +329,11 @@ class VerifyClientRequestView(LoginRequiredMixin, UserPassesTestMixin, View):
         instance = get_object_or_404(UserRoleRequest, pk=self.kwargs.get('id'))
         instance.status = UserRoleRequest.VERIFIED
         instance.save()
+        payload_data = {
+            "head": "Alert !",
+            "body": "Your Request is Verified."
+        }
+        send_user_notification(user=instance.user, payload=payload_data, ttl=100)
         return redirect('client_request_detail', pk= instance.id)
 
 

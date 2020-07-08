@@ -183,8 +183,8 @@ class SaveBookings(LoginRequiredMixin, View):
 
             url = reverse_lazy('appointments')
         return JsonResponse({'url': url})
-
-
+# fro checking purpose
+from webpush import send_user_notification
 class SaveAppointments(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs2):
@@ -199,6 +199,13 @@ class SaveAppointments(LoginRequiredMixin, View):
                 instance.requestee_id = provider
                 instance.requestor_id = self.request.user.id
                 instance.save()
+                payload_data = {
+                    "head": 'Appoitment Book',
+                    "body": "Sucessfully book"
+                }
+                send_user_notification(user=instance.requestor, payload=payload_data, ttl=100)
+
+
 
         if appointment_id:
             appointment = ProviderAppointment.objects.get(id=appointment_id)
