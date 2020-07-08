@@ -322,3 +322,9 @@ class VerifyClientRequestView(LoginRequiredMixin, UserPassesTestMixin, View):
         instance.status = UserRoleRequest.VERIFIED
         instance.save()
         return redirect('client_request_detail', pk= instance.id)
+
+
+class PublicProfile(DetailView):
+    model = CustomUser
+    template_name = 'users/public_profile.html'
+    context_object_name = 'user'

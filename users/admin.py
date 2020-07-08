@@ -74,7 +74,7 @@ class CustomerAdmin(AuthUserAdmin):
         }),
         ('Extra Info.', {
             'classes': ('collapse',),
-            'fields': ('bio', 'phone_number', 'state',
+            'fields': ('first_name', 'last_name', 'bio', 'phone_number', 'state',
                        'country', 'language', 'profession',
                        'stripe_id', 'user_role', 'profile_image'),
         }),
