@@ -6,6 +6,13 @@
         <div class="col-12  col-md-6 col-lg-4">
             <a class="button secondaryAction page_main_header mb-5" href="{% url 'account_change_password' %}">Change Password?</a>
         </div>
+        {% for account in request.user.paymentaccount_set.all %}
+        {% if account.account_status == 'False' %}
+        <div class="col-12  col-md-6 col-lg-4">
+            <a class="button secondaryAction page_main_header mb-5" href="{{ account.account_link }}">Verify Payment Account...</a>
+        </div>
+        {% endif %}
+        {% endfor %}
         <div class="col-12  col-md-6 col-lg-4">
             <a class="button secondaryAction page_main_header mb-5" href="{% url 'payment_account' %}">Add Payment Account</a>
         </div>
