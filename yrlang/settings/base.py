@@ -42,7 +42,11 @@ SOCIALACCOUNT_ADAPTER = 'yrlang.adapter.MySocialAccountAdepter'
 # Application definition
 
 INSTALLED_APPS = [
+    'django_crontab',
     'channels',
+    # cron-tab
+
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
@@ -87,6 +91,7 @@ INSTALLED_APPS = [
 
     # paypal
     'paypal.standard.ipn',
+
 ]
 
 
@@ -215,3 +220,9 @@ WAGTAILEMBEDS_RESPONSIVE_HTML = True
 # paypal Settings
 PAYPAL_RECEIVER_EMAIL = '' # This is the email where all the notification will be sent
 PAYPAL_TEST = True
+
+
+#cron-tabs schedule
+CRONJOBS = [
+    ('*/5 * * * *', 'cron_tabs.task_reminder.appointment_reminder_before_24H'),
+    ]
