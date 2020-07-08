@@ -196,8 +196,8 @@ STATIC_URL = '/static/'
 # stripe keys
 
 STRIPE_KEYS = {
-  'secret_key': 'sk_test_YC3WXffq70yY2KeAhVTqsKzg00wrwkHmdK',
-  'publishable_key': 'pk_test_F5vWmK7jVOu5YTvf9VgOgATv00W1pf4Grl'
+  'secret_key': 'sk_test_51H2DyaHfiYMY9ftZKm47X0nRCs5f6lrmhU71rv0jXz2PskQuf07CTIgaWvgz81NYh0UMdndH4OcaRZT6O0oAl3Z800ZBBPTc6G',
+  'publishable_key': 'pk_test_51H2DyaHfiYMY9ftZAZnlyH7TniUIByW7tS7U9px2eTivaZ8FRqtDTqVUDO9OC7NG92cdJDGsnXJ6XhQpw75ikPgi001ZfGYJ9G'
 }
 STATICFILES_DIRS = [
     os.path.join(PROJECT_DIR, 'static'),

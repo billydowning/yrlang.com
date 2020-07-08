@@ -1,13 +1,18 @@
 import datetime
+
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponseRedirect, JsonResponse
+from django.contrib.contenttypes.models import ContentType
+from django.urls import reverse_lazy
+from django.conf import settings
 from django.views.generic import (DetailView, UpdateView, TemplateView,
                                   FormView, View, ListView, CreateView)
-from django.urls import reverse_lazy
+
 from allauth.account.views import SignupView
-from django.contrib.contenttypes.models import ContentType
+import stripe
+
 from .forms import (
     ProfessionalAccountForm,
     UpdateProfessionalAccountForm,
@@ -20,6 +25,7 @@ from .forms import (
     ClientToAdminRequestForm
 )
 from .models import CustomUser, UserRole, UserRoleRequest, UserVideos
+from payment.models import PaymentAccount
 
 
 class ProfileView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -77,6 +83,17 @@ class ProfileView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
 class AccountView(LoginRequiredMixin, UpdateView):
     success_url = '/'
+
+    def dispatch(self, request, *args, **kwargs):
+        accounts = PaymentAccount.objects.filter(user=request.user)
+        print(accounts.first())
+        for account in accounts:
+            if account.account_status == "False":
+                stripe.api_key = settings.STRIPE_KEYS['secret_key']
+                retrieve_acc = stripe.Account.retrieve(account.account_id)
+                account.account_status = retrieve_acc['details_submitted']
+                account.save()
+        return super(AccountView, self).dispatch(request, *args, **kwargs)
 
     def get_template_names(self):
         current_user = CustomUser.get(self.request.user.id)
