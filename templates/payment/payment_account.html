@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="content-section container mt-5">
+    {% if request.user.paymentaccount_set.all|length == 0 %}
     <h1 class="button secondaryAction page_main_header mb-5">Add Bank Account Details</h1>
     <div class="col-12">
         <form method="POST" action="" enctype="multipart/form-data">
@@ -106,6 +107,14 @@
             </div>
         </form>
     </div>
+    {% else %}
+    <h1 class="button secondaryAction page_main_header mb-5">Verify Details Go with Link</h1>
+    {% for account in request.user.paymentaccount_set.all %}
+    <div class="col-12">
+        <button class="my-5 mx-5"><a href="{{ account.account_link }}"> Verify Click Hear... </a></button>
+    </div>
+    {% endfor %}
+    {% endif %}
 </div>
 
 
