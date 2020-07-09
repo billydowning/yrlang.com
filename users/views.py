@@ -303,8 +303,9 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
                 req.user.user_role.add(req.requested_for)
             messages.success(self.request, "Request Approved successfully!")
             payload_data = {
-                "head": "Alert !",
-                "body": "Your Request is Accepted."
+                "head": "YR-lang",
+                "body": "Your Request is Accepted.",
+                "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
             }
             send_user_notification(user=req.user, payload=payload_data, ttl=100)
             return HttpResponseRedirect('/')
@@ -330,8 +331,9 @@ class VerifyClientRequestView(LoginRequiredMixin, UserPassesTestMixin, View):
         instance.status = UserRoleRequest.VERIFIED
         instance.save()
         payload_data = {
-            "head": "Alert !",
-            "body": "Your Request is Verified."
+            "head": "YR-lang",
+            "body": "Your Request is Verified.",
+                    "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
         }
         send_user_notification(user=instance.user, payload=payload_data, ttl=100)
         return redirect('client_request_detail', pk= instance.id)

@@ -13,10 +13,11 @@ def appointment_reminder_before_24H():
                                                                   status=ProviderAppointment.REQUESTED)
 
     if appointmnet_res:
-        appointment_name = "Appointment For Localite"
+        appointment_name = "YR-lang"
         payload_data = {
             "head": "Reminder !",
-            "body": "your have an appoitment to visit Tommorow "
+            "body": "your have an appoitment to visit Tommorow ",
+                    "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
         }
         for data in appointmnet_res:
             Notification.objects.create(user=data.requestee,
@@ -26,8 +27,9 @@ def appointment_reminder_before_24H():
     if provider_appointmnet_res:
         appointment_name = "Appointment For Provider"
         payload_data = {
-            "head": "Reminder !",
-            "body":"your have an appoitment to visit Tommorow "
+            "head": "YR-lang",
+            "body":"your have an appoitment to visit Tommorow ",
+            "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
         }
         for data in provider_appointmnet_res:
             Notification.objects.create(user=data.requestee,
