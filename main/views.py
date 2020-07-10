@@ -1,7 +1,7 @@
 from datetime import datetime
 import pytz
 
-from django.views.generic import TemplateView, View, ListView
+from django.views.generic import TemplateView, View, ListView, DetailView
 from django.http import JsonResponse
 from django.db.models import Q
 
@@ -128,3 +128,48 @@ class LocaliteListsView(ListView):
 
 class IndexView(TemplateView):
     template_name = 'explore.html'
+
+
+class OurCities(DetailView):
+    model = CityPage
+    template_name = 'our-cities.html'
+    context_object_name = 'city'
+
+    def dispatch(self, request, *args, **kwargs):
+        pk = self.kwargs.get(self.pk_url_kwarg)
+        if not pk:
+            self.kwargs['pk'] = self.model.objects.first()
+        return super(OurCities, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(OurCities, self).get_context_data()
+        context['cities'] = self.get_queryset()
+        obj = self.get_object()
+        if obj.state:
+            providers = CustomUser.objects.filter(
+                is_client=False, is_private=False,
+                state__name__icontains=obj.state,
+                user_role__name=UserRole.PROVIDER
+            ).exclude(id=self.request.user.id).exclude(country__isnull=True).order_by('?')
+
+            localites = CustomUser.objects.filter(
+                is_client=False, is_private=False,
+                state__name__icontains=obj.state,
+                user_role__name=UserRole.LOCALITE
+            ).exclude(id=self.request.user.id).exclude(country__isnull=True).order_by('?')
+        else:
+            providers = CustomUser.objects.filter(
+                is_client=False, is_private=False,
+                user_role__name=UserRole.PROVIDER
+            ).exclude(id=self.request.user.id)\
+                .exclude(state__isnull=True, country__isnull=True).order_by('?')
+
+            localites = CustomUser.objects.filter(
+                is_client=False, is_private=False,
+                user_role__name=UserRole.LOCALITE
+            ).exclude(id=self.request.user.id)\
+                .exclude(state__isnull=True, country__isnull=True).order_by('?')
+
+        context['providers'] = providers
+        context['localites'] = localites
+        return context

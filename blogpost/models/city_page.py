@@ -1,11 +1,14 @@
+from django import forms
+from django.db import models
+from django.urls import reverse
+
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from wagtail.core.models import Page, Orderable
-from django.db import models
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel
-from users.models import CustomUser, Country, UserRole
-from django import forms
+
+from users.models import CustomUser, UserRole
 from .brucke_page import (BruckePage)
 
 
@@ -47,6 +50,9 @@ class CityPage(Page):
         )
 
     ]
+
+    def get_absolute_url(self):
+        return reverse('main:our_cities', args=[self.pk])
 
     def get_context(self, request, *args, **kwargs):
         city_id = self._get_pk_val()
