@@ -25,11 +25,14 @@
                             <p>Requested Time : {{req.requested_on.time}} </p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Videos :{% for clip in videos %}
+                            {% for clip in videos %}
+                            <p>Language :{{clip.language}}</p>
+                            <p>Videos :
                             <video width="530" height="440" controls >
                              <source src="{{clip.files.url}}" type="video/mp4"> </source>
                             </video>
-                            {%endfor%}</p>
+                            </p>
+                            {%endfor%}
                         </div>
                     </div>
 

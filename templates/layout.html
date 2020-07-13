@@ -125,6 +125,7 @@
                     {% is_client user_role=request.session.user_role as client_checked %}
                     {% is_provider user_role=request.session.user_role as provider_checked %}
                     {% is_localite user_role=request.session.user_role as localite_checked %}
+                    {% is_language_veri user_role=request.session.user_role as is_language_veri_checked %}
 
                     <li><a href="{% url 'main:home' %}"> Explore</a></li>
                     <li>
