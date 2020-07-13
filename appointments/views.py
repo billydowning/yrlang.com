@@ -11,6 +11,7 @@ from django.views.generic import CreateView, ListView, DetailView, UpdateView, D
 
 from .forms import ApproveProviderAppointmentForm, ProviderAppointmentCreateForm
 from .models import *
+from webpush import send_user_notification
 
 
 class AppoitnemtRequestView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
@@ -159,6 +160,12 @@ class SaveBookings(LoginRequiredMixin, View):
             requestor = self.request.user
             requestee = CustomUser.objects.get(id=localite)
             booking = Appointment.objects.create(requestor=requestor, requestee=requestee)
+            payload_data = {
+                "head": 'Yr-lang',
+                "body": "You have an Booking from " + booking.requestor.email,
+                "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
+            }
+            send_user_notification(user=booking.requestee, payload=payload_data, ttl=100)
 
             for obj in data:
                 BookingDates.objects.create(booking=booking, date=obj['date'], start_time=obj['start'], end_time=obj['end'])
@@ -184,7 +191,6 @@ class SaveBookings(LoginRequiredMixin, View):
             url = reverse_lazy('appointments')
         return JsonResponse({'url': url})
 
-
 class SaveAppointments(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs2):
@@ -199,6 +205,14 @@ class SaveAppointments(LoginRequiredMixin, View):
                 instance.requestee_id = provider
                 instance.requestor_id = self.request.user.id
                 instance.save()
+                payload_data = {
+                    "head": 'Yr-lang',
+                    "body": "You have an appointment from " + instance.requestor.email ,
+                    "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
+                }
+                send_user_notification(user=instance.requestee, payload=payload_data, ttl=100)
+
+
 
         if appointment_id:
             appointment = ProviderAppointment.objects.get(id=appointment_id)

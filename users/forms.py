@@ -6,6 +6,7 @@ from django.forms import ModelForm
 from multiupload.fields import MultiMediaField
 from .models import (CustomUser, UserRole, Categories, ProviderCategories, UserVideos)
 from .utils import group_obj
+from django.forms import modelformset_factory, BaseModelFormSet
 
 
 class ClientSignupForm(SignupForm):
@@ -204,7 +205,7 @@ class ProviderAccountForm(ModelForm):
     class Meta:
         model = CustomUser
         fields = ['country', 'state', 'phone_number']
-        help_texts ={
+        help_texts = {
             'phone_number': 'Use Formate Like This 999-999-9999 '
         }
 
@@ -215,7 +216,7 @@ class ProviderAccountForm(ModelForm):
         self.fields['country'].required = True
         self.fields['phone_number'].required = True
         self.fields['phone_number'].widget.attrs.update({
-            'autocomplete': 'off', 'type':'tel',
+            'autocomplete': 'off', 'type': 'tel',
             'pattern': "[0-9]{3}-[0-9]{3}-[0-9]{4}",
 
         })
@@ -294,5 +295,40 @@ class UpdateProviderAccountForm(ModelForm):
             instance.save()
         return instance
 
-class ClientToAdminRequestForm(forms.Form):
-    videos  =MultiMediaField(min_num=1, max_num=3, max_file_size=1024*1024*1024*5, media_type='video')
+
+class ClientToAdminRequestForm(forms.ModelForm):
+    # videos  =MultiMediaField(min_num=1, max_num=3, max_file_size=1024*1024*1024*5, media_type='video')
+
+    class Meta:
+        model = UserVideos
+        fields = ['language', 'files']
+
+
+class BaseAdminRequestFormset(BaseModelFormSet):
+
+    def __init__(self, *args, **kwargs):
+        super(BaseAdminRequestFormset, self).__init__(*args, **kwargs)
+        self.queryset= UserVideos.objects.none()
+
+    def clean(self):
+        super(BaseAdminRequestFormset, self).clean()
+        lst = []
+        for form in self.forms:
+            if not form.is_valid():
+                return
+            if self.can_delete and self._should_delete_form(form):
+                continue
+            lang = form.cleaned_data.get('language')
+            file = form.cleaned_data.get('files')
+            if file is None:
+                form.add_error('files', "Please Provide File!")
+            if lang  in lst or lang is None:
+                form.add_error('language', "Please Chose Proper Language !")
+            else:
+                lst.append(lang)
+
+
+
+ClientToAdminRequestFormSet = modelformset_factory(UserVideos, formset=BaseAdminRequestFormset,
+                                                   form=ClientToAdminRequestForm, min_num=1, extra=0, max_num=4
+                                                   )

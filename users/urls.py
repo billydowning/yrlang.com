@@ -12,6 +12,7 @@ urlpatterns = [
     path("professional_signup", views.ProfessionalSignupView.as_view(), name='professional_account_signup'),
     path("request_for_provider", views.CreateRequestForProvider.as_view(), name='request_for_provider'),
     path("request_for_localite", views.CreateRequestForLocalite.as_view(), name='request_for_localite'),
+    path("request_for_language_verifiers", views.CreateRequestForLanguageVerifier.as_view(), name='request_for_language_verifier'),
     path("request-detail/<int:pk>", views.AprovedClientRequestView.as_view(), name='client_request_detail'),
     path("request-list", views.UserRequestListView.as_view(), name='client_request_list'),
     path('public-profile/<int:pk>/', views.PublicProfile.as_view(), name='public_profile'),

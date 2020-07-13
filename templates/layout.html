@@ -1,7 +1,9 @@
 {% load static wagtailcore_tags check_role %}
+{% load webpush_notifications %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
+     {% webpush_header %}
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -123,6 +125,7 @@
                     {% is_client user_role=request.session.user_role as client_checked %}
                     {% is_provider user_role=request.session.user_role as provider_checked %}
                     {% is_localite user_role=request.session.user_role as localite_checked %}
+                    {% is_language_veri user_role=request.session.user_role as is_language_veri_checked %}
 
                     <li><a href="{% url 'main:home' %}"> Explore</a></li>
                     <li>
@@ -259,6 +262,7 @@
 
                     <!-- site content block -->
                     <div style="" class="uk-width-2-3@m uk-width-1-1@s uk-padding uk-container">
+
                         {% block content %}{% endblock %}
                     </div>
                 </div>

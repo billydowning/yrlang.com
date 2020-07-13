@@ -32,3 +32,12 @@ def ckeck_is_provider(*args, **kwargs):
 @register.simple_tag(name='is_localite')
 def ckeck_is_localite(*args, **kwargs):
     return UserRole.LOCALITE == kwargs.get('user_role')
+
+
+@register.simple_tag(name='language_verifer')
+def check_is_languag_verifer(user):
+    return user.user_role.all().filter(name=UserRole.LANGUAGE_VERIFIER).exists()
+
+@register.simple_tag(name='is_language_veri')
+def check_is_languag_verifer_session(*args, **kwargs):
+    return UserRole.LANGUAGE_VERIFIER == kwargs.get('user_role')

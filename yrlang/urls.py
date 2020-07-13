@@ -42,6 +42,10 @@ urlpatterns += [
     path('', include(wagtail_urls)),
 ]
 
+urlpatterns +=  [
+    re_path(r'^webpush/', include('webpush.urls'))
+]
+
 
 
 if settings.DEBUG:

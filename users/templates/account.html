@@ -1,9 +1,11 @@
 {% extends "layout.html" %}
 {% load check_role %}
 {% block content %}
+{% load webpush_notifications %}
 
 <div class="content-section container mt-5">
     <a class="button secondaryAction" href="{% url 'account_change_password' %}">Change Password?</a>
+    {% webpush_button with_class="btn btn-theme"  %}
     <div class="media">
         {% if request.user.profile_image %}
         <img class="uk-border-circle" width="40" height="40" src="{{ request.user.profile_image.url }}">
