@@ -32,6 +32,9 @@
         $("#provider").click(function(){
             func($("#provider").val());
         });
+         $("#lang_veri").click(function(){
+            func($("#lang_veri").val());
+        });
     });
 </script>
 {% endblock calendar_extras %}
@@ -42,6 +45,7 @@
     {% provider user as pro %}
     {% client user as clt %}
     {% localite user as loc %}
+    {% language_verifer user as lang_veri %}
 
         <div class="select_user">
             <div class="row">
@@ -80,6 +84,19 @@
                         </div>
                         <div class="name_selected">
                             Localite
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                 {% if lang_veri %}
+                <div class="col-12 col-md-4">
+                    <div class="porovider_outer">
+                        <input type="radio" name="name" id="lang_veri" value="language_verifier">
+                        <div class="img_con">
+                            <img src="/media/role_images/global-check-business-man-hold-600w-263828054.jpg" width="320" height="300">
+                        </div>
+                        <div class="name_selected">
+                            Language Verifier
                         </div>
                     </div>
                 </div>

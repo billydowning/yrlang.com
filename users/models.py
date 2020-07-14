@@ -64,10 +64,12 @@ class UserRole(models.Model):
     CLIENT = 'client'
     LOCALITE = 'localite'
     PROVIDER = 'provider'
+    LANGUAGE_VERIFIER = 'language_verifier'
     ROLE_CHOICES = (
         (CLIENT, 'Client'),
         (LOCALITE, 'Localite'),
         (PROVIDER, 'Provider'),
+        (LANGUAGE_VERIFIER, 'Language Verifier')
 
     )
     name = models.CharField(max_length=20, choices=ROLE_CHOICES)
@@ -112,8 +114,13 @@ class CustomUser(AbstractUser):
     def is_localite_user(self, role):
         return UserRole.LOCALITE == role
 
+
+    def is_language_verifier_user(self, role):
+        return UserRole.LANGUAGE_VERIFIER == role
+
     def get_provider_absolute_url(self):
         return reverse('provider_detail', args=[self.pk])
+
 
 
 class UserLanguage(models.Model):
@@ -194,8 +201,9 @@ class UserVideos(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
+    language = models.ForeignKey(Language, null=True, blank=True, on_delete=models.CASCADE)
     files = models.FileField(validators=[validate_file_extension]
         , upload_to='videos/', null=True, blank=True)
 
     def __str__(self):
-        return '{} Video'.format(self.content_object.user.username)
+        return '{} Video,for {}'.format(self.content_object.user.username, self.language)

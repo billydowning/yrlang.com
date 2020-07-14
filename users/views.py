@@ -10,6 +10,11 @@ from django.conf import settings
 from django.views.generic import (DetailView, UpdateView, TemplateView,
                                   FormView, View, ListView, CreateView)
 
+from django.urls import reverse_lazy
+#for notification
+from webpush import send_user_notification
+from django.forms import formset_factory
+
 from allauth.account.views import SignupView
 import stripe
 
@@ -22,7 +27,8 @@ from .forms import (
     ProfessionalSignupForm,
     ProviderAccountForm,
     UpdateProviderAccountForm,
-    ClientToAdminRequestForm
+    ClientToAdminRequestForm,
+    ClientToAdminRequestFormSet
 )
 from .models import CustomUser, UserRole, UserRoleRequest, UserVideos
 from payment.models import PaymentAccount
@@ -196,6 +202,15 @@ class UserMultipleRoleView(TemplateView):
             else:
                 self.request.session['user_role'] = UserRole.LOCALITE
                 url = '/'
+        elif self.request.POST.get("role") == UserRole.LANGUAGE_VERIFIER:
+            if self.request.user.phone_number is None \
+                    or self.request.user.country is None \
+                    or self.request.user.state is None:
+                self.request.session['user_role'] = UserRole.LANGUAGE_VERIFIER
+                url = reverse_lazy('profile')
+            else:
+                self.request.session['user_role'] = UserRole.LANGUAGE_VERIFIER
+                url = '/'
         elif self.request.POST.get("role") == UserRole.CLIENT:
             self.request.session['user_role'] = UserRole.CLIENT
             url = '/'
@@ -231,7 +246,7 @@ class ProviderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
 
 
 class CreateRequestForProvider(LoginRequiredMixin, UserPassesTestMixin, FormView):
-    form_class = ClientToAdminRequestForm
+    form_class = ClientToAdminRequestFormSet
     template_name = 'request_to_admin.html'
 
     def test_func(self):
@@ -245,8 +260,12 @@ class CreateRequestForProvider(LoginRequiredMixin, UserPassesTestMixin, FormView
     def form_valid(self, form):
         role = UserRole.objects.get(name=UserRole.PROVIDER)
         instance = UserRoleRequest.objects.create(user=self.request.user, requested_for=role)
-        for each in form.cleaned_data['videos']:
-            UserVideos.objects.create(content_object=instance, files=each)
+        for frm in form:
+            form_instance = frm.save(commit=False)
+            form_instance.content_object = instance
+            form_instance.save()
+        # for each in form.cleaned_data['videos']:
+        #     UserVideos.objects.create(content_object=instance, files=each)
         messages.success(self.request, "Your Request For Become Provider sent Successfully !")
         return HttpResponseRedirect('/')
 
@@ -255,7 +274,7 @@ class CreateRequestForProvider(LoginRequiredMixin, UserPassesTestMixin, FormView
 
 
 class CreateRequestForLocalite(LoginRequiredMixin, UserPassesTestMixin, FormView):
-    form_class = ClientToAdminRequestForm
+    form_class = ClientToAdminRequestFormSet
     template_name = 'request_to_admin.html'
 
     def test_func(self):
@@ -269,8 +288,12 @@ class CreateRequestForLocalite(LoginRequiredMixin, UserPassesTestMixin, FormView
     def form_valid(self, form):
         role = UserRole.objects.get(name=UserRole.LOCALITE)
         instance = UserRoleRequest.objects.create(user=self.request.user, requested_for=role)
-        for each in form.cleaned_data['videos']:
-            UserVideos.objects.create(content_object=instance, files=each)
+        for frm in form:
+            form_instance = frm.save(commit=False)
+            form_instance.content_object = instance
+            form_instance.save()
+        # for each in form.cleaned_data['videos']:
+        #     UserVideos.objects.create(content_object=instance, files=each)
         messages.success(self.request, "Your Request For Become Localite sent Successfully !")
         return HttpResponseRedirect('/')
 
@@ -284,10 +307,15 @@ class UserRequestListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     context_object_name = 'requests'
 
     def test_func(self):
-        return self.request.user.is_staff
+        return self.request.user.is_staff or self.request.user.is_language_verifier_user(self.request.session.get('user_role'))
 
     def get_queryset(self):
-        return self.model.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED)
+        if self.request.user.is_staff:
+            return self.model.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
+                                                                      requested_for__name=UserRole.LANGUAGE_VERIFIER)
+        else:
+            return self.model.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
+                                                                      requested_for__name__in=[UserRole.LOCALITE, UserRole.PROVIDER]).exclude(user=self.request.user)
 
 
 class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
@@ -297,7 +325,7 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
     context_object_name = 'req'
 
     def test_func(self):
-        return self.request.user.is_staff
+        return  self.request.user.is_staff or self.request.user.is_language_verifier_user(self.request.session.get('user_role'))
 
     def form_valid(self, form):
         req = self.get_object()
@@ -313,9 +341,17 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
             req.save()
             if req.requested_for.name == UserRole.PROVIDER:
                 req.user.user_role.add(req.requested_for)
-            if req.requested_for.name == UserRole.LOCALITE:
+            elif req.requested_for.name == UserRole.LOCALITE:
+                req.user.user_role.add(req.requested_for)
+            elif req.requested_for.name == UserRole.LANGUAGE_VERIFIER:
                 req.user.user_role.add(req.requested_for)
             messages.success(self.request, "Request Approved successfully!")
+            payload_data = {
+                "head": "YR-lang",
+                "body": "Your Request is Accepted For " +  req.requested_for.name,
+                "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
+            }
+            send_user_notification(user=req.user, payload=payload_data, ttl=100)
             return HttpResponseRedirect('/')
 
     def form_invalid(self, form):
@@ -332,12 +368,18 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
 class VerifyClientRequestView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def test_func(self):
-        return self.request.user.is_staff
+        return self.request.user.is_staff or self.request.user.is_language_verifier_user(self.request.session.get('user_role'))
 
     def get(self, request, *args, **kwargs):
         instance = get_object_or_404(UserRoleRequest, pk=self.kwargs.get('id'))
         instance.status = UserRoleRequest.VERIFIED
         instance.save()
+        payload_data = {
+            "head": "YR-lang",
+            "body": "Your Request is Verified  for " + instance.requested_for.name,
+            "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
+        }
+        send_user_notification(user=instance.user, payload=payload_data, ttl=100)
         return redirect('client_request_detail', pk= instance.id)
 
 
@@ -345,3 +387,31 @@ class PublicProfile(DetailView):
     model = CustomUser
     template_name = 'users/public_profile.html'
     context_object_name = 'user'
+
+class CreateRequestForLanguageVerifier(LoginRequiredMixin, UserPassesTestMixin, FormView):
+    form_class = ClientToAdminRequestFormSet
+    template_name = 'request_to_admin.html'
+
+    def test_func(self):
+        return self.request.user.is_client_user(self.request.session.get('user_role'))
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateRequestForLanguageVerifier, self).get_context_data(**kwargs)
+        context['banner'] = 'Request for Language Verifier'
+        return context
+
+    def form_valid(self, form):
+        role = UserRole.objects.get(name=UserRole.LANGUAGE_VERIFIER)
+        instance = UserRoleRequest.objects.create(user=self.request.user, requested_for=role)
+        for frm in form:
+            form_instance = frm.save(commit=False)
+            form_instance.content_object = instance
+            form_instance.save()
+        # for each in form.cleaned_data['videos']:
+        #     UserVideos.objects.create(content_object=instance, files=each)
+        messages.success(self.request, "Your Request For Become Language Verifier sent Successfully !")
+        return HttpResponseRedirect('/')
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+

@@ -835,7 +835,7 @@ ul.about_user_pro li span {
 .join_locality
 {
     position: absolute;
-    right: 0;
+    left: 0;
     color: #fff;
     z-index: 9;
     top: 22px;
