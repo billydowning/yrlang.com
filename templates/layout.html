@@ -125,17 +125,7 @@
                     {% is_localite user_role=request.session.user_role as localite_checked %}
 
                     <li><a href="{% url 'main:home' %}"> Explore</a></li>
-                    <li>
-                        <a href="{{ rooms.inbox }}">
-                            {{ Messages }}
-
-                            <span id="message_count" class="uk-margin uk-badge"
-                                  style="visibility: {% if new_messages %}visible
-                                                    {% else %}hidden {% endif %};">
-                              {{ new_messages }}
-                          </span>
-                        </a>
-                    </li>
+                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
 
                     <li class="dropdown">
                         <a href="">Top City</a>
@@ -149,8 +139,8 @@
                             <a href="{% slugurl city_parent.slug %}">View All.</a>
                             {% endif %}
                         </div>
-
                     </li>
+
                     {% if request.user.is_staff == True %}
 
                     <!-- aa jyare main adimn hase tyare show karse -->
@@ -200,10 +190,12 @@
                             {% if provider_checked or client_checked %}
                             <a href="{% url 'provider_appointment' %}"><i class="fa fa-calendar"
                                                                           aria-hidden="true"> </i><span>Appointments</span></a>
-                            <a href="{% url 'inbox' %}"><i class="fa fa-envelope " aria-hidden="true"> </i> <span>Messages</span></a>
+                            <a href="{% url 'inbox' %}"><i class="fa fa-envelope "
+                                                           aria-hidden="true"> </i> <span>Messages</span></a>
                             {% endif %}
                             {% if localite_checked or client_checked  %}
-                            <a href="{% url 'appointments' %}"><i class="fa fa-calendar" aria-hidden="true"> </i><span>Booking </span></a>
+                            <a href="{% url 'appointments' %}"><i class="fa fa-calendar"
+                                                                  aria-hidden="true"> </i><span>Booking </span></a>
                             {% endif %}
 
                             <a href="{% url 'account' %}"><i class="fa fa-user"
@@ -229,6 +221,18 @@
 
                     {% else %}
                     <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
+                    <li class="dropdown">
+                        <a href="">Top Cities</a>
+                        <div class="dropdown-content">
+                            {% for city in city_list %}
+                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>
+                            {% endfor %}
+                            {% if  city_list.count > 3 %}
+                            <a href="{% slugurl city_parent.slug %}">View All.</a>
+                            {% endif %}
+                        </div>
+                    </li>
                     <li><a href="{% url 'account_login' %}"><i class="fa fa-sign-in top_0"
                                                                aria-hidden="true"> </i><span>Login</span></a></li>
                     <li><a href="{% url 'client_signup_view' %}"><i class="fa fa-user-plus top_0"
