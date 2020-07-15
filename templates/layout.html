@@ -94,6 +94,9 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="{% static 'css/sideNev.css' %}">
+    <script src="{% static 'js/sideNev.js' %}"></script>
     {% block link_css %}
     {% endblock link_css %}
 
@@ -109,6 +112,11 @@
             <div class="uk-navbar-left">
 
 
+                <ul class="uk-navbar-nav">
+                    <li class="uk-active">
+                        <span style="font-size:30px;cursor:pointer" onmouseover="openNav()" onclick="openNav()">&#9776;</span>
+                    </li>
+                </ul>
                 <ul class="uk-navbar-nav">
                     <li class="uk-active"><a href="/" class="logo_font"><img
                             src="https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"></a>
@@ -128,17 +136,7 @@
                     {% is_language_veri user_role=request.session.user_role as is_language_veri_checked %}
 
                     <li><a href="{% url 'main:home' %}"> Explore</a></li>
-                    <li>
-                        <a href="{{ rooms.inbox }}">
-                            {{ Messages }}
-
-                            <span id="message_count" class="uk-margin uk-badge"
-                                  style="visibility: {% if new_messages %}visible
-                                                    {% else %}hidden {% endif %};">
-                              {{ new_messages }}
-                          </span>
-                        </a>
-                    </li>
+                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
 
                     <li class="dropdown">
                         <a href="">Top City</a>
@@ -152,8 +150,8 @@
                             <a href="{% slugurl city_parent.slug %}">View All.</a>
                             {% endif %}
                         </div>
-
                     </li>
+
                     {% if request.user.is_staff == True %}
 
                     <!-- aa jyare main adimn hase tyare show karse -->
@@ -208,6 +206,7 @@
                             {% if localite_checked or client_checked  %}
                             <a href="{% url 'appointments' %}"><i class="fa fa-calendar" aria-hidden="true"> </i><span>Booking </span></a>
                             <a href="{% url 'inbox' %}"><i class="fa fa-envelope " aria-hidden="true"> </i> <span>Messages</span></a>
+
                             {% endif %}
                             {% if localite_checked or client_checked  or provider_checked %}
                             <a href="{% url 'account' %}"><i class="fa fa-user"
@@ -234,6 +233,18 @@
 
                     {% else %}
                     <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
+                    <li class="dropdown">
+                        <a href="">Top Cities</a>
+                        <div class="dropdown-content">
+                            {% for city in city_list %}
+                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>
+                            {% endfor %}
+                            {% if  city_list.count > 3 %}
+                            <a href="{% slugurl city_parent.slug %}">View All.</a>
+                            {% endif %}
+                        </div>
+                    </li>
                     <li><a href="{% url 'account_login' %}"><i class="fa fa-sign-in top_0"
                                                                aria-hidden="true"> </i><span>Login</span></a></li>
                     <li><a href="{% url 'client_signup_view' %}"><i class="fa fa-user-plus top_0"
@@ -246,6 +257,86 @@
         </div>
     </nav>
 
+    <div id="mySidenav" class="sidenav" onmouseleave="closeNav()">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="mx-5 my-5 overflow-auto">
+            <h3 id="word">Namaskar</h3>
+            <h3>Nikka...</h3>
+        </div>
+
+        {% if request.user.is_authenticated %}
+        <div class="row my-5 mx-5">
+            <div class="user_img">
+                {% if request.user.profile_image %}
+                <img src="{{ request.user.profile_image.url }}">
+                {% else %}
+                <img src="{{ avtar }}">
+                {% endif %}
+            </div>
+            <div class="name_of_user">
+                <h6>{{ request.user.username|title }}</h6>
+                <font color="green">
+                    {% if request.session.user_role %}
+                    {{request.session.user_role|title}}
+                    {% endif %}
+                </font>
+            </div>
+        </div>
+        {% endif %}
+
+        <hr class="my-3">
+        <br>
+
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Clients</a>
+        <a href="#">Contact</a>
+        <a href="{% url 'main:our_cities' %}">Our Cities</a>
+
+        {% if request.session.user_role %}
+        <div>
+            <a href="{% url 'account' %}"><span>Account</span></a>
+            {% if provider_checked or client_checked %}
+            <a href="{% url 'provider_appointment' %}"><span>Appointments</span></a>
+            <a href="{% url 'inbox' %}"><span>Messages</span></a>
+            {% endif %}
+
+            {% if localite_checked or client_checked %}
+            <a href="{% url 'appointments' %}"><span>Booking </span></a>
+            {% endif %}
+
+            {% if localite_checked or client_checked %}
+            <a href="{% url 'invoices' %}"><span>Invoices</span></a>
+            {% endif %}
+
+            {% if localite_checked %}
+            <a href="{% url 'create_invoice' %}"><span>Create New Invoice</span></a>
+            {% endif %}
+
+            {% if request.user.user_role.count > 1 %}
+            <a href="{% url 'user-role-select' %}">Swich Role</a>
+            {% endif %}
+
+            <a href="{% url 'account_logout' %}"><span>Logout</span></a>
+        </div>
+        {% else %}
+        <a href="{% url 'main:home' %}"> <span>Expore</span></a>
+
+        <a href="{% url 'account_login' %}">
+            <i class="fa fa-sign-in top_0" aria-hidden="true"> </i>
+            <span>Login</span>
+        </a>
+        <a href="{% url 'client_signup_view' %}">
+            <i class="fa fa-user-plus top_0" aria-hidden="true"> </i>
+            <span>Register</span>
+        </a>
+        {% endif %}
+        <hr>
+        <div class="my-3 mx-5">
+            <p class="text-center">Yr lang</p>
+        </div>
+
+    </div>
 
     <div class="content">
         <div class="container-fluid">

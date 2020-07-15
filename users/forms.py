@@ -10,6 +10,13 @@ from django.forms import modelformset_factory, BaseModelFormSet
 
 
 class ClientSignupForm(SignupForm):
+    terms = forms.BooleanField(widget=forms.CheckboxInput())
+
+    def clean_terms(self):
+        terms = self.cleaned_data['terms']
+        if not terms:
+            raise forms.ValidationError("You have not accept Terms and Conditions")
+        return terms
 
     def save(self, request):
         user = super(ClientSignupForm, self).save(request)
@@ -24,6 +31,14 @@ class ProfessionalSignupForm(SignupForm):
         queryset=UserRole.objects.exclude(name=UserRole.CLIENT),
         required=True
     )
+
+    terms = forms.BooleanField(widget=forms.CheckboxInput())
+
+    def clean_terms(self):
+        terms = self.cleaned_data['terms']
+        if not terms:
+            raise forms.ValidationError("You have not accept Terms and Conditions")
+        return terms
 
     def save(self, request):
         adapter = get_adapter(request)
