@@ -44,7 +44,7 @@ class HomeView(TemplateView):
                 banner = "Logged in as Localite"
             elif self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
                 context["requests"] = UserRoleRequest.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
-                                                                      requested_for__name__in=[UserRole.LOCALITE, UserRole.PROVIDER]).exclude(user=self.request.user)[:3]
+                                                                      ).exclude(user=self.request.user)[:3]
         elif self.request.user.is_anonymous:
             banner = "You Are not logged in "
         context["banner"] = banner

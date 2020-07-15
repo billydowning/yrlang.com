@@ -315,7 +315,7 @@ class UserRequestListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
                                                                       requested_for__name=UserRole.LANGUAGE_VERIFIER)
         else:
             return self.model.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
-                                                                      requested_for__name__in=[UserRole.LOCALITE, UserRole.PROVIDER]).exclude(user=self.request.user)
+                                                                      ).exclude(user=self.request.user)
 
 
 class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
