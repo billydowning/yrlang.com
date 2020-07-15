@@ -9,9 +9,9 @@ class MessageInline(admin.TabularInline):
 
 
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ('__str__', "date_created")
+    list_display = ('__str__', "date_created",'created_for')
     list_display_links = ('__str__',)
-    list_filter = ('date_created',)
+    list_filter = ('date_created', 'created_for')
     list_per_page = 25
     search_fields = ['creator', 'partner', 'date_created']
     inlines = [ MessageInline]

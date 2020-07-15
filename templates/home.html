@@ -47,6 +47,7 @@
 {% is_provider user_role=request.session.user_role as provider_checked %}
 {% is_localite user_role=request.session.user_role as localite_checked %}
 {% is_client user_role=request.session.user_role as client_checked %}
+{% is_language_veri user_role=request.session.user_role as lang_veri_checked %}
 {% if request.user.is_authenticated %}
 {% provider user as pro %}
 {% localite user as loc %}
@@ -120,7 +121,7 @@
       {% if localite_checked %}
     {% include 'localite_home.html' %}
     {% endif %}
-      {% if request.user.is_staff or lang_veri %}
+      {% if request.user.is_staff or lang_veri_checked %}
     {% include 'admin_home.html' %}
     {% endif %}
 

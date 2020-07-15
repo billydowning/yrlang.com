@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (FormView, TemplateView, )
-from users.models import CustomUser, Language
+from users.models import CustomUser, Language, UserRole
 import json
 from .models import *
 from .forms import MessageForm
@@ -17,19 +17,33 @@ class ContactPersonView(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         message = form.save(commit=False)
+        if self.kwargs.get('user_role'):
+            role = UserRole.objects.get(name=self.kwargs.get('user_role'))
+        else:
+            if self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
+                role = UserRole.objects.get(name=UserRole.LANGUAGE_VERIFIER)
+            else:
+                role = UserRole.objects.get(name=UserRole.LOCALITE)
         current_user = CustomUser.get(self.request.user.id)
         partner = CustomUser.get(self.kwargs.get('partner_id'))
-        room = Room.create(current_user, partner)
+        room = Room.create(current_user, partner, role)
         message.create(room, current_user, partner)
         return redirect("chatroom", room_id=room.id)
 
     def get(self, request, *args, **kwargs):
         current_user = CustomUser.get(request.user.id)
         partner = CustomUser.get(kwargs.get('partner_id'))
-        if Room.objects.filter(creator=current_user, partner=partner).exists():
+        if self.kwargs.get('user_role'):
+            role = UserRole.objects.get(name=self.kwargs.get('user_role'))
+        else:
+            if self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
+                role = UserRole.objects.get(name=UserRole.LANGUAGE_VERIFIER)
+            else:
+                role = UserRole.objects.get(name=UserRole.LOCALITE)
+        if Room.objects.filter(creator=current_user, partner=partner, created_for=role).exists():
             room = Room.objects.filter(creator=current_user, partner=partner).first()
             return redirect('chatroom', room_id=room.id)
-        elif Room.objects.filter(creator=partner, partner=current_user).exists():
+        elif Room.objects.filter(creator=partner, partner=current_user, created_for=role).exists():
             room = Room.objects.filter(creator=partner, partner=current_user).first()
             return redirect('chatroom', room_id=room.id)
         return super(ContactPersonView, self).get(request, *args, **kwargs)
