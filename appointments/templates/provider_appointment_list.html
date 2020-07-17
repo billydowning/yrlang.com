@@ -78,7 +78,7 @@
                                                     {% if provider_checked %}
                                                     {% if appointment.status|is_approved %}
                                                 <li class="li_flex">
-                                                    <a href="">
+                                                    <a href="{% url 'edit_provider_appointment' appointment.id %}">
                                                         <button class="btn theme_btn" type="button">Edit</button>
                                                     </a>
                                                     <span>OR</span>
@@ -351,7 +351,7 @@
                                                     <!--                                                    <a href="" class="cancel">Cancel</a>-->
                                                     {% if provider_checked %}
 
-                                                    <a href="{{ appointment.get_absolute_url }}">
+                                                    <a href="{% url 'edit_provider_appointment' appointment.id %}">
                                                         <button class="btn theme_btn" type="button">Edit</button>
                                                     </a>
 

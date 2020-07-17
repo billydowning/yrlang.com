@@ -1,0 +1,211 @@
+{% extends "layout.html" %}
+{% load static check_status %}
+
+{% block calendar_extras %}
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+      crossorigin="anonymous">
+
+<link href="{% static 'calender_assets/fullcalendar.min.css' %}" rel='stylesheet'/>
+<link href="{% static 'calender_assets/fullcalendar.print.min.css' %}" rel='stylesheet' media='print'/>
+<script src="{% static 'calender_assets/moment.min.js' %}"></script>
+<script src="{% static 'calender_assets/jquery.min.js' %}"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+<script src="{% static 'calender_assets/fullcalendar.min.js' %}"></script>
+
+<script>
+
+  $(document).ready(function() {
+    var booking_data = [];
+    var block_data = [];
+    var del_data = {};
+    var event_data = [];
+
+    {% for appointment in appointments %}
+        {% if appointment.status|is_approved %}
+            event_data.push({
+                start: '{{ appointment.approved_date|date:'Y-m-d' }}',
+                rendering: 'background',
+                overlap: false,
+                color: '#8d99ae',
+            });
+            block_data.push('{{ appointment.approved_date|date:'Y-m-d' }}')
+        {% else %}
+            event_data.push({
+                start: '{{ appointment.request_date|date:'Y-m-d' }}',
+                rendering: 'background',
+                overlap: false,
+                color: '#8d99ae',
+            });
+            block_data.push('{{ appointment.request_date|date:'Y-m-d' }}')
+        {% endif %}
+    {% endfor %}
+    {% if request.user == appointment.requestee %}
+        event_data.push({
+            start: '{{ appointment.approved_date|date:'Y-m-d' }}',
+            rendering: 'background',
+            overlap: false,
+            color: '#ffff3f',
+        });
+    {% else %}
+        event_data.push({
+            start: '{{ appointment.request_date|date:'Y-m-d' }}',
+            rendering: 'background',
+            overlap: false,
+            color: '#ffff3f',
+        });
+    {% endif %}
+
+    $('#calendar').fullCalendar({
+    customButtons: {
+    submit: {
+      text: 'Update Appointment!',
+      click: function() {
+        if (booking_data.length != 0){
+            $('#noteForm').modal('show');
+        }
+        else{
+            alert('PLZZZZ... Select dates...!!!');
+        }
+      }
+    }
+    },
+    selectable: true,
+    header: {
+      left: 'prev,next',
+      center: 'title',
+      right: 'submit'
+    },
+    height: 440,
+    selectConstraint: {
+       start: moment().format('YYYY-MM-DD'),
+       end: moment().add(1, "M").format('YYYY-MM-DD')
+    },
+    select: function(startDate, endDate) {
+        var temp = moment(startDate).add(1, "d").format('YYYY-MM-DD');
+        if (jQuery.inArray(startDate.format('YYYY-MM-DD'), block_data) != -1){
+           $('#calendar').fullCalendar('unselect');
+           return false;
+        }
+        else if (moment(temp).format('YYYY-MM-DD') != endDate.format('YYYY-MM-DD')){
+            booking_data = [];
+            $('#calendar').fullCalendar('unselect');
+            return false;
+        }
+        else{
+            booking_data = [];
+            booking_data.push(startDate.format('YYYY-MM-DD'));
+        }
+    },
+    events: event_data,
+    });
+
+    $('#submitBtn').click(function(){
+        {% if request.user == appointment.requestee %}
+            var obj = {
+                approved_date: booking_data[0],
+                provider_comment: $('#customerNote').val(),
+            };
+        {% else %}
+            var obj = {
+                request_date: booking_data[0],
+                client_comment: $('#customerNote').val(),
+            };
+        {% endif %}
+
+        $.ajax({
+            url:'{% url 'edit_provider_appointment' appointment.id %}',
+            type: 'POST',
+            headers:{
+                "X-CSRFToken": '{{ csrf_token }}'
+            },
+            data:{
+                obj: JSON.stringify(obj),
+                appointment_id: '{{ appointment.id }}'
+            },
+            success:function(response){
+                window.location.href = response.url;
+            }
+         });
+    });
+
+  });
+
+
+</script>
+
+<style>
+
+  body {
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  #calendar {
+    max-width: auto;
+    margin: 0 auto;
+  }
+  .uk-navbar-item, .uk-navbar-nav>li>a, .uk-navbar-toggle{font-size:14px}
+  .fc-past{
+    color: #8d99ae;
+  }
+
+
+</style>
+{% endblock calendar_extras %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+    <div class="col-3">
+    </div>
+    <div class="col-6">
+        <div class="req_appontment_form">
+        <div class="alert alert-danger my-3" id="alert" role="alert" hidden>
+        </div>
+        <div id='calendar'></div>
+        </div>
+    </div>
+    <div class="col-3">
+    </div>
+    </div>
+</div>
+
+<!-- Confirm Modal -->
+<div class="modal fade" id="noteForm" tabindex="-1" role="dialog" aria-labelledby="noteFormTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="noteFormTitle">Confirm Booking</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+           <div class="form-group">
+            <label for="customerNote">Notes</label>
+            <textarea class="form-control" id="customerNote" rows="3" required></textarea>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="submitBtn" class="btn btn-primary" data-dismiss="modal">Book Appointment</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

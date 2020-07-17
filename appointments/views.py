@@ -3,11 +3,11 @@ import json
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import render, redirect
+from django.http import JsonResponse
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, DeleteView
 
 from .forms import ApproveProviderAppointmentForm, ProviderAppointmentCreateForm
 from .models import *
@@ -111,27 +111,60 @@ class ProviderAppointmentList(LoginRequiredMixin, UserPassesTestMixin, ListView)
         return query
 
 
-class EditProviderAppointmentView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    template_name = 'provider_create_appointment.html'
-    form_class = ProviderAppointmentCreateForm
-    model = ProviderAppointment
-    context_object_name = 'appoientment'
+class EditProviderAppointmentView(LoginRequiredMixin, UserPassesTestMixin, View):
+    template_name = 'provider_update_appointment.html'
+    appointment = None
+    flag = None
+
+    def dispatch(self, request, *args, **kwargs):
+        self.appointment = ProviderAppointment.objects.get(id=self.kwargs.get('pk', None))
+        return super(EditProviderAppointmentView, self).dispatch(request, *args, **kwargs)
 
     def test_func(self):
-        appointment = self.get_object()
-        if appointment.requestor == self.request.user:
+        if self.appointment.requestor == self.request.user:
+            self.flag = False
+            return True
+        elif self.appointment.requestee == self.request.user:
+            self.flag = True
             return True
         else:
+            self.flag = False
             return False
 
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request,
-                         'Your appointment request has been Updated')
-        return redirect('provider_appointment')
+    def get(self, request, *args, **kwargs):
+        context = {
+            'appointment': self.appointment,
+            'appointments': ProviderAppointment.objects.filter(
+                                requestee=CustomUser.get(id=self.appointment.requestee.id)
+                            ).exclude(request_date=self.appointment.request_date),
+            }
+        return render(self.request, self.template_name, context)
 
-    def form_invalid(self, form):
-        return self.render_to_response(self.get_context_data(form=form))
+    def post(self, request, *args, **kwargs2):
+        appointment_id = request.POST.get('appointment_id', None)
+
+        if appointment_id:
+            data = json.loads(request.POST.get('obj', None))
+            if self.flag:
+                data['status'] = True
+                form = ApproveProviderAppointmentForm(instance=self.appointment, data=data)
+                if form.is_valid:
+                    instance = form.save(commit=False)
+                    instance.save()
+            else:
+                form = ProviderAppointmentCreateForm(instance=self.appointment, data=data)
+                if form.is_valid:
+                    instance = form.save(commit=False)
+                    instance.save()
+                    payload_data = {
+                        "head": 'Yr-lang',
+                        "body": "You have an appointment from " + instance.requestor.email,
+                        "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
+                    }
+                    send_user_notification(user=instance.requestee, payload=payload_data, ttl=100)
+        url = reverse_lazy('provider_appointment')
+
+        return JsonResponse({'url': url})
 
 
 class CancelAppointmnetView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -201,6 +234,7 @@ class SaveBookings(LoginRequiredMixin, View):
 
             url = reverse_lazy('appointments')
         return JsonResponse({'url': url})
+
 
 class SaveAppointments(LoginRequiredMixin, View):
 
