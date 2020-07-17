@@ -7,6 +7,8 @@ from multiupload.fields import MultiMediaField
 from .models import (CustomUser, UserRole, Categories, ProviderCategories, UserVideos)
 from .utils import group_obj
 from django.forms import modelformset_factory, BaseModelFormSet
+from django.core.mail import send_mail
+from yrlang.settings.development_example import EMAIL_HOST_USER
 
 
 class ClientSignupForm(SignupForm):
@@ -22,6 +24,13 @@ class ClientSignupForm(SignupForm):
         user = super(ClientSignupForm, self).save(request)
         role = UserRole.objects.get(name=UserRole.CLIENT)
         user.user_role.add(role)
+        send_mail(
+            'Welcome To YR-lang ' ,
+            'Your account fo the YR-lang is been created welcome to our family of YR-lang.',
+            EMAIL_HOST_USER,
+            [str(user.email)],
+            fail_silently=False,
+        )
         return user
 
 

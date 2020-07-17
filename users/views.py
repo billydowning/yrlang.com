@@ -9,8 +9,9 @@ from django.urls import reverse_lazy
 from django.conf import settings
 from django.views.generic import (DetailView, UpdateView, TemplateView,
                                   FormView, View, ListView, CreateView)
-
+from yrlang.settings import development_example
 from django.urls import reverse_lazy
+from django.core.mail import send_mail
 #for notification
 from webpush import send_user_notification
 from django.forms import formset_factory
@@ -103,7 +104,7 @@ class AccountView(LoginRequiredMixin, UpdateView):
 
     def get_template_names(self):
         current_user = CustomUser.get(self.request.user.id)
-        if self.request.user.is_client_user(self.request.session.get('user_role')):
+        if self.request.user.is_client_user(self.request.session.get('user_role')) or self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
             self.template_name = "account.html"
             return self.template_name
         elif self.request.user.is_localite_user(self.request.session.get('user_role')):
@@ -116,7 +117,7 @@ class AccountView(LoginRequiredMixin, UpdateView):
     def get_form(self, form_class=None):
         self.request.session['role_flag'] = False
         current_user = CustomUser.get(self.request.user.id)
-        if self.request.user.is_client_user(self.request.session.get('user_role')):
+        if self.request.user.is_client_user(self.request.session.get('user_role')) or self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
             if self.request.method == 'POST':
                 self.form_class = UpdateAccountForm(
                     instance=current_user,
@@ -311,10 +312,9 @@ class UserRequestListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return self.model.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
-                                                                      requested_for__name=UserRole.LANGUAGE_VERIFIER)
+            return None
         else:
-            return self.model.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
+            return self.model.objects.order_by('requested_on').filter(status__in=[UserRoleRequest.REQUESTED, UserRoleRequest.VERIFIED],
                                                                       ).exclude(user=self.request.user)
 
 
@@ -352,6 +352,13 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
                 "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
             }
             send_user_notification(user=req.user, payload=payload_data, ttl=100)
+            send_mail(
+                'Request Approved for ' + req.requested_for.name ,
+                'Your Request is Approved for ' + req.requested_for.name + '',
+                development_example.EMAIL_HOST_USER,
+                [str(req.user.email)],
+                fail_silently=False,
+            )
             return HttpResponseRedirect('/')
 
     def form_invalid(self, form):
@@ -380,6 +387,13 @@ class VerifyClientRequestView(LoginRequiredMixin, UserPassesTestMixin, View):
             "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
         }
         send_user_notification(user=instance.user, payload=payload_data, ttl=100)
+        send_mail(
+            'Verification mail for '+instance.requested_for.name + ' request',
+            'Your Request has been verified for '+instance.requested_for.name+ '' ,
+            development_example.EMAIL_HOST_USER,
+            [str(instance.user.email)],
+            fail_silently=False,
+        )
         return redirect('client_request_detail', pk= instance.id)
 
 
