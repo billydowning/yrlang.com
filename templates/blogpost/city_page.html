@@ -253,7 +253,7 @@ $(document).ready(function() {
                          alt="Card image cap">
                     {% endif %}
                     <div class="card-body">
-                        <h5 class="card-title"> {{ user.username }}</h5>
+                        <h5 class="card-title"> <a href="{{ user.get_public_profile }}">{{ user.username }}</a></h5>
                         <p class="card-text">
                             {% if user.language %}
                             Languge :{% for language in user.language.all %} {{ language }}, {% endfor %}
@@ -290,7 +290,7 @@ $(document).ready(function() {
                          alt="Card image cap">
                     {% endif %}
                     <div class="card-body">
-                        <h5 class="card-title"> {{ user.username }}</h5>
+                        <h5 class="card-title"> <a href="{{ user.get_public_profile }}">{{ user.username }}</a></h5>
                         <p class="card-text">
                             {% if user.language %}
                                 Languge :{% for language in user.language.all %} {{ language }}, {% endfor %}
