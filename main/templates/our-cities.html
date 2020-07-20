@@ -120,7 +120,7 @@
             <h4>FIND THE PROVIDER YOU NEED- WHEREVER YOU ARE!</h4>
             <h5 class="my2">Localites</h5>
             {% for obj in localites %}
-            <li><a href="{{ obj.get_provider_absolute_url }}">{{ obj.username }}</a></li>
+            <li><a href="{{ obj.get_public_profile }}">{{ obj.username }}</a></li>
             {% endfor %}
 
             <h5 class="my2">Providers</h5>
