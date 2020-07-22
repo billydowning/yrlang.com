@@ -180,6 +180,7 @@ class UserRoleRequest(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=REQUESTED)
     requested_for = models.ForeignKey(UserRole, on_delete=models.CASCADE, related_name='request_for')
     reason = models.TextField(null=True, blank=True)
+    meeting_on =  models.DateTimeField(null=True, blank=True)
     approved_on = models.DateTimeField(null=True, blank=True)
     requested_on = models.DateTimeField(auto_now=True)
 

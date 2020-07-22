@@ -1,5 +1,5 @@
 import datetime
-
+from _collections import defaultdict
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -28,8 +28,9 @@ from .forms import (
     ProfessionalSignupForm,
     ProviderAccountForm,
     UpdateProviderAccountForm,
-    ClientToAdminRequestForm,
+    RequestVerificationForm,
     ClientToAdminRequestFormSet
+
 )
 from .models import CustomUser, UserRole, UserRoleRequest, UserVideos
 from payment.models import PaymentAccount
@@ -314,14 +315,14 @@ class UserRequestListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
         if self.request.user.is_staff:
             return None
         else:
-            return self.model.objects.order_by('requested_on').filter(status__in=[UserRoleRequest.REQUESTED, UserRoleRequest.VERIFIED],
+            return self.model.objects.order_by('requested_on').filter(status__in=[UserRoleRequest.REQUESTED, UserRoleRequest.VERIFIED, UserRoleRequest.APPROVED],
                                                                       ).exclude(user=self.request.user)
 
 
 class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'client_request_detail.html'
     model = UserRoleRequest
-    fields = ['reason']
+    form_class = RequestVerificationForm
     context_object_name = 'req'
 
     def test_func(self):
@@ -336,8 +337,10 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
             messages.success(self.request, "Request Canceled successfully!")
             return HttpResponseRedirect('/')
         else:
+            meeting_date = form.cleaned_data.get('meeting_on')
             req.status = UserRoleRequest.APPROVED
             req.approved_on = datetime.datetime.now()
+            req.meeting_on = meeting_date
             req.save()
             if req.requested_for.name == UserRole.PROVIDER:
                 req.user.user_role.add(req.requested_for)
@@ -364,11 +367,21 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
 
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(AprovedClientRequestView, self).get_form_kwargs(**kwargs)
+        kwargs['model_object'] = self.get_object()
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super(AprovedClientRequestView, self).get_context_data(**kwargs)
         content_type_obj = ContentType.objects.get_for_model(UserRoleRequest)
         obj = self.get_object()
         context['videos'] = UserVideos.objects.filter(object_id=obj.id, content_type=content_type_obj)
+        results  =  UserRoleRequest.objects.values('meeting_on').all().exclude(id=obj.id).exclude(meeting_on=None)
+        date_dict = defaultdict(list)
+        for date_l in results:
+            date_dict[str(date_l['meeting_on'].date().strftime("%Y.%m.%d"))].append(str(date_l['meeting_on'].time().strftime("%H:%M")))
+        context['disabled_dates'] = dict(date_dict)
         return context
 
 
