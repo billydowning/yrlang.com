@@ -114,12 +114,14 @@ class CustomUser(AbstractUser):
     def is_localite_user(self, role):
         return UserRole.LOCALITE == role
 
-
     def is_language_verifier_user(self, role):
         return UserRole.LANGUAGE_VERIFIER == role
 
     def get_provider_absolute_url(self):
         return reverse('provider_detail', args=[self.pk])
+
+    def get_public_profile(self):
+        return reverse('public_profile', args=[self.pk])
 
 
 

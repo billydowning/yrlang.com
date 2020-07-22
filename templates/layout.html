@@ -261,7 +261,7 @@
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         <div class="mx-5 my-5 overflow-auto">
             <h3 id="word">Namaskar</h3>
-            <h3>Nikka...</h3>
+            <h3>{{ request.user.username }}</h3>
         </div>
 
         {% if request.user.is_authenticated %}
