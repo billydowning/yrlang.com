@@ -1,5 +1,5 @@
 import datetime
-
+from _collections import defaultdict
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -9,8 +9,9 @@ from django.urls import reverse_lazy
 from django.conf import settings
 from django.views.generic import (DetailView, UpdateView, TemplateView,
                                   FormView, View, ListView, CreateView)
-
+from yrlang.settings import development_example
 from django.urls import reverse_lazy
+from django.core.mail import send_mail
 #for notification
 from webpush import send_user_notification
 from django.forms import formset_factory
@@ -27,8 +28,9 @@ from .forms import (
     ProfessionalSignupForm,
     ProviderAccountForm,
     UpdateProviderAccountForm,
-    ClientToAdminRequestForm,
+    RequestVerificationForm,
     ClientToAdminRequestFormSet
+
 )
 from .models import CustomUser, UserRole, UserRoleRequest, UserVideos
 from payment.models import PaymentAccount
@@ -103,7 +105,7 @@ class AccountView(LoginRequiredMixin, UpdateView):
 
     def get_template_names(self):
         current_user = CustomUser.get(self.request.user.id)
-        if self.request.user.is_client_user(self.request.session.get('user_role')):
+        if self.request.user.is_client_user(self.request.session.get('user_role')) or self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
             self.template_name = "account.html"
             return self.template_name
         elif self.request.user.is_localite_user(self.request.session.get('user_role')):
@@ -116,7 +118,7 @@ class AccountView(LoginRequiredMixin, UpdateView):
     def get_form(self, form_class=None):
         self.request.session['role_flag'] = False
         current_user = CustomUser.get(self.request.user.id)
-        if self.request.user.is_client_user(self.request.session.get('user_role')):
+        if self.request.user.is_client_user(self.request.session.get('user_role')) or self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
             if self.request.method == 'POST':
                 self.form_class = UpdateAccountForm(
                     instance=current_user,
@@ -311,17 +313,16 @@ class UserRequestListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return self.model.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
-                                                                      requested_for__name=UserRole.LANGUAGE_VERIFIER)
+            return None
         else:
-            return self.model.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
+            return self.model.objects.order_by('requested_on').filter(status__in=[UserRoleRequest.REQUESTED, UserRoleRequest.VERIFIED, UserRoleRequest.APPROVED],
                                                                       ).exclude(user=self.request.user)
 
 
 class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'client_request_detail.html'
     model = UserRoleRequest
-    fields = ['reason']
+    form_class = RequestVerificationForm
     context_object_name = 'req'
 
     def test_func(self):
@@ -336,8 +337,10 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
             messages.success(self.request, "Request Canceled successfully!")
             return HttpResponseRedirect('/')
         else:
+            meeting_date = form.cleaned_data.get('meeting_on')
             req.status = UserRoleRequest.APPROVED
             req.approved_on = datetime.datetime.now()
+            req.meeting_on = meeting_date
             req.save()
             if req.requested_for.name == UserRole.PROVIDER:
                 req.user.user_role.add(req.requested_for)
@@ -352,16 +355,33 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
                 "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
             }
             send_user_notification(user=req.user, payload=payload_data, ttl=100)
+            send_mail(
+                'Request Approved for ' + req.requested_for.name ,
+                'Your Request is Approved for ' + req.requested_for.name + '',
+                development_example.EMAIL_HOST_USER,
+                [str(req.user.email)],
+                fail_silently=False,
+            )
             return HttpResponseRedirect('/')
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(AprovedClientRequestView, self).get_form_kwargs(**kwargs)
+        kwargs['model_object'] = self.get_object()
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(AprovedClientRequestView, self).get_context_data(**kwargs)
         content_type_obj = ContentType.objects.get_for_model(UserRoleRequest)
         obj = self.get_object()
         context['videos'] = UserVideos.objects.filter(object_id=obj.id, content_type=content_type_obj)
+        results  =  UserRoleRequest.objects.values('meeting_on').all().exclude(id=obj.id).exclude(meeting_on=None)
+        date_dict = defaultdict(list)
+        for date_l in results:
+            date_dict[str(date_l['meeting_on'].date().strftime("%Y.%m.%d"))].append(str(date_l['meeting_on'].time().strftime("%H:%M")))
+        context['disabled_dates'] = dict(date_dict)
         return context
 
 
@@ -380,6 +400,13 @@ class VerifyClientRequestView(LoginRequiredMixin, UserPassesTestMixin, View):
             "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
         }
         send_user_notification(user=instance.user, payload=payload_data, ttl=100)
+        send_mail(
+            'Verification mail for '+instance.requested_for.name + ' request',
+            'Your Request has been verified for '+instance.requested_for.name+ '' ,
+            development_example.EMAIL_HOST_USER,
+            [str(instance.user.email)],
+            fail_silently=False,
+        )
         return redirect('client_request_detail', pk= instance.id)
 
 

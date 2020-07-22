@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load check_role %}
+{% load check_role js_tag %}
 {% block content %}
 <div class="content-section container mt-5">
     <div class="media">{% if req.user.profile_image %}
@@ -12,7 +12,8 @@
             </div>
             <div class="col-12 col-md-9 col-lg-10">
                 <div class="media-body text-left w-100">
-                    <h2>{{ req.user.username }} &nbsp;&nbsp; <a href="{% url 'contact' req.user.id %}"> <i class="fa fa-comments-o fa-2x" aria-hidden="true">&nbsp;Chat with requestor</i></a></h2>
+                    <h2>{{ req.user.username }} &nbsp;&nbsp; <a href="{% url 'contact' req.user.id %}"> <i
+                            class="fa fa-comments-o fa-2x" aria-hidden="true">&nbsp;Chat with requestor</i></a></h2>
                     <h2>Requested For : {{ req.requested_for }}</h2>
                     <div class="row">
                         <div class="col-12  col-md-6 col-lg-4">
@@ -28,75 +29,150 @@
                             {% for clip in videos %}
                             <p>Language :{{clip.language}}</p>
                             <p>Videos :
-                            <video width="530" height="440" controls >
-                             <source src="{{clip.files.url}}" type="video/mp4"> </source>
-                            </video>
+                                <video width="530" height="440" controls>
+                                    <source src="{{clip.files.url}}" type="video/mp4"></source>
+                                </video>
                             </p>
                             {%endfor%}
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
 
     </div>
-    {% if req.status == 'requested'  %}
+    {% if req.status == 'requested' %}
     <button><a href="{% url 'verify_client_request' req.id %}">Verify</a></button>
-    {% elif req.status == 'verified' %}
+    {% elif req.status == 'verified' or req.status == 'approved' %}
     <form action="{{req.get_detail}}" method="post">
         {% csrf_token %}
-        <button type="submit"  class="btn btn-theme">Approved</button>
-        </form>
+        <div class="col-12  col-md-6 col-lg-4">
+            {% if req.meeting_on %}
+            <p>You already scheuled ones with : {{req.meeting_on}}</p>
+            {% endif %}
+
+
+            {% if form.meeting_on  %}
+            <p>Schedule Your Meeting :</p>
+            <p>Select Date:
+                <span>{{ form.meeting_on.errors }}</span>
+                {{ form.meeting_on }}
+
+            </p>
+            {% if req.status == 'approved'%}
+            <button type="submit" class="btn btn-theme">Update</button>
+            {% else %}
+            <button type="submit" class="btn btn-theme">Approved</button>
+            {% endif %}
+            {% endif %}
+        </div>
+
+    </form>
 
     <br>
-  <button style="background:red; " class="btn mx-2  btn-danger" data-toggle="modal"
+    <button style="background:red; " class="btn mx-2  btn-danger" data-toggle="modal"
             data-target="#exampleModal"
             data-btn="cancel"
-            data-title="Cancel">Cancel</button>
+            data-title="Cancel">Cancel
+    </button>
     {% endif %}
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-      <form method="POST">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Cancel Request</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form method="POST">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Cancel Request</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
 
-          {% csrf_token %}
-          <div class="form-group" id="approved_date_div">
-            {{ form.reason.label }}
-            {% if form.approved_date.errors %}
+                        {% csrf_token %}
+                        <div class="form-group" id="approved_date_div">
+                            {{ form.reason.label }}
+                            {% if form.approved_date.errors %}
+                            <span>{{ form.reason.errors }}</span>
 
-                <div class="invalid-feedback">
-
-                        <span>{{ form.reason.error }}</span>
-
+                            {% else %}
+                            {{ form.reason }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+                    </div>
                 </div>
-            {% else %}
-                {{ form.reason }}
-            {% endif %}
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" id="submit" class="btn btn-primary">Submit</button>
-      </div>
+            </form>
+        </div>
     </div>
-    </form>
-  </div>
-</div>
 </div>
 <script>
      $(document).ready(function() {
 
         $('#id_reason').prop('required', true);
+        {% if req.status == 'verified' %}
+        $('#id_meeting_on').prop('required', true);
+        {% endif %}
 
      });
+
 </script>
+<script>
+
+var arrayDates = {}
+    {% for date,time in disabled_dates.items %}
+
+            arrayDates["{{date}}"] = {{time | js }};
+    {% endfor  %}
+
+
+var selectedDate = ''
+var availableTimes = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
+     $(function () {
+    $("#id_meeting_on").datetimepicker({
+        'minDate':'+1970/01/02',
+        format:'Y.m.d H:i',
+        defaultTime:'00:00',
+        inline:true,
+         allowTimes: availableTimes,
+            onSelectDate:function(ct,$i){
+                    selectedDate= $i.val().split(" ");
+                    var matchedDate =  arrayDates[selectedDate[0]];
+                     this.setOptions({
+                          defaultTime:'09:00',
+
+                        });
+
+                  if (matchedDate) {
+
+                        myArray = availableTimes.filter( function( el ) {
+                                    return matchedDate.indexOf( el ) < 0;
+                                });
+
+                          if(JSON.stringify(myArray) === JSON.stringify(availableTimes)){
+                                  this.setOptions({
+                                  disabledDates: [selectedDate[0]]
+                                });
+                          }else{
+                        this.setOptions({
+                          allowTimes: myArray
+                        });}
+
+                  } else {
+                    this.setOptions({
+                      allowTimes:availableTimes
+                    });}
+            }
+
+    });
+  });
+
+
+
+</script>
+
 
 {% endblock content %}

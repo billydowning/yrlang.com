@@ -12,6 +12,9 @@ from django.views.generic import ListView, DetailView, DeleteView
 from .forms import ApproveProviderAppointmentForm, ProviderAppointmentCreateForm
 from .models import *
 from webpush import send_user_notification
+from django.core.mail import send_mail
+from yrlang.settings.development_example import EMAIL_HOST_USER
+
 
 
 class AppoitnemtRequestView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
@@ -199,6 +202,14 @@ class SaveBookings(LoginRequiredMixin, View):
                 "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
             }
             send_user_notification(user=booking.requestee, payload=payload_data, ttl=100)
+            send_mail(
+                'Booking scheduled on ' + data[0]['date'],
+                'You have booking schedule with '+ str(booking.requestor) + ' on '+ data[0]['date']+
+                'with start time respectivly with end time ' +  data[0]['start'] + ' '+ data[0]['end'],
+                EMAIL_HOST_USER,
+                [str(booking.requestee.email)],
+                fail_silently=False,
+            )
 
             for obj in data:
                 BookingDates.objects.create(booking=booking, date=obj['date'], start_time=obj['start'], end_time=obj['end'])
@@ -246,7 +257,13 @@ class SaveAppointments(LoginRequiredMixin, View):
                 }
                 send_user_notification(user=instance.requestee, payload=payload_data, ttl=100)
 
-
+                send_mail(
+                    'Appointment scheduled on '+ data['request_date'],
+                    'You have booking schedule with ' + str(instance.requestor) + ' on ' + ''+data['request_date'],
+                    EMAIL_HOST_USER,
+                    [str(instance.requestee.email)],
+                    fail_silently=False,
+                )
 
         if appointment_id:
             appointment = ProviderAppointment.objects.get(id=appointment_id)

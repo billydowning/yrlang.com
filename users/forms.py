@@ -4,9 +4,11 @@ from allauth.account.utils import setup_user_email
 from django import forms
 from django.forms import ModelForm
 from multiupload.fields import MultiMediaField
-from .models import (CustomUser, UserRole, Categories, ProviderCategories, UserVideos)
+from .models import (CustomUser, UserRole, Categories, ProviderCategories, UserVideos, UserRoleRequest)
 from .utils import group_obj
 from django.forms import modelformset_factory, BaseModelFormSet
+from django.core.mail import send_mail
+from yrlang.settings.development_example import EMAIL_HOST_USER
 
 
 class ClientSignupForm(SignupForm):
@@ -22,6 +24,13 @@ class ClientSignupForm(SignupForm):
         user = super(ClientSignupForm, self).save(request)
         role = UserRole.objects.get(name=UserRole.CLIENT)
         user.user_role.add(role)
+        send_mail(
+            'Welcome To YR-lang ' ,
+            'Your account fo the YR-lang is been created welcome to our family of YR-lang.',
+            EMAIL_HOST_USER,
+            [str(user.email)],
+            fail_silently=False,
+        )
         return user
 
 
@@ -347,3 +356,24 @@ class BaseAdminRequestFormset(BaseModelFormSet):
 ClientToAdminRequestFormSet = modelformset_factory(UserVideos, formset=BaseAdminRequestFormset,
                                                    form=ClientToAdminRequestForm, min_num=1, extra=0, max_num=4
                                                    )
+
+from django.contrib.admin.widgets import AdminSplitDateTime
+from datetime import date
+
+
+class RequestVerificationForm(forms.ModelForm):
+    class Meta:
+        model = UserRoleRequest
+        fields = ['reason', 'meeting_on']
+
+    def __init__(self, *args, **kwargs):
+        self.model_object = kwargs.pop('model_object', None)
+        super(RequestVerificationForm, self).__init__(*args, **kwargs)
+        self.fields['meeting_on'].input_formats = ['%Y.%m.%d %H:%M']
+        if self.model_object.meeting_on:
+            today = date.today()
+            difference = today - self.model_object.meeting_on.date()
+            if difference.days == -1:
+                self.fields.pop('meeting_on')
+
+

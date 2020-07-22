@@ -17,11 +17,11 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
 
-        context["localites"] = CustomUser.objects.filter(is_client=False, is_private=False,
+        context["localites"] = CustomUser.objects.filter( is_private=False,
                                                          user_role__name__in=[UserRole.LOCALITE]). \
                                    exclude(id=self.request.user.id).exclude(state__isnull=True,
                                                                             country__isnull=True).order_by('?')[:3]
-        context["providers"] = CustomUser.objects.filter(is_client=False, is_private=False,
+        context["providers"] = CustomUser.objects.filter( is_private=False,
                                                          user_role__name__in=[UserRole.PROVIDER]). \
                                    exclude(id=self.request.user.id).exclude(state__isnull=True,
                                                                             country__isnull=True).order_by('?')[:3]
@@ -43,7 +43,7 @@ class HomeView(TemplateView):
                 context["bookings"] = Appointment.objects.filter(requestee=self.request.user).order_by('-date_created')[:3]
                 banner = "Logged in as Localite"
             elif self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
-                context["requests"] = UserRoleRequest.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
+                context["requests"] = UserRoleRequest.objects.order_by('requested_on').filter(status__in=[UserRoleRequest.REQUESTED, UserRoleRequest.VERIFIED],
                                                                       ).exclude(user=self.request.user)[:3]
         elif self.request.user.is_anonymous:
             banner = "You Are not logged in "
