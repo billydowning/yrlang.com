@@ -205,14 +205,8 @@ class UserMultipleRoleView(TemplateView):
                 self.request.session['user_role'] = UserRole.LOCALITE
                 url = '/'
         elif self.request.POST.get("role") == UserRole.LANGUAGE_VERIFIER:
-            if self.request.user.phone_number is None \
-                    or self.request.user.country is None \
-                    or self.request.user.state is None:
-                self.request.session['user_role'] = UserRole.LANGUAGE_VERIFIER
-                url = reverse_lazy('profile')
-            else:
-                self.request.session['user_role'] = UserRole.LANGUAGE_VERIFIER
-                url = '/'
+            self.request.session['user_role'] = UserRole.LANGUAGE_VERIFIER
+            url = '/'
         elif self.request.POST.get("role") == UserRole.CLIENT:
             self.request.session['user_role'] = UserRole.CLIENT
             url = '/'
