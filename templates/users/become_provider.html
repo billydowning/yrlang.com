@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+{% load static %}
+ {% block link_css %}
+<link href="{% static 'custome_CSS/become_provider_CSS/style.css' %}" rel="stylesheet">
+{% endblock link_css %}
+
+	{% block content %}
+		<div id="wrapper">
+			<header>
+
+			</header>
+			<div id="content">
+				<section class="earn_section">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+								<div class="earned_text">
+									<h4>BECOME A PROVIDER</h4>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="place_form text-center">
+					<div class="container">
+						<div class="row">
+							<div class="col-12 col-lg-10 m-auto">
+								<h2 class="mb-5 page_title_st">What is a Provider? <span class="bottom_border"></span></h2>
+								<div class="row">
+									<div class="col-12 col-md-7 m-auto">
+										<div class="video_gif">
+											 <iframe id="show" class="chance embed-responsive-item" src="https://www.youtube.com/embed/-9rJnVEwadE"></iframe>
+										</div>
+										<div class="about_video_text">
+											<p>Less like a travel guide/ more like a friend helping you get around (or just get through life) in a new city. </p>
+										</div>
+										<div class="text-center mt-5">
+											<a href="{% url 'request_for_provider' %}" ><button class="btn theme_btn" type="button">GET STARTED </button></a>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</section>
+
+				<section class="details_section">
+					<div class="container">
+						<div class="row">
+							<div class="col-12 col-lg-12 m-auto">
+								<div class="details_texts">
+									<h4 class="page_title_st">Benefits <span class="bottom_line"></span></h4>
+									<ul class="benefit_ul">
+									<li>Earn money while helping others navigate getting around your city</li>
+									<li>Be a global citizen and help share your city’s culture and heritage with others</li>
+									<li>Build your global community one visit at a time without feeling like you need to do the same tour over and over... because every visit (and every traveler) is different</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<section class="what_do">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+									<h4 class="page_title_st">What do Localities do?   <span class="bottom_line"></span></h4>
+							</div>
+						</div>
+						<div class="main_do_text">
+							<p>Imagine you have a good friend visiting that has never been to your city and doesn’t speak the language -how would you try to make their experience the best it could be? Now imagine your friend decided to move to your city for work, a relationship, or maybe just to hangout for 3-4 months, but they don’t know exactly how and where to go to get settled in. </p>
+							<p>This is where a Provider can help, they are just a local friend helping someone move through the communication barriers of getting around, getting settled, and everything involved in just living in a new city. Simple things often become difficult when starting up in a new place, like finding a vet for your pets, getting a haircut or a massage, and even setting up new phone service. </p>
+						</div>
+					</div>
+				</section>
+				<section class="place_form ">
+					<div class="container">
+						<div class="row">
+							<div class="col-12 col-lg-12 m-auto">
+								
+									<h4 class="page_title_st mb-5">How do I become a Provider?<span class="bottom_line"></span></h4>
+								<div class="row">
+									<div class="col-12 col-md-6">
+										<div class="video_gif">
+											 <iframe id="show" class="chance embed-responsive-item" src="https://www.youtube.com/embed/-9rJnVEwadE"></iframe>
+										</div>
+									</div>
+									<div class="col-12 col-md-6">
+										<div class="about_video_text">
+											<p>We believe in connecting those with fluent or native second language proficiency and a love for their city with travelers worldwide so they can make money while doing what they love, where they love to be.  </p>
+										</div>
+										<div class=" mt-5">
+											<a href="{% url 'request_for_provider' %}" ><button class="btn theme_btn" type="button">GET STARTED </button></a>
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+						
+					</div>
+				</section>
+
+				<section class="basic_steps_section">
+					<div class="container">
+						<div class="row">
+							<div class="col-12">
+								<h4 class="page_title_st mb-5">the Basics:<span class="bottom_line"></span></h4>
+								<ul class="steps_listing">
+									<li>
+										<span>1</span>
+										<p>simply sign-up for a user account with us today</p>
+									</li>
+									<li>
+										<span>2</span>
+										<p>once you receive your User Dashboard, follow the prompts to submit a request 
+										(or just click the Become a Provider button)
+										</p>
+									</li>
+									<li>
+										<span>3</span>
+										<p>you will be prompted to complete our online application, review and check-off our Ground Rules doc, upload a short video for every language you would like to verify in (a separate video for each language), and submit.
+										</p>
+									</li>
+									<li>
+										<span>4</span>
+										<p>you will receive a confirmation email with a status update within approx. 1 week of submission (depending on the #s of requests we receive this may be longer). If your video is deemed fluent level or above, you will receive a confirmation email with a link to your  Provider dashboard page and you will be prompted to choose a time to schedule a video chat with someone from our Verification Team. Once you book a video chat, you will receive a confirmation email, or an SMS text based on your notification preferences.
+										</p>
+									</li>
+									<li>
+										<span>2</span>
+										<p>you will receive an SMS notification 1-hour prior to your scheduled video chat. The short video conversation will be about 5 minutes and will be with a language professional in the language you are to be verified in. Once completed, you will receive a status update within the same day via your notification preferences. If approved, you will be sent a welcome email and a link to your updated Provider dashboard, along with a link to our contract document to sign-off on.
+										</p>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</section>
+
+			</div>
+			<footer class="footer">
+				
+			</footer>
+		</div> <!-- wrapper_end -->
+		
+
+
+		
+
+	{% endblock %}

@@ -436,3 +436,9 @@ class CreateRequestForLanguageVerifier(LoginRequiredMixin, UserPassesTestMixin, 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
 
+class BecomeProviderView(TemplateView):
+    template_name = 'users/become_provider.html'
+
+
+class BecomeLocaliteView(TemplateView):
+    template_name = 'users/become_localite.html'
