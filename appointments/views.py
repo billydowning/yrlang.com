@@ -208,7 +208,7 @@ class SaveBookings(LoginRequiredMixin, View):
                 'with start time respectivly with end time ' +  data[0]['start'] + ' '+ data[0]['end'],
                 EMAIL_HOST_USER,
                 [str(booking.requestee.email)],
-                fail_silently=False,
+                fail_silently=True,
             )
 
             for obj in data:
@@ -262,7 +262,7 @@ class SaveAppointments(LoginRequiredMixin, View):
                     'You have booking schedule with ' + str(instance.requestor) + ' on ' + ''+data['request_date'],
                     EMAIL_HOST_USER,
                     [str(instance.requestee.email)],
-                    fail_silently=False,
+                    fail_silently=True,
                 )
 
         if appointment_id:

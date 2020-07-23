@@ -360,7 +360,7 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
                 'Your Request is Approved for ' + req.requested_for.name + '',
                 development_example.EMAIL_HOST_USER,
                 [str(req.user.email)],
-                fail_silently=False,
+                fail_silently=True,
             )
             return HttpResponseRedirect('/')
 
@@ -405,7 +405,7 @@ class VerifyClientRequestView(LoginRequiredMixin, UserPassesTestMixin, View):
             'Your Request has been verified for '+instance.requested_for.name+ '' ,
             development_example.EMAIL_HOST_USER,
             [str(instance.user.email)],
-            fail_silently=False,
+            fail_silently=True,
         )
         return redirect('client_request_detail', pk= instance.id)
 

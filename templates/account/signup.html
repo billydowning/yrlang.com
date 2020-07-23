@@ -30,58 +30,46 @@
                 {% csrf_token %}
                 <div class="form-group">
                     {{ form.email.label }}
-                    {% if form.email.errors %}
-                    <div class="invalid-feedback">
+                    <div class="dd">
                         {% for error in form.email.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
-                    {% else %}
                     {{ form.email }}
-                    {% endif %}
                 </div>
                 <div class="form-group">
                     {{ form.username.label }}
-                    {% if form.username.errors %}
-                    <div class="invalid-feedback">
+                    <div class="dd">
                         {% for error in form.username.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
-                    {% else %}
                     {{ form.username }}
-                    {% endif %}
                 </div>
                 <div class="form-group">
                     {{ form.password1.label }}
-                    {% if form.password1.errors %}
-                    <div class="invalid-feedback">
+                    <div class="dd">
                         {% for error in form.password1.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
-                    {% else %}
                     {{ form.password1 }}
-                    {% endif %}
                 </div>
                 <div class="form-group">
                     {{ form.password2.label }}
-                    {% if form.password2.errors %}
-                    <div class="invalid-feedback">
+                    <div class="dd">
                         {% for error in form.password2.errors %}
                         <span>{{ error }}</span>
                         {% endfor %}
                     </div>
-                    {% else %}
                     {{ form.password2 }}
-                    {% endif %}
                 </div>
                 <div class="form-group">
                     <div class="row">
                         <div class="col-3">
                             {{ form.terms.label }}
                             {% if form.terms.errors %}
-                            <div class="invalid-feedback">
+                            <div class="dd">
                                 {% for error in form.terms.errors %}
                                 <span>{{ error }}</span>
                                 {% endfor %}

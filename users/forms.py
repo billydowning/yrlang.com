@@ -29,7 +29,7 @@ class ClientSignupForm(SignupForm):
             'Your account fo the YR-lang is been created welcome to our family of YR-lang.',
             EMAIL_HOST_USER,
             [str(user.email)],
-            fail_silently=False,
+            fail_silently=True,
         )
         return user
 
