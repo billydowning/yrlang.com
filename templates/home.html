@@ -68,14 +68,14 @@
                 {% if client_checked %}
                     {% if not  pro %}
                         {% if not  provider_request_checked %}
-                        <li> <a href="{% url 'request_for_provider' %}">Join as a Provider</a></li>
+                        <li> <a href="{% url 'become_provider_temp' %}">Join as a Provider</a></li>
                         {% else %}
                         <li> <a >Requested for Provider </a></li>
                         {% endif %}
                     {% endif %}
                     {% if not  loc  %}
                         {% if not   localite_request_checked  %}
-                        <li><a href="{%  url 'request_for_localite' %}" class="">Join as a Localite</a></li>
+                        <li><a href="{%  url 'become_localite_temp' %}" class="">Join as a Localite</a></li>
                          {% else %}
                         <li> <a >Requested for Localite </a></li>
                         {% endif %}
