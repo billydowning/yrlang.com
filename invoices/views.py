@@ -5,19 +5,20 @@ from decimal import Decimal
 import stripe
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import  UserPassesTestMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 from django.views.generic import (CreateView, ListView)
 from paypal.standard.forms import PayPalPaymentsForm
 
+from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 from invoices.models import Invoice
 from users.models import CustomUser
 from .forms import CreateInvoiceForm
 
 
-class InvoiceCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class InvoiceCreateView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, CreateView):
     template_name = "create_invoice.html"
     form_class = CreateInvoiceForm
 
@@ -51,7 +52,7 @@ class Invoices(ListView):
         return query
 
 
-class InvoiceView(LoginRequiredMixin, View):
+class InvoiceView(UserSessionAndLoginCheckMixing, View):
     template_name = "invoice_checkout.html"
     form_class = PayPalPaymentsForm
 

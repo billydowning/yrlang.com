@@ -5,13 +5,15 @@ from django.contrib import messages
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (FormView, TemplateView, )
+
+from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 from users.models import CustomUser, Language, UserRole
 import json
 from .models import *
 from .forms import MessageForm
 
 
-class ContactPersonView(LoginRequiredMixin, FormView):
+class ContactPersonView(UserSessionAndLoginCheckMixing, FormView):
     form_class = MessageForm
     template_name = "create_chatroom.html"
 
@@ -49,7 +51,7 @@ class ContactPersonView(LoginRequiredMixin, FormView):
         return super(ContactPersonView, self).get(request, *args, **kwargs)
 
 
-class ChatRoomView(LoginRequiredMixin, FormView):
+class ChatRoomView(UserSessionAndLoginCheckMixing, FormView):
     form_class = MessageForm
     template_name = "chatroom.html"
 
@@ -90,7 +92,7 @@ class ChatRoomView(LoginRequiredMixin, FormView):
         return redirect('chatroom', room_id=room.id)
 
 
-class InboxView(LoginRequiredMixin, TemplateView):
+class InboxView(UserSessionAndLoginCheckMixing, TemplateView):
     template_name = "inbox.html"
 
     def get_context_data(self, **kwargs):
