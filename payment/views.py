@@ -2,12 +2,13 @@ from django.shortcuts import render, HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView, View, TemplateView, CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import  UserPassesTestMixin
 from django.contrib import messages
 from django.conf import settings
 from django.shortcuts import render, reverse
 from django.urls import reverse_lazy
 
+from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 from .models import PaymentAccount
 from .forms import PaymentAccountForm
 
@@ -18,7 +19,7 @@ import stripe
 
 # Create your views here.
 
-class PaymentProcessView(LoginRequiredMixin, UserPassesTestMixin, FormView):
+class PaymentProcessView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, FormView):
     form_class = PayPalPaymentsForm
     template_name = 'payment/payment_process.html'
 
@@ -66,7 +67,7 @@ class PaymentCancelView(TemplateView):
         return super(PaymentCancelView, self).dispatch( request, *args, **kwargs)
 
 
-class PaymentAccountView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class PaymentAccountView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, CreateView):
     template_name = 'payment/payment_account.html'
     form_class = PaymentAccountForm
 
