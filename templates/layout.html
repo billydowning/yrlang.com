@@ -135,8 +135,7 @@
                     {% is_localite user_role=request.session.user_role as localite_checked %}
                     {% is_language_veri user_role=request.session.user_role as is_language_veri_checked %}
 
-                    <li><a href="{% url 'main:home' %}"> Explore</a></li>
-                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
+                    <li><a href="{% url 'main:our_cities' %}"> Explore</a></li>
 
                     <li class="dropdown">
                         <a href="">Top City</a>
@@ -231,8 +230,7 @@
                     {% endif %}
 
                     {% else %}
-                    <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
-                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
+                    <li><a href="{% url 'main:our_cities' %}">    <span>Expore</span></a></li>
                     <li class="dropdown">
                         <a href="">Top Cities</a>
                         <div class="dropdown-content">
@@ -256,7 +254,7 @@
         </div>
     </nav>
 
-    <div id="mySidenav" class="sidenav" onmouseleave="closeNav()">
+    <div id="mySidenav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
         <div class="mx-5 my-5 overflow-auto">
             <h3 id="word">Namaskar</h3>
