@@ -460,3 +460,7 @@ class BecomeLocaliteView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, Te
 
     def test_func(self):
         return self.request.user.is_client_user(self.request.session.get('user_role'))
+
+
+class AboutUsView(TemplateView):
+    template_name = 'about_us.html'

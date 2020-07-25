@@ -755,6 +755,34 @@ section.basic_steps_section {
 /*22-07-202*/
 
 
+.about_us_page
+{
+min-height: 250px;
+    background: url('../../images/about.jpg');
+    background-size: cover;
+    background-position: bottom;
+}
+.about_us_page .earned_text{height: 250px}
+
+.about_us_content
+{
+  padding: 60px 0;
+}
+.about_us_main_container h4 {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.about_us_main_container p {
+    font-size: 16px;
+}
+.btn_sec button.btn.theme_btn {
+    background: #3dbb3d;
+    color: #fff;
+    width: auto;
+    height: 50px;
+}
+
 
 
 

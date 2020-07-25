@@ -232,6 +232,7 @@
                     {% endif %}
 
                     {% else %}
+                    <li><a href="{% url 'about_us' %}"> About US.</a></li>
                     <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
                     <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
                     <li class="dropdown">
@@ -357,6 +358,7 @@
                     <div style="" class="uk-width-2-3@m uk-width-1-1@s uk-padding uk-container">
 
                         {% block content %}{% endblock %}
+
                     </div>
                 </div>
             </div>
