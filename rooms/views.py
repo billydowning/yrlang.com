@@ -50,7 +50,7 @@ class ContactPersonView(UserSessionAndLoginCheckMixing, FormView):
             return redirect('chatroom', room_id=room.id)
         return super(ContactPersonView, self).get(request, *args, **kwargs)
 
-
+from django.utils import timezone
 class ChatRoomView(UserSessionAndLoginCheckMixing, FormView):
     form_class = MessageForm
     template_name = "chatroom.html"
@@ -75,8 +75,9 @@ class ChatRoomView(UserSessionAndLoginCheckMixing, FormView):
         if request.is_ajax():
             room = Room.objects.get(id=self.kwargs.get('room_id'))
             room_chat_list = Message.objects.filter(room=room).order_by('date_created')
-            chat_lst2 = [{'author': str(chat.author.id), 'date_created': str(chat.date_created.time().strftime ("%H:%M")),
+            chat_lst2 = [{'author': str(chat.author.id), 'date_created': str(chat.date_created.strftime ("%m/%d/%y, %H:%M")),
                           'content': chat.content, 'reciepent': str(chat.reciepent)} for chat in room_chat_list]
+            print(chat_lst2)
             json.dumps(chat_lst2)
             return JsonResponse(data={'room': chat_lst2})
         return super(ChatRoomView, self).get( request, *args, **kwargs)

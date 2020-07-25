@@ -321,7 +321,6 @@ class UpdateProviderAccountForm(ModelForm):
 
 
 class ClientToAdminRequestForm(forms.ModelForm):
-    # videos  =MultiMediaField(min_num=1, max_num=3, max_file_size=1024*1024*1024*5, media_type='video')
 
     class Meta:
         model = UserVideos
@@ -354,10 +353,10 @@ class BaseAdminRequestFormset(BaseModelFormSet):
 
 
 ClientToAdminRequestFormSet = modelformset_factory(UserVideos, formset=BaseAdminRequestFormset,
-                                                   form=ClientToAdminRequestForm, min_num=1, extra=0, max_num=4
+                                                   form=ClientToAdminRequestForm, min_num=1, extra=0,
+                                                   max_num=4
                                                    )
 
-from django.contrib.admin.widgets import AdminSplitDateTime
 from datetime import date
 
 
@@ -373,7 +372,7 @@ class RequestVerificationForm(forms.ModelForm):
         if self.model_object.meeting_on:
             today = date.today()
             difference = today - self.model_object.meeting_on.date()
-            if difference.days == -1:
+            if difference.days == -1 or  difference.days == 0:
                 self.fields.pop('meeting_on')
 
 
