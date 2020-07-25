@@ -7,7 +7,7 @@
 <link rel='stylesheet prefetch'
       href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/af.min.js"></script>-->
 <style type="text/css">
     footer
 {
@@ -146,6 +146,14 @@ $(document).ready(function(){
         };
 
 
+    function convert(str) {
+    var date = new Date(str),
+        mnth = ("0" + (date.getMonth()+1)).slice(-2),
+        day  = ("0" + date.getDate()).slice(-2);
+        hours  = ("0" + date.getHours()).slice(-2);
+        minutes = ("0" + date.getMinutes()).slice(-2);
+    return [ date.getFullYear(), mnth, day, hours+':' +minutes ].join("/");
+};
      function createMessages(data){
 
             var author = data['author'];
@@ -155,7 +163,8 @@ $(document).ready(function(){
             msgTimeTag.className = 'msg_time';
             var pTag = document.createElement('p');
             pTag.textContent = data.content ;
-            msgTimeTag.textContent = data.date_created;
+            var localdate = new Date(data.date_created+' UTC');
+            msgTimeTag.textContent = convert(localdate);
 
 
 
