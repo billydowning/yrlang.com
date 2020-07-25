@@ -201,18 +201,17 @@
                             {% if provider_checked or client_checked %}
                             <a href="{% url 'provider_appointment' %}"><i class="fa fa-calendar"
                                                                           aria-hidden="true"> </i><span>Appointments</span></a>
-
+                            <a href="{% url 'inbox' %}"><i class="fa fa-envelope "
+                                                           aria-hidden="true"> </i> <span>Messages</span></a>
                             {% endif %}
                             {% if localite_checked or client_checked  %}
-                            <a href="{% url 'appointments' %}"><i class="fa fa-calendar" aria-hidden="true"> </i><span>Booking </span></a>
-                            <a href="{% url 'inbox' %}"><i class="fa fa-envelope " aria-hidden="true"> </i> <span>Messages</span></a>
-
+                            <a href="{% url 'appointments' %}"><i class="fa fa-calendar"
+                                                                  aria-hidden="true"> </i><span>Booking </span></a>
                             {% endif %}
 
                             <a href="{% url 'account' %}"><i class="fa fa-user"
                                                              aria-hidden="true"> </i><span>Account</span></a>
-
-                            {% if localite_checked or client_checked   %}
+                            {% if localite_checked or client_checked  %}
                             <a href="{% url 'invoices' %}"><i class="fa fa-files-o" aria-hidden="true"> </i><span>Invoices</span></a>
                             {% endif %}
                             {% if localite_checked %}
@@ -232,7 +231,6 @@
                     {% endif %}
 
                     {% else %}
-                    <li><a href="{% url 'about_us' %}"> About US.</a></li>
                     <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
                     <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
                     <li class="dropdown">
@@ -358,7 +356,6 @@
                     <div style="" class="uk-width-2-3@m uk-width-1-1@s uk-padding uk-container">
 
                         {% block content %}{% endblock %}
-
                     </div>
                 </div>
             </div>

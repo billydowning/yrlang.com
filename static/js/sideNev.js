@@ -8,7 +8,15 @@ function closeNav() {
 
 $(function () {
   count = 0;
-  wordsArray = ["Bonjour", "Guten Tag" , "Hola", "Salve", "Yassas"];
+  wordsArray = [
+  "Bonjour", "Guten Tag",
+   "Hola", "Salve",
+   "Yassas", "Zdravstvuyte",
+   "Konnichiwa", "Olá",
+   "Goddag", "Goedendag",
+   "Shikamoo", "Dzień dobry",
+   "Namaskar", "Merhaba"
+  ];
   setInterval(function () {
     count++;
     $("#word").fadeOut(400, function () {
