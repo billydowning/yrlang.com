@@ -1,22 +1,24 @@
 import datetime
-
+from _collections import defaultdict
 from django.contrib import messages
-from django.shortcuts import redirect, get_object_or_404
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect, get_object_or_404, reverse
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse_lazy
 from django.conf import settings
 from django.views.generic import (DetailView, UpdateView, TemplateView,
                                   FormView, View, ListView, CreateView)
-
+from yrlang.settings import development_example
 from django.urls import reverse_lazy
-#for notification
+from django.core.mail import send_mail
+# for notification
 from webpush import send_user_notification
 from django.forms import formset_factory
 
 from allauth.account.views import SignupView
 import stripe
+from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 
 from .forms import (
     ProfessionalAccountForm,
@@ -27,14 +29,15 @@ from .forms import (
     ProfessionalSignupForm,
     ProviderAccountForm,
     UpdateProviderAccountForm,
-    ClientToAdminRequestForm,
+    RequestVerificationForm,
     ClientToAdminRequestFormSet
+
 )
 from .models import CustomUser, UserRole, UserRoleRequest, UserVideos
 from payment.models import PaymentAccount
 
 
-class ProfileView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class ProfileView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, UpdateView):
     success_url = '/'
 
     def test_func(self):
@@ -87,7 +90,7 @@ class ProfileView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class AccountView(LoginRequiredMixin, UpdateView):
+class AccountView(UserSessionAndLoginCheckMixing, UpdateView):
     success_url = '/'
 
     def dispatch(self, request, *args, **kwargs):
@@ -103,7 +106,9 @@ class AccountView(LoginRequiredMixin, UpdateView):
 
     def get_template_names(self):
         current_user = CustomUser.get(self.request.user.id)
-        if self.request.user.is_client_user(self.request.session.get('user_role')):
+        if self.request.user.is_client_user(
+                self.request.session.get('user_role')) or self.request.user.is_language_verifier_user(
+            self.request.session.get('user_role')):
             self.template_name = "account.html"
             return self.template_name
         elif self.request.user.is_localite_user(self.request.session.get('user_role')):
@@ -116,7 +121,9 @@ class AccountView(LoginRequiredMixin, UpdateView):
     def get_form(self, form_class=None):
         self.request.session['role_flag'] = False
         current_user = CustomUser.get(self.request.user.id)
-        if self.request.user.is_client_user(self.request.session.get('user_role')):
+        if self.request.user.is_client_user(
+                self.request.session.get('user_role')) or self.request.user.is_language_verifier_user(
+            self.request.session.get('user_role')):
             if self.request.method == 'POST':
                 self.form_class = UpdateAccountForm(
                     instance=current_user,
@@ -163,7 +170,7 @@ class AccountView(LoginRequiredMixin, UpdateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class UserDetailView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DetailView):
     template_name = 'users/user_detail.html'
     model = CustomUser
     context_object_name = 'user'
@@ -203,14 +210,8 @@ class UserMultipleRoleView(TemplateView):
                 self.request.session['user_role'] = UserRole.LOCALITE
                 url = '/'
         elif self.request.POST.get("role") == UserRole.LANGUAGE_VERIFIER:
-            if self.request.user.phone_number is None \
-                    or self.request.user.country is None \
-                    or self.request.user.state is None:
-                self.request.session['user_role'] = UserRole.LANGUAGE_VERIFIER
-                url = reverse_lazy('profile')
-            else:
-                self.request.session['user_role'] = UserRole.LANGUAGE_VERIFIER
-                url = '/'
+            self.request.session['user_role'] = UserRole.LANGUAGE_VERIFIER
+            url = '/'
         elif self.request.POST.get("role") == UserRole.CLIENT:
             self.request.session['user_role'] = UserRole.CLIENT
             url = '/'
@@ -233,7 +234,7 @@ class ProfessionalSignupView(SignupView):
     template_name = 'account/professional_signup.html'
 
 
-class ProviderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class ProviderDetailView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DetailView):
     template_name = 'users/provider_detail.html'
     model = CustomUser
     context_object_name = 'current_user'
@@ -245,7 +246,7 @@ class ProviderDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return self.model.objects.filter(user_role__name=UserRole.PROVIDER)
 
 
-class CreateRequestForProvider(LoginRequiredMixin, UserPassesTestMixin, FormView):
+class CreateRequestForProvider(UserSessionAndLoginCheckMixing, UserPassesTestMixin, FormView):
     form_class = ClientToAdminRequestFormSet
     template_name = 'request_to_admin.html'
 
@@ -273,7 +274,7 @@ class CreateRequestForProvider(LoginRequiredMixin, UserPassesTestMixin, FormView
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class CreateRequestForLocalite(LoginRequiredMixin, UserPassesTestMixin, FormView):
+class CreateRequestForLocalite(UserSessionAndLoginCheckMixing, UserPassesTestMixin, FormView):
     form_class = ClientToAdminRequestFormSet
     template_name = 'request_to_admin.html'
 
@@ -301,31 +302,33 @@ class CreateRequestForLocalite(LoginRequiredMixin, UserPassesTestMixin, FormView
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class UserRequestListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+class UserRequestListView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, ListView):
     template_name = 'client_request_list.html'
     model = UserRoleRequest
     context_object_name = 'requests'
 
     def test_func(self):
-        return self.request.user.is_staff or self.request.user.is_language_verifier_user(self.request.session.get('user_role'))
+        return self.request.user.is_staff or self.request.user.is_language_verifier_user(
+            self.request.session.get('user_role'))
 
     def get_queryset(self):
         if self.request.user.is_staff:
-            return self.model.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
-                                                                      requested_for__name=UserRole.LANGUAGE_VERIFIER)
+            return None
         else:
-            return self.model.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
-                                                                      requested_for__name__in=[UserRole.LOCALITE, UserRole.PROVIDER]).exclude(user=self.request.user)
+            return self.model.objects.order_by('requested_on').filter(
+                status__in=[UserRoleRequest.REQUESTED, UserRoleRequest.VERIFIED, UserRoleRequest.APPROVED],
+            ).exclude(user=self.request.user)
 
 
-class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class AprovedClientRequestView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, UpdateView):
     template_name = 'client_request_detail.html'
     model = UserRoleRequest
-    fields = ['reason']
+    form_class = RequestVerificationForm
     context_object_name = 'req'
 
     def test_func(self):
-        return  self.request.user.is_staff or self.request.user.is_language_verifier_user(self.request.session.get('user_role'))
+        return self.request.user.is_staff or self.request.user.is_language_verifier_user(
+            self.request.session.get('user_role'))
 
     def form_valid(self, form):
         req = self.get_object()
@@ -336,8 +339,10 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
             messages.success(self.request, "Request Canceled successfully!")
             return HttpResponseRedirect('/')
         else:
+            meeting_date = form.cleaned_data.get('meeting_on')
             req.status = UserRoleRequest.APPROVED
             req.approved_on = datetime.datetime.now()
+            req.meeting_on = meeting_date
             req.save()
             if req.requested_for.name == UserRole.PROVIDER:
                 req.user.user_role.add(req.requested_for)
@@ -348,27 +353,46 @@ class AprovedClientRequestView(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
             messages.success(self.request, "Request Approved successfully!")
             payload_data = {
                 "head": "YR-lang",
-                "body": "Your Request is Accepted For " +  req.requested_for.name,
+                "body": "Your Request is Accepted For " + req.requested_for.name,
                 "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
             }
             send_user_notification(user=req.user, payload=payload_data, ttl=100)
+            send_mail(
+                'Request Approved for ' + req.requested_for.name,
+                'Your Request is Approved for ' + req.requested_for.name + '',
+                development_example.EMAIL_HOST_USER,
+                [str(req.user.email)],
+                fail_silently=True,
+            )
             return HttpResponseRedirect('/')
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(AprovedClientRequestView, self).get_form_kwargs(**kwargs)
+        kwargs['model_object'] = self.get_object()
+        return kwargs
 
     def get_context_data(self, **kwargs):
         context = super(AprovedClientRequestView, self).get_context_data(**kwargs)
         content_type_obj = ContentType.objects.get_for_model(UserRoleRequest)
         obj = self.get_object()
         context['videos'] = UserVideos.objects.filter(object_id=obj.id, content_type=content_type_obj)
+        results = UserRoleRequest.objects.values('meeting_on').all().exclude(id=obj.id).exclude(meeting_on=None)
+        date_dict = defaultdict(list)
+        for date_l in results:
+            date_dict[str(date_l['meeting_on'].date().strftime("%Y.%m.%d"))].append(
+                str(date_l['meeting_on'].time().strftime("%H:%M")))
+        context['disabled_dates'] = dict(date_dict)
         return context
 
 
-class VerifyClientRequestView(LoginRequiredMixin, UserPassesTestMixin, View):
+class VerifyClientRequestView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, View):
 
     def test_func(self):
-        return self.request.user.is_staff or self.request.user.is_language_verifier_user(self.request.session.get('user_role'))
+        return self.request.user.is_staff or self.request.user.is_language_verifier_user(
+            self.request.session.get('user_role'))
 
     def get(self, request, *args, **kwargs):
         instance = get_object_or_404(UserRoleRequest, pk=self.kwargs.get('id'))
@@ -380,7 +404,14 @@ class VerifyClientRequestView(LoginRequiredMixin, UserPassesTestMixin, View):
             "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
         }
         send_user_notification(user=instance.user, payload=payload_data, ttl=100)
-        return redirect('client_request_detail', pk= instance.id)
+        send_mail(
+            'Verification mail for ' + instance.requested_for.name + ' request',
+            'Your Request has been verified for ' + instance.requested_for.name + '',
+            development_example.EMAIL_HOST_USER,
+            [str(instance.user.email)],
+            fail_silently=True,
+        )
+        return redirect('client_request_detail', pk=instance.id)
 
 
 class PublicProfile(DetailView):
@@ -388,7 +419,8 @@ class PublicProfile(DetailView):
     template_name = 'users/public_profile.html'
     context_object_name = 'user'
 
-class CreateRequestForLanguageVerifier(LoginRequiredMixin, UserPassesTestMixin, FormView):
+
+class CreateRequestForLanguageVerifier(UserSessionAndLoginCheckMixing, UserPassesTestMixin, FormView):
     form_class = ClientToAdminRequestFormSet
     template_name = 'request_to_admin.html'
 
@@ -415,3 +447,20 @@ class CreateRequestForLanguageVerifier(LoginRequiredMixin, UserPassesTestMixin, 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
 
+
+class BecomeProviderView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, TemplateView):
+    template_name = 'users/become_provider.html'
+
+    def test_func(self):
+        return self.request.user.is_client_user(self.request.session.get('user_role'))
+
+
+class BecomeLocaliteView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, TemplateView):
+    template_name = 'users/become_localite.html'
+
+    def test_func(self):
+        return self.request.user.is_client_user(self.request.session.get('user_role'))
+
+
+class AboutUsView(TemplateView):
+    template_name = 'about_us.html'

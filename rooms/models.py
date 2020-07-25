@@ -1,17 +1,18 @@
 from django.db import models
-from users.models import CustomUser
+from users.models import CustomUser, UserRole
 
 class Room(models.Model):
 	creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="creator")
 	partner = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="partner")
+	created_for = models.ForeignKey(UserRole, on_delete=models.CASCADE, related_name='room_for', null=True, blank= True)
 	date_created = models.DateField(auto_now=True)
 
 	def __str__(self):
 		return self.creator.email + self.partner.email
 
 	@classmethod
-	def create(cls, creator, partner):
-		return cls.objects.create(creator=creator, partner=partner)
+	def create(cls, creator, partner, created_for):
+		return cls.objects.create(creator=creator, partner=partner, created_for= created_for)
 
 class Message(models.Model):
 	room = models.ForeignKey(Room, on_delete=models.CASCADE)

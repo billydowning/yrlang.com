@@ -5,37 +5,53 @@ from django.contrib import messages
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import (FormView, TemplateView, )
-from users.models import CustomUser, Language
+
+from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
+from users.models import CustomUser, Language, UserRole
 import json
 from .models import *
 from .forms import MessageForm
 
 
-class ContactPersonView(LoginRequiredMixin, FormView):
+class ContactPersonView(UserSessionAndLoginCheckMixing, FormView):
     form_class = MessageForm
     template_name = "create_chatroom.html"
 
     def form_valid(self, form):
         message = form.save(commit=False)
+        if self.kwargs.get('user_role'):
+            role = UserRole.objects.get(name=self.kwargs.get('user_role'))
+        else:
+            if self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
+                role = UserRole.objects.get(name=UserRole.LANGUAGE_VERIFIER)
+            else:
+                role = UserRole.objects.get(name=UserRole.LOCALITE)
         current_user = CustomUser.get(self.request.user.id)
         partner = CustomUser.get(self.kwargs.get('partner_id'))
-        room = Room.create(current_user, partner)
+        room = Room.create(current_user, partner, role)
         message.create(room, current_user, partner)
         return redirect("chatroom", room_id=room.id)
 
     def get(self, request, *args, **kwargs):
         current_user = CustomUser.get(request.user.id)
         partner = CustomUser.get(kwargs.get('partner_id'))
-        if Room.objects.filter(creator=current_user, partner=partner).exists():
+        if self.kwargs.get('user_role'):
+            role = UserRole.objects.get(name=self.kwargs.get('user_role'))
+        else:
+            if self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
+                role = UserRole.objects.get(name=UserRole.LANGUAGE_VERIFIER)
+            else:
+                role = UserRole.objects.get(name=UserRole.LOCALITE)
+        if Room.objects.filter(creator=current_user, partner=partner, created_for=role).exists():
             room = Room.objects.filter(creator=current_user, partner=partner).first()
             return redirect('chatroom', room_id=room.id)
-        elif Room.objects.filter(creator=partner, partner=current_user).exists():
+        elif Room.objects.filter(creator=partner, partner=current_user, created_for=role).exists():
             room = Room.objects.filter(creator=partner, partner=current_user).first()
             return redirect('chatroom', room_id=room.id)
         return super(ContactPersonView, self).get(request, *args, **kwargs)
 
-
-class ChatRoomView(LoginRequiredMixin, FormView):
+from django.utils import timezone
+class ChatRoomView(UserSessionAndLoginCheckMixing, FormView):
     form_class = MessageForm
     template_name = "chatroom.html"
 
@@ -59,8 +75,9 @@ class ChatRoomView(LoginRequiredMixin, FormView):
         if request.is_ajax():
             room = Room.objects.get(id=self.kwargs.get('room_id'))
             room_chat_list = Message.objects.filter(room=room).order_by('date_created')
-            chat_lst2 = [{'author': str(chat.author.id), 'date_created': str(chat.date_created.time().strftime ("%H:%M")),
+            chat_lst2 = [{'author': str(chat.author.id), 'date_created': str(chat.date_created.strftime ("%m/%d/%y, %H:%M")),
                           'content': chat.content, 'reciepent': str(chat.reciepent)} for chat in room_chat_list]
+            print(chat_lst2)
             json.dumps(chat_lst2)
             return JsonResponse(data={'room': chat_lst2})
         return super(ChatRoomView, self).get( request, *args, **kwargs)
@@ -76,7 +93,7 @@ class ChatRoomView(LoginRequiredMixin, FormView):
         return redirect('chatroom', room_id=room.id)
 
 
-class InboxView(LoginRequiredMixin, TemplateView):
+class InboxView(UserSessionAndLoginCheckMixing, TemplateView):
     template_name = "inbox.html"
 
     def get_context_data(self, **kwargs):

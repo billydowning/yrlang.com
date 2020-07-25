@@ -8,9 +8,10 @@ from .forms import CreatePostForm
 from .models import BlogPostPage
 from users.models import CustomUser
 from django.views.generic import (CreateView, ListView, UpdateView, DeleteView)
+from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 
 
-class PostCreateView(LoginRequiredMixin, CreateView):
+class PostCreateView(UserSessionAndLoginCheckMixing, CreateView):
     template_name = "create_post.html"
     form_class = CreatePostForm
 
@@ -26,7 +27,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class PostView(LoginRequiredMixin, ListView):
+class PostView(UserSessionAndLoginCheckMixing, ListView):
     template_name = "post.html"
     context_object_name = 'post'
 
@@ -34,7 +35,7 @@ class PostView(LoginRequiredMixin, ListView):
         return BlogPostPage.objects.get(id=self.kwargs.get('post_id'))
 
 
-class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class PostDelete(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DeleteView):
     model = BlogPostPage
     success_url = "/"
 
@@ -49,7 +50,7 @@ class PostDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.post(request, *args, **kwargs)
 
 
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class PostUpdateView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, UpdateView):
     template_name = "create_post.html"
     form_class = CreatePostForm
     model = BlogPostPage

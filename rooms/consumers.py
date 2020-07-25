@@ -26,7 +26,7 @@ class ChatConsumer(WebsocketConsumer):
         return {
             'author': message.author.id,
             'content': message.content,
-            'date_created': str(message.date_created.time().strftime ("%H:%M"))
+            'date_created': str(message.date_created.strftime ("%m/%d/%y, %H:%M"))
 
         }
 

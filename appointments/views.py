@@ -12,9 +12,13 @@ from django.views.generic import ListView, DetailView, DeleteView
 from .forms import ApproveProviderAppointmentForm, ProviderAppointmentCreateForm
 from .models import *
 from webpush import send_user_notification
+from django.core.mail import send_mail
+from yrlang.settings.development_example import EMAIL_HOST_USER
+from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 
 
-class AppoitnemtRequestView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+
+class AppoitnemtRequestView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DetailView):
     model = CustomUser
     template_name = 'request_appointment.html'
 
@@ -24,7 +28,7 @@ class AppoitnemtRequestView(LoginRequiredMixin, UserPassesTestMixin, DetailView)
             return True
 
 
-class AppointmentView(LoginRequiredMixin,UserPassesTestMixin, ListView):
+class AppointmentView(UserSessionAndLoginCheckMixing,UserPassesTestMixin, ListView):
     template_name = "appointments.html"
     context_object_name = 'bookings'
 
@@ -43,7 +47,7 @@ class AppointmentView(LoginRequiredMixin,UserPassesTestMixin, ListView):
         return query
 
 
-class NewAppointmentView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class NewAppointmentView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DetailView):
     model = Appointment
     template_name = "create_appointment.html"
 
@@ -56,12 +60,12 @@ class NewAppointmentView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
         return context
 
 
-class AppointmentDetailView(LoginRequiredMixin, DetailView):
+class AppointmentDetailView(UserSessionAndLoginCheckMixing, DetailView):
     model = Appointment
     template_name = 'appointment_detail.html'
 
 
-class ProviderAppointmentDetailView(LoginRequiredMixin, DetailView):
+class ProviderAppointmentDetailView(UserSessionAndLoginCheckMixing, DetailView):
     model = ProviderAppointment
     template_name = 'appointment_detail.html'
     context_object_name = 'appointment'
@@ -72,7 +76,7 @@ class ProviderAppointmentDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
-class ProviderAppointmentCreateView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
+class ProviderAppointmentCreateView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DetailView):
     model = CustomUser
     template_name = 'provider_create_appointment.html'
 
@@ -87,7 +91,7 @@ class ProviderAppointmentCreateView(LoginRequiredMixin, UserPassesTestMixin, Det
         return context
 
 
-class ProviderAppointmentList(LoginRequiredMixin, UserPassesTestMixin, ListView):
+class ProviderAppointmentList(UserSessionAndLoginCheckMixing, UserPassesTestMixin, ListView):
     template_name = "provider_appointment_list.html"
     context_object_name = 'appointments'
 
@@ -108,7 +112,7 @@ class ProviderAppointmentList(LoginRequiredMixin, UserPassesTestMixin, ListView)
         return query
 
 
-class EditProviderAppointmentView(LoginRequiredMixin, UserPassesTestMixin, View):
+class EditProviderAppointmentView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, View):
     template_name = 'provider_update_appointment.html'
     appointment = None
     flag = None
@@ -164,7 +168,7 @@ class EditProviderAppointmentView(LoginRequiredMixin, UserPassesTestMixin, View)
         return JsonResponse({'url': url})
 
 
-class CancelAppointmnetView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class CancelAppointmnetView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DeleteView):
     model = ProviderAppointment
     success_url = reverse_lazy('provider_appointment')
 
@@ -181,7 +185,7 @@ class CancelAppointmnetView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
         return self.post(request, *args, **kwargs)
 
 
-class SaveBookings(LoginRequiredMixin, View):
+class SaveBookings(UserSessionAndLoginCheckMixing, View):
 
     def post(self, request, *args, **kwargs2):
         localite = request.POST.get('localite', None)
@@ -199,6 +203,14 @@ class SaveBookings(LoginRequiredMixin, View):
                 "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
             }
             send_user_notification(user=booking.requestee, payload=payload_data, ttl=100)
+            send_mail(
+                'Booking scheduled on ' + data[0]['date'],
+                'You have booking schedule with '+ str(booking.requestor) + ' on '+ data[0]['date']+
+                'with start time respectivly with end time ' +  data[0]['start'] + ' '+ data[0]['end'],
+                EMAIL_HOST_USER,
+                [str(booking.requestee.email)],
+                fail_silently=True,
+            )
 
             for obj in data:
                 BookingDates.objects.create(booking=booking, date=obj['date'], start_time=obj['start'], end_time=obj['end'])
@@ -225,7 +237,7 @@ class SaveBookings(LoginRequiredMixin, View):
         return JsonResponse({'url': url})
 
 
-class SaveAppointments(LoginRequiredMixin, View):
+class SaveAppointments(UserSessionAndLoginCheckMixing, View):
 
     def post(self, request, *args, **kwargs2):
         provider = request.POST.get('provider', None)
@@ -246,7 +258,13 @@ class SaveAppointments(LoginRequiredMixin, View):
                 }
                 send_user_notification(user=instance.requestee, payload=payload_data, ttl=100)
 
-
+                send_mail(
+                    'Appointment scheduled on '+ data['request_date'],
+                    'You have booking schedule with ' + str(instance.requestor) + ' on ' + ''+data['request_date'],
+                    EMAIL_HOST_USER,
+                    [str(instance.requestee.email)],
+                    fail_silently=True,
+                )
 
         if appointment_id:
             appointment = ProviderAppointment.objects.get(id=appointment_id)

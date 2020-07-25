@@ -46,7 +46,11 @@
 
 
                                     <li class="li_flex">
+                                         {% if req.status == 'approved' %}
+                                        <a href="{{ req.get_detail }}"> <button class="btn theme_btn" type="button">Update</button></a>
+                                        {% else %}
                                         <a href="{{ req.get_detail }}"> <button class="btn theme_btn" type="button">Detail</button></a>
+                                        {% endif %}
                                     </li>
 
                                 </ul>

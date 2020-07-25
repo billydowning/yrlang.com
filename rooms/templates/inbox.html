@@ -7,11 +7,16 @@
             {% for msg in unread_messages %}
             <a href="{% url 'chatroom' msg.message.room.id %}">
                 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m uk-padding-small msg_inbox">
-
+                    {% if  msg.chat_partner.profile_image %}
+                    <img class="uk-border-circle uk-margin-small uk-padding-remove" width="25" height="25" src="{{ msg.chat_partner.profile_image.url }}">
+                    {% else %}
                     <img class="uk-border-circle uk-margin-small uk-padding-remove" width="25" height="25" src="">
+                    {% endif %}
                    <div class="msg_texts">
+
                         <p class="uk-padding-remove use_name">{{ msg.chat_partner.username }}</p>
                         <p>{{ msg.message.content }}</p>
+                       <p><font color="green">{{ msg.message.room.created_for }} Chat</font></p>
                         <p class="date_time">{{ msg.message.date_created }}</p>
                        <div class="uk-card-badge uk-label">New</div>
                    </div>
@@ -22,10 +27,16 @@
         {% for msg in read_messages %}
             <a href="{% url 'chatroom' msg.message.room.id %}">
                 <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m uk-padding-small msg_inbox">
+                    {% if  msg.chat_partner.profile_image %}
+                    <img class="uk-border-circle uk-margin-small uk-padding-remove" width="25" height="25" src="{{ msg.chat_partner.profile_image.url }}">
+                    {% else %}
                     <img class="uk-border-circle uk-margin-small uk-padding-remove" width="25" height="25" src="">
+                    {% endif %}
+
                     <div class="msg_texts">
                         <p class="uk-padding-remove use_name">{{ msg.chat_partner.username }}</p>
                         <p>{{ msg.message.content }}</p>
+                        <p><font color="green"> {{ msg.message.room.created_for }} Chat</font></p>
                         <p class="date_time">{{ msg.message.date_created }}</p>
                     </div>
                     
