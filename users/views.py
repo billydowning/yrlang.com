@@ -439,8 +439,6 @@ class CreateRequestForLanguageVerifier(UserSessionAndLoginCheckMixing, UserPasse
             form_instance = frm.save(commit=False)
             form_instance.content_object = instance
             form_instance.save()
-        # for each in form.cleaned_data['videos']:
-        #     UserVideos.objects.create(content_object=instance, files=each)
         messages.success(self.request, "Your Request For Become Language Verifier sent Successfully !")
         return HttpResponseRedirect('/')
 

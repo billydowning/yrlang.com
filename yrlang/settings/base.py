@@ -38,6 +38,9 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 LOGIN_REDIRECT_URL = '/'
 ACCOUNT_ADAPTER = 'yrlang.adapter.MyAccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'yrlang.adapter.MySocialAccountAdepter'
+LOGOUT_REDIRECT_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+WAGTAIL_FRONTEND_LOGIN_URL = '/accounts/login/'
 # ACCOUNT_FORMS = {'signup': 'users.forms.ClientSignupForm'}
 # Application definition
 

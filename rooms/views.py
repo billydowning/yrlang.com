@@ -77,7 +77,7 @@ class ChatRoomView(UserSessionAndLoginCheckMixing, FormView):
             room_chat_list = Message.objects.filter(room=room).order_by('date_created')
             chat_lst2 = [{'author': str(chat.author.id), 'date_created': str(chat.date_created.strftime ("%m/%d/%y, %H:%M")),
                           'content': chat.content, 'reciepent': str(chat.reciepent)} for chat in room_chat_list]
-            print(chat_lst2)
+
             json.dumps(chat_lst2)
             return JsonResponse(data={'room': chat_lst2})
         return super(ChatRoomView, self).get( request, *args, **kwargs)
