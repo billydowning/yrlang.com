@@ -5,9 +5,6 @@
 {% endblock link_css %}
 
 	{% block content %}
-
-
-
 				<section class="earn_section">
 					<div class="container">
 						<div class="row">
@@ -27,7 +24,7 @@
 								<div class="row">
 									<div class="col-12 col-md-7 m-auto">
 										<div class="video_gif">
-											 <iframe id="show" class="chance embed-responsive-item" src="https://www.youtube.com/embed/-9rJnVEwadE"></iframe>
+											 <iframe id="show" class="chance embed-responsive-item" src="{% static 'videos/Become_a_Localite.mp4' %}"></iframe>
 										</div>
 										<div class="about_video_text">
 											<p>Less like a travel guide/ more like a friend helping you get around (or just get through life) in a new city. </p>
@@ -82,7 +79,7 @@
 								<div class="row">
 									<div class="col-12 col-md-6">
 										<div class="video_gif">
-											 <iframe id="show" class="chance embed-responsive-item" src="https://www.youtube.com/embed/-9rJnVEwadE"></iframe>
+											 <iframe id="show" class="chance embed-responsive-item" src="{% static 'videos/Become_a_Localite.mp4' %}"></iframe>
 										</div>
 									</div>
 									<div class="col-12 col-md-6">
@@ -137,13 +134,4 @@
 						</div>
 					</div>
 				</section>
-
-
-
-
-		
-
-
-		
-
 	{% endblock %}
