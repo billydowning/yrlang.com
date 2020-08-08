@@ -14,4 +14,5 @@ urlpatterns = [
     path('localites/', views.LocaliteListsView.as_view(), name='localite_list'),
     path('our-cities/<int:pk>/', views.OurCities.as_view(), name='our_cities'),
     path('our-cities/', views.OurCities.as_view(), name='our_cities'),
+    path('blog-post/', views.BlogPostView.as_view(), name='blog-post'),
 ]

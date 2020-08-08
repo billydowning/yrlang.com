@@ -7,7 +7,7 @@ from django.db.models import Q
 
 from .constant import *
 from users.models import CustomUser, UserRole, UserRoleRequest
-from blogpost.models import BlogPostPage, CityPage
+from blogpost.models import BlogPostPage, CityPage, BruckePage
 from appointments.models import Appointment, ProviderAppointment
 
 
@@ -132,6 +132,11 @@ class LocaliteListsView(ListView):
 
 class IndexView(TemplateView):
     template_name = 'explore.html'
+
+
+class BlogPostView(TemplateView):
+    template_name = 'blogpost/brucke_page.html'
+    queryset = BruckePage.objects.all().order_by("?")[:3]
 
 
 class OurCities(DetailView):
