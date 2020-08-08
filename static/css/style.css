@@ -1,6 +1,6 @@
 @charset "utf-8";
 /* CSS Document */
-
+@import url('https://fonts.googleapis.com/css2?family=Questrial&display=swap');
 
 /*font-family: 'Josefin Sans', sans-serif;*/
 
@@ -15,6 +15,7 @@ body {
     background-color:#fff;
     overflow-x: hidden;
     color: #000;
+    font-family: 'Questrial', sans-serif !important;
 }
 *, *:after, *:before {
     margin: 0;
@@ -118,13 +119,13 @@ button:focus {
 }
 .main_btn {
     background: transparent;
-    color: #3dbb3d;
+    color: #6ac241;
     text-transform: uppercase;
     font-weight: 600;
     padding: 8px 23px;
     outline: none !important;
     box-shadow: none !important;
-    border:1px solid #3dbb3d;
+    border:1px solid #6ac241;
 }
 .white_btn
 {
@@ -136,8 +137,8 @@ button:focus {
     letter-spacing: 1px;
     transition: 0.5s;
     color: #fff;
-    background: #3dbb3d;
-    border:1px solid #3dbb3d
+    background: #6ac241;
+    border:1px solid #6ac241
 }
 .why_us_section {
     background: #f2f2f2;
@@ -159,7 +160,7 @@ span.bottom_border {
     display: block;
     width: 60px;
     height: 4px;
-    background: #3dbb3d;
+    background: #6ac241;
     margin: 0 auto;
     margin-top: 11px;
 }
@@ -168,7 +169,7 @@ span.bottom_border {
     padding: 80px 0;
 }
 .solutions_div h5 {
-    color: #3dbb3d;
+    color: #6ac241;
 }
 .solutions_div {
     position: relative;
@@ -235,7 +236,7 @@ span.bottom_line {
     display: block;
     width: 60px;
     height: 4px;
-    background: #3dbb3d;
+    background: #6ac241;
     /* margin: 0 auto; */
     margin-top: 11px;
 }
@@ -257,17 +258,17 @@ span.bottom_line {
 }
 .start_inner:hover
 {
-    border-color: #3dbb3d;
+    border-color: #6ac241;
     transition: 0.5s
 }
 p.blog_count {
     display: inline-block;
     width: 30px;
     height: 30px;
-    border: 1px solid #3dbb3d;
+    border: 1px solid #6ac241;
     text-align: center;
     line-height: 30px;
-    background: #3dbb3d;
+    background: #6ac241;
     color: #fff;
     font-weight: 600;
 }
@@ -275,7 +276,7 @@ p.blog_count {
 {
     display: block;
     text-align: right;
-    color: #3dbb3d !important;
+    color: #6ac241 !important;
     font-weight: 600;
     text-decoration: underline;;
 }
@@ -296,7 +297,7 @@ p.blog_count {
 }
 /*.blog_img 
 {
-    border: 1px solid #3dbb3d;
+    border: 1px solid #6ac241;
     padding: 20px;
 }*/
 .blog_outer_section
@@ -371,7 +372,7 @@ background: rgba(0,0,0,0.8);
 }
 .why_yr_blog h4 {
     font-size: 20px;
-    color: #3dbb3d;
+    color: #6ac241;
     font-weight: 600;
 }
 .our_solution_section {
@@ -640,7 +641,7 @@ section.our_solution_section h4 {
 }
 ul.lading_links li:hover a
 {
-    color: #3dbb3d;
+    color: #6ac241;
 }
 .bottom_blog_design .blog_img {
     background: #fff;

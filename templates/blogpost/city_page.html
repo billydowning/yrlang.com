@@ -32,6 +32,10 @@ display:inline;
 <script src="{% static 'calender_assets/jquery.min.js' %}"></script>
 <script src="{% static 'calender_assets/fullcalendar.min.js' %}"></script>
 
+
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
 <script>
 $(document).ready(function() {
     var initialTimeZone = 'UTC';
@@ -142,6 +146,21 @@ $(document).ready(function() {
         initialTimeZone = this.value
         $('#calendar').fullCalendar('option', 'timezone', this.value || false);
       });
+
+
+
+      $('.gallary_images').slick({
+          infinite: true,
+          slidesToShow: 1,
+          arrows: false,
+          slidesToScroll: 1,
+          margin:0,
+          autoplay:true,
+          autoplaySpeed:4000,
+          fade:true
+        });
+
+
   });
 </script>
 <style>
@@ -168,7 +187,7 @@ $(document).ready(function() {
         <div class="row">
             <div class="col-12">
 
-                <h1 class="page_main_header">{{ page.title }}</h1>
+                <h1 class="page_main_header galarry_header">{{ page.title }}</h1>
 
                 {% if page.introduction %}
                 <div class="intro_div">
@@ -179,12 +198,12 @@ $(document).ready(function() {
                 {% endif %}
             </div>
         </div>
-
+</div></div>
         {% with images=page.gallery_image.all %}
         {% if images %}
-        <div class="row w-100">
-            <div class="col-12">
-                <h3 class="gallary_title">Gallery</h3>
+       <div class="container-fluid">
+             <div class="row ">
+            <div class="col-12 pl-0 pr-0">
                 <div class="gallary_images">
                     {% for pictures in images %}
                     {% image pictures.image fill-320x300 %}
@@ -192,6 +211,7 @@ $(document).ready(function() {
                 </div>
             </div>
         </div>
+       </div>
         {% endif %}
         {% endwith %}
 
@@ -204,7 +224,8 @@ $(document).ready(function() {
     </div>
         {% endif %}
 
-
+<div class="container mt-5">
+<div class="">
         <div class="row w-100">
             <div class="col-12">
             {% with language=page.language.all %}

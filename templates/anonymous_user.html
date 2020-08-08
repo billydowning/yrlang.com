@@ -22,7 +22,8 @@
 		<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
 		<!-- custom styles-->
 		<link href="{% static 'css/style.css' %}" rel="stylesheet">
-
+		<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+		
 	</head>
 	<body>
 		<div id="wrapper">
@@ -31,13 +32,99 @@
 			</header>
 			<div id="content">
 				<!-- slider section -->
-					<section class="slider_section">
-						<div class="container">
-							<div class="row">
-								<div class="col-12 col-lg-10 m-auto">
-									<div class="slider_text">
-										<h4>Never be a stranger in a new city again. Live more comfortably, like a local!</h4>
-										<button class="btn main_btn white_btn" type="button">GET STARTED </button>
+					<section class="home_slider">
+						<div class="slider_section" style="background: url({% static 'images/city_banner.jpg' %});">
+							<div class="slider_right_form">
+								<div class="container">
+									<div class="row">
+										<div class="col-12 col-lg-6 ml-auto">
+												<div class="slider_inner_form">
+													<h2>Earn Money as an Arbnb Host</h2>
+													<p>Tell us a little about your place</p>
+													<form>
+														<div class="row">
+															<div class="col-12">
+																<div class="form-group">
+																	<input type="text" class="form-control" placeholder="Enter City" name="">
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-12 col-md-6">
+																<div class="form-group">
+																	<select class="form-control custom_select">
+																		<option>Enter Place</option>
+																		<option> Place</option>
+																	</select>
+																</div>
+															</div>
+															<div class="col-12 col-md-6">
+																<div class="form-group">
+																	<select class="form-control custom_select">
+																		<option>4 August</option>
+																		<option> Place</option>
+																	</select>
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-12 col-md-12">
+																<div class="right_form_btn">
+																	<button class="btn theme_btn" type="button">Get Started</button>
+																</div>
+															</div>
+														</div>
+													</form>
+												</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="slider_section" style="background: url({% static 'images/city_banner.jpg' %});">
+							<div class="slider_right_form">
+								<div class="container">
+									<div class="row">
+										<div class="col-12 col-lg-6 ml-auto">
+												<div class="slider_inner_form">
+													<h2>Earn Money as an Arbnb Host</h2>
+													<p>Tell us a little about your place</p>
+													<form>
+														<div class="row">
+															<div class="col-12">
+																<div class="form-group">
+																	<input type="text" class="form-control" placeholder="Enter City" name="">
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-12 col-md-6">
+																<div class="form-group">
+																	<select class="form-control custom_select">
+																		<option>Enter Place</option>
+																		<option> Place</option>
+																	</select>
+																</div>
+															</div>
+															<div class="col-12 col-md-6">
+																<div class="form-group">
+																	<select class="form-control custom_select">
+																		<option>4 August</option>
+																		<option> Place</option>
+																	</select>
+																</div>
+															</div>
+														</div>
+														<div class="row">
+															<div class="col-12 col-md-12">
+																<div class="right_form_btn">
+																	<button class="btn theme_btn" type="button">Get Started</button>
+																</div>
+															</div>
+														</div>
+													</form>
+												</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -482,11 +569,24 @@
 		<script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
 		<script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
 
-
+		<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+	$('.home_slider').slick({
+          infinite: true,
+          slidesToShow: 1,
+          arrows: false,
+          slidesToScroll: 1,
+          margin:0,
+          autoplay:true,
+          autoplaySpeed:4000,
+          fade:true
+        });
+</script>
 
 		<script>
 			//set content bottom padding
 			$("#content").css("padding-bottom", $(".footer").outerHeight()+'px');
+			$(".home_slider ").css("height", $(window).outerHeight()+'px');
 
 			// height
 			// var highestBox = 0;
