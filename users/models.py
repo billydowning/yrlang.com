@@ -91,6 +91,7 @@ class CustomUser(AbstractUser):
     profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
     user_role = models.ManyToManyField(UserRole, null=True, blank=True)
     is_private = models.BooleanField('private', default=False)
+    multi_day = models.BooleanField(default=False)
 
 
     USERNAME_FIELD = 'email'
@@ -122,7 +123,6 @@ class CustomUser(AbstractUser):
 
     def get_public_profile(self):
         return reverse('public_profile', args=[self.pk])
-
 
 
 class UserLanguage(models.Model):

@@ -76,7 +76,7 @@ class CustomerAdmin(AuthUserAdmin):
             'classes': ('collapse',),
             'fields': ('first_name', 'last_name', 'bio', 'phone_number', 'state',
                        'country', 'language', 'profession',
-                       'stripe_id', 'user_role', 'profile_image'),
+                       'stripe_id', 'user_role', 'profile_image', 'multi_day'),
         }),
         ('Groups & Permission', {
             'classes': ('collapse',),

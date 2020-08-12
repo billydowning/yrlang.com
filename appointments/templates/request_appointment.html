@@ -31,6 +31,8 @@
     var block_data = [];
     var del_data = {};
     var event_data = [];
+    dates = [];
+    var multi_day = false;
 
     {% for booking in customuser.requestee.all %}
         {% for event in booking.booking.all %}
@@ -58,12 +60,18 @@
         {% endfor %}
     {% endfor %}
 
+    {% if customuser.multi_day %}
+        multi_day = true;
+    {% endif %}
+
   $('#calendar').fullCalendar({
     customButtons: {
     submit: {
       text: 'Save Booking!',
       click: function() {
         if (booking_data.length != 0){
+        $("button").prop('disabled', true);
+        alert('Are You Sure For Booking...!');
         var json_array = []
         $.each(booking_data, function(index, value){
             json_array.push(JSON.stringify(value))
@@ -87,11 +95,24 @@
             alert('PLZZZZ... Select dates...!!!');
         }
       }
-    }
+    },
+    reset: {
+      text: 'Reset!',
+      click: function() {
+        if (booking_data.length != 0){
+            $("button").prop('disabled', true);
+            location.reload(true);
+        }
+        else{
+            alert('PLZZZZ... Select dates...!!!');
+        }
+      }
+    },
+
     },
     selectable: true,
     header: {
-      left: 'prev,next submit',
+      left: 'prev,next submit, reset',
       center: 'title',
       right: 'month,agendaWeek,agendaDay'
     },
@@ -110,9 +131,15 @@
         $('#calendar').fullCalendar('changeView','agenda');
         $('#calendar').fullCalendar('gotoDate',startDate);
       }
+      else if (multi_day == false & dates.length != 0 & jQuery.inArray(startDate.format('DD'), dates) == -1){
+           alert('Multi-Day Booking is not Allowed ...!!!');
+           $('#calendar').fullCalendar('unselect');
+           return false;
+      }
       else{
         var temp1 = moment(startDate).add(1, "d").format('YYYY-MM-DD');
         var temp2 = moment(startDate).add(6, "h").format('YYYY-MM-DD HH:mm:ss');
+
         if(moment(temp2).format('HH:mm:ss') != endDate.format('HH:mm:ss')){
             $('#calendar').fullCalendar('unselect');
             return false;
@@ -142,6 +169,8 @@
                 start: startDate.format('HH:mm:ss'),
                 end: endDate.format('HH:mm:ss'),
               });
+              dates.push(startDate.format('DD'));
+
               $('#calendar').fullCalendar('removeEventSource', event_data);
               $('#calendar').fullCalendar('addEventSource', event_data);
               $('#calendar').fullCalendar('refetchEvents');
@@ -155,6 +184,9 @@
 
                 index = getEventIndex(event_data, key);
                 event_data.splice(index, 1);
+
+                index = getEventIndex(dates, moment(id).format('DD'));
+                dates.splice(index, 1);
 
                 $('#calendar').fullCalendar('removeEventSource', event_data);
                 $('#calendar').fullCalendar('addEventSource', event_data);
