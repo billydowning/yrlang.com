@@ -94,9 +94,10 @@ class ProfessionalAccountForm(ModelForm):
     class Meta:
         model = CustomUser
         fields = ['bio', 'phone_number', 'state', 'country', 'language',
-                  'profession', 'profile_image', 'is_private']
+                  'profession', 'profile_image', 'is_private', 'multi_day']
         help_texts = {
-            'phone_number': 'Use Formate Like This 999-999-9999 '
+            'phone_number': 'Use Formate Like This 999-999-9999 ',
+            'multi_day': 'Allow Customer Multi-Day Booking '
         }
 
     def save(self, commit=True):
@@ -126,9 +127,10 @@ class UpdateProfessionalAccountForm(ModelForm):
     class Meta:
         model = CustomUser
         fields = ['username', 'email', 'bio', 'phone_number', 'state',
-                  'country', 'language', 'profession', 'profile_image', 'is_private']
+                  'country', 'language', 'profession', 'profile_image', 'is_private', 'multi_day']
         help_texts = {
-            'phone_number': 'Use Formate Like This 999-999-9999 '
+            'phone_number': 'Use Formate Like This 999-999-9999 ',
+            'multi_day': 'Allow Customer Multi-Day Booking '
         }
 
     def __init__(self, request=None, *args, **kwargs):
@@ -374,5 +376,4 @@ class RequestVerificationForm(forms.ModelForm):
             difference = today - self.model_object.meeting_on.date()
             if difference.days == -1 or  difference.days == 0:
                 self.fields.pop('meeting_on')
-
 

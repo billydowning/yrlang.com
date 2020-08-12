@@ -13,9 +13,9 @@ MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'yrlang2020',
-        'USER': 'root',  # Do not change. Create a separate settings file for local dev if needs to be different
-        'PASSWORD': 'root',
+        'NAME': 'yrlang2020_2',
+        'USER': 'postgres',  # Do not change. Create a separate settings file for local dev if needs to be different
+        'PASSWORD': 'postgres',
         'HOST': 'localhost',
         'PORT': '5432',
     }
