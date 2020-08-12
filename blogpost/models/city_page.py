@@ -7,8 +7,8 @@ from wagtail.core.models import Page, Orderable
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel
-
 from users.models import CustomUser, UserRole
+# from users.models import( UserRole, CustomUser)
 from .brucke_page import (BruckePage)
 
 

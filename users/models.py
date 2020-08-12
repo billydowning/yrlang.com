@@ -210,3 +210,13 @@ class UserVideos(models.Model):
 
     def __str__(self):
         return '{} Video,for {}'.format(self.content_object.user.username, self.language)
+
+class UserFavorite(models.Model):
+    user = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.CASCADE, related_name='user_favorite')
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey()
+
+
+
+

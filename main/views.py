@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.shortcuts import redirect
 from .constant import *
 from users.models import CustomUser, UserRole, UserRoleRequest
-from blogpost.models import BlogPostPage, CityPage
+from blogpost.models import BlogPostPage, CityPage, BruckePage
 from appointments.models import Appointment, ProviderAppointment
 
 
@@ -135,6 +135,11 @@ class IndexView(TemplateView):
     template_name = 'explore.html'
 
 
+class BlogPostView(TemplateView):
+    template_name = 'blogpost/brucke_page.html'
+    queryset = BruckePage.objects.all().order_by("?")[:3]
+
+
 class OurCities(DetailView):
     model = CityPage
     template_name = 'our-cities.html'
@@ -184,7 +189,7 @@ class AddAnonymousUserFavoriteView(RedirectView):
 
     def get(self, request, *args, **kwargs):
         key = kwargs.get('object')
-        fav_dic = request.session['favorites_dic']
+        fav_dic = request.session.get('favorites_dic') or dict()
         if key in fav_dic:
             if kwargs.get('id')  not in fav_dic[kwargs.get('object')]:
                 fav_dic[kwargs.get('object')].append(kwargs.get('id'))
@@ -206,16 +211,19 @@ class ListOfnonymousUserFavoriteView(TemplateView):
         context = super(ListOfnonymousUserFavoriteView, self).get_context_data(**kwargs)
         self.localite = 'localite'
         self.provider = 'provider'
-        if self.localite in  self.request.session['favorites_dic']:
-            context['localites'] =CustomUser.objects.filter(is_private=False,
-                                      id__in=self.request.session['favorites_dic']['localite']). \
-                exclude(id=self.request.user.id).exclude(state__isnull=True,
-                                                         country__isnull=True).order_by('?')
-        if self.provider in  self.request.session['favorites_dic']:
-            context['providers'] =CustomUser.objects.filter(is_private=False,
-                                      id__in=self.request.session['favorites_dic']['provider']). \
-                exclude(id=self.request.user.id).exclude(state__isnull=True,
-                                                         country__isnull=True).order_by('?')
-
+        self.city = 'city'
+        if self.request.session.get('favorites_dic'):
+            if self.localite in  self.request.session.get('favorites_dic'):
+                context['localites'] = CustomUser.objects.filter(is_private=False,
+                                          id__in=self.request.session['favorites_dic']['localite']). \
+                    exclude(id=self.request.user.id).exclude(state__isnull=True,
+                                                             country__isnull=True).order_by('?')
+            if self.provider in self.request.session.get('favorites_dic'):
+                context['providers'] = CustomUser.objects.filter(is_private=False,
+                                          id__in=self.request.session['favorites_dic']['provider']). \
+                    exclude(id=self.request.user.id).exclude(state__isnull=True,
+                                                             country__isnull=True).order_by('?')
+            if self.city in self.request.session.get('favorites_dic'):
+                context['citys'] = CityPage.objects.filter(id__in=self.request.session['favorites_dic']['city'])
         return context
 

@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse_lazy
 from django.conf import settings
 from django.views.generic import (DetailView, UpdateView, TemplateView,
-                                  FormView, View, ListView, CreateView)
+                                  FormView, View, ListView, CreateView, RedirectView)
 from yrlang.settings import development_example
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
@@ -33,10 +33,10 @@ from .forms import (
     ClientToAdminRequestFormSet
 
 )
-from .models import CustomUser, UserRole, UserRoleRequest, UserVideos
+from .models import CustomUser, UserRole, UserRoleRequest, UserVideos, UserFavorite
 from payment.models import PaymentAccount
 
-
+from blogpost.models.city_page import CityPage
 class ProfileView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, UpdateView):
     success_url = '/'
 
@@ -462,3 +462,46 @@ class BecomeLocaliteView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, Te
 
 class AboutUsView(TemplateView):
     template_name = 'about_us.html'
+
+class AddCityInUserFavoriteView(RedirectView):
+
+    def get(self, request, *args, **kwargs):
+        instance = CityPage.objects.get(id=kwargs.get('city_id'))
+        if instance:
+            UserFavorite.objects.create(content_object=instance, user=self.request.user)
+        messages.success(self.request, "city addes in your favorite")
+        return redirect('/')
+
+class AddLocOrProInUserFavoriteView(RedirectView):
+
+    def get(self, request, *args, **kwargs):
+        instance = CustomUser.objects.get(id=kwargs.get('user_id'))
+        if instance:
+            UserFavorite.objects.create(content_object=instance, user=self.request.user)
+        messages.success(self.request, "added in favorite !")
+        return redirect('/')
+
+
+class UserFavoriteListView(TemplateView):
+    template_name = 'users/user_favorite_list.html'
+
+    def get_context_data(self, **kwargs):
+        self.provider_list = []
+        self.localite_list = []
+        context = super(UserFavoriteListView, self).get_context_data( **kwargs)
+        content_type_city = ContentType.objects.get_for_model(CityPage)
+        content_type_user = ContentType.objects.get_for_model(CustomUser)
+        user_list = UserFavorite.objects.filter( content_type=content_type_user, user=self.request.user)
+        city_list = UserFavorite.objects.filter(content_type=content_type_city, user=self.request.user)
+
+        context['citys'] = [ i.content_object for i in city_list ]
+        for user in user_list:
+            if user.content_object.user_role.filter(name= UserRole.PROVIDER).exists():
+                self.provider_list.append(user.content_object)
+        for user in user_list:
+            if user.content_object.user_role.filter(name=UserRole.LOCALITE).exists():
+                self.localite_list.append(user.content_object)
+
+        context['providers'] = self.provider_list
+        context['localites'] = self.localite_list
+        return context

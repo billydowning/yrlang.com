@@ -1,4 +1,4 @@
-{% load static check_role check_request %}
+{% load static check_role check_request favorite_check %}
 {% is_provider user_role=request.session.user_role as provider_checked %}
 {% is_localite user_role=request.session.user_role as localite_checked %}
 {% is_client user_role=request.session.user_role as client_checked %}
@@ -47,15 +47,22 @@
                                         </div>
                                         <div class="price_Book Visit!">
                                             <h5>$ 50 <span>Per Day</span></h5>
-                                            <h5><a href="{% url 'main:add_anon_favorite' 'localite' localite.id %}"><span>Add to Favorite</span></a></h5>
+
                                             {%if request.user.is_authenticated %}
+                                            {% is_user_in_fav id=localite.id current_u_id=request.user.id  as user_in_fav_checked %}
+                                            {% if  user_in_fav_checked %}
+                                            <h5><span>Already in Favorite</span></h5>
+                                            {% else %}
+                                            <h5><a href="{% url 'add_loc_or_pro_in_favorite' localite.id %}"><span>Add to Favorite</span></a></h5>
+                                            {% endif %}
                                             <a href="{% url 'request_appointment' localite.id %}">
                                                 <button class="btn theme_btn" type="button">Book Visit!</button>
                                             </a>
                                             &nbsp; <a href="{% url 'contact' localite.id %}">
                                             <button class="btn theme_btn" type="button">Contact</button>
                                         </a>
-                                            {% else %}<a href="{% url 'account_login' %}">
+                                            {% else %}
+                                            <h5><a href="{% url 'main:add_anon_favorite' 'localite' localite.id %}"><span>Add to Favorite</span></a></h5><a href="{% url 'account_login' %}">
                                             <button class="btn theme_btn" type="button">Book Visit!</button>
                                         </a>
                                             &nbsp; <a href="{% url 'account_login'  %}">
@@ -109,11 +116,19 @@
                                             </div>
                                         </div>
                                         <div class="price_hire">
-                                            <h5><a href="{% url 'main:add_anon_favorite' 'provider' professional.id %}">Add to Favorite</a></h5>
+
                                             {%if request.user.is_authenticated %}
+                                            {% is_user_in_fav id=professional.id current_u_id=request.user.id  as user_in_fav_checked %}
+                                            {% if  user_in_fav_checked %}
+                                            <h5><span>Already in Favorite</span></h5>
+                                            {% else %}
+                                            <h5><a href="{% url 'add_loc_or_pro_in_favorite' professional.id %}"><span>Add to Favorite</span></a></h5>
+                                            {% endif %}
                                             <a href="{% url 'create_provider_appointments' professional.id %}">
                                                 <button class="btn theme_btn" type="button">Book Appointment!</button>
-                                                {% else %}<a href="{% url 'account_login' %}">
+                                                {% else %}
+                                                <h5><a href="{% url 'main:add_anon_favorite' 'provider' professional.id %}">Add to Favorite</a></h5>
+                                                <a href="{% url 'account_login' %}">
                                             <button class="btn theme_btn" type="button">Book Appointment!</button>
                                                 {% endif %}
                                             </a>

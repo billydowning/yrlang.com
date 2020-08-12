@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (CustomUser, State, Language, Country, Profession,
-                     UserRole, Categories, ProviderCategories, UserRoleRequest, UserVideos)
+                     UserRole, Categories, ProviderCategories, UserRoleRequest, UserVideos, UserFavorite)
 from invoices.models import Invoice
 from appointments.models import Appointment
 from blogpost.models.modelpost import BlogPostPage
@@ -163,3 +163,4 @@ admin.site.register(Categories, CategoriesAdmin)
 
 admin.site.register(UserRoleRequest)
 admin.site.register(UserVideos)
+admin.site.register(UserFavorite)
