@@ -15,12 +15,38 @@ from paypal.standard.forms import PayPalPaymentsForm
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 from invoices.models import Invoice
 from users.models import CustomUser
-from .forms import CreateInvoiceForm
+from .forms import CreateInvoiceForm, ProviderCreateInvoiceForm
 
 
 class InvoiceCreateView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, CreateView):
     template_name = "create_invoice.html"
     form_class = CreateInvoiceForm
+
+    def test_func(self):
+        return self.request.user.groups.filter(name='Professionals').exists()
+
+    def form_valid(self, form):
+        current_user = CustomUser.get(self.request.user.id)
+        invoice = form.save(commit=False)
+        invoice.payee = current_user
+        booking = form.cleaned_data.get('booking')
+        invoice.payor = booking.requestor
+        invoice.save()
+        messages.success(self.request, 'Your invoice has been created and sent to the client!')
+        return HttpResponseRedirect('/')
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(InvoiceCreateView, self).get_form_kwargs(**kwargs)
+        kwargs['user'] = self.request.user
+        return kwargs
+
+
+class ProviderInvoiceCreateView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, CreateView):
+    template_name = "provider_create_invoice.html"
+    form_class = ProviderCreateInvoiceForm
 
     def test_func(self):
         return self.request.user.groups.filter(name='Professionals').exists()
@@ -48,6 +74,8 @@ class Invoices(ListView):
         if self.request.user.is_client_user(self.request.session.get('user_role')):
             query = Invoice.objects.filter(payor=current_user)
         elif self.request.user.is_localite_user(self.request.session.get('user_role')):
+            query = Invoice.objects.filter(payee=current_user)
+        elif self.request.user.is_provider_user(self.request.session.get('user_role')):
             query = Invoice.objects.filter(payee=current_user)
         return query
 

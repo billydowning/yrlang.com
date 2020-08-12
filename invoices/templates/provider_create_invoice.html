@@ -31,15 +31,16 @@
                 {% endif %}
             </div>
             <div class="form-group">
-                {{form.booking.label}}
-                {% if form.booking.errors %}
+                {{form.payor.label}}
+                {% if form.payor.errors %}
                     <div class="invalid-feedback">
-                        {% for error in form.booking.errors %}
+                        {% for error in form.payor.errors %}
                             <span>{{ error }}</span>
                         {% endfor %}
                     </div>
+                {% else %}
+                    {{ form.payor }}
                 {% endif %}
-                    {{ form.booking }}
             </div>
         </fieldset>
         <div class="form-group">

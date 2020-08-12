@@ -1,10 +1,30 @@
 from django.forms import ModelForm, Form
 from django import forms
+
+
 from .models import Invoice
 from users.models import CustomUser
+from appointments.models import Appointment
+
 
 class CreateInvoiceForm(ModelForm):
-	payor = forms.ModelChoiceField(queryset=CustomUser.objects.all())
+	booking = forms.ModelChoiceField(queryset=Appointment.objects.all())
+	class Meta:
+		model=Invoice
+		fields=["title","amount", "booking"]
+
+	def __init__(self, *args, **kwargs):
+		self.user = kwargs.pop('user', None)
+		super(CreateInvoiceForm, self).__init__(*args, **kwargs)
+		print(self.user)
+		self.fields['booking'].queryset = Appointment.objects.filter(
+			requestee=self.user,
+			status=Appointment.CONFIRMED or Appointment.COMPLETED
+		)
+
+
+class ProviderCreateInvoiceForm(ModelForm):
+	payor = forms.ModelChoiceField(queryset=CustomUser.objects.filter())
 	class Meta:
 		model=Invoice
 		fields=["title","amount"]

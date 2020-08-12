@@ -62,7 +62,16 @@
                     {% endif %}
                 </div>
                 <div class="col-4">
-                    <button class="btn btn-secondary">Book...!</button>
+                    {% if pro %}
+                    <a href="{% url 'create_provider_appointments' user.id %}">
+                        <button class="btn btn-secondary my-2">Book Appointment</button>
+                    </a>
+                    {% endif %}
+                    {% if loc %}
+                    <a href="{% url 'request_appointment' user.id %}">
+                        <button class="btn btn-secondary my-2" type="button">Book Visit!</button>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
 
