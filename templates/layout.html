@@ -198,6 +198,9 @@
                         </a>
                         {% if request.session.user_role %}
                         <div class="dropdown-content custom-icons">
+                            {% if client_checked %}
+                            <a href="{% url 'user_favorite_list' %}">Favorite</a>
+                            {% endif %}
                             {% if provider_checked or client_checked %}
                             <a href="{% url 'provider_appointment' %}"><i class="fa fa-calendar"
                                                                           aria-hidden="true"> </i><span>Appointments</span></a>
@@ -207,13 +210,12 @@
                             {% if localite_checked or client_checked  %}
                             <a href="{% url 'appointments' %}"><i class="fa fa-calendar"
                                                                   aria-hidden="true"> </i><span>Booking </span></a>
+                            <a href="{% url 'invoices' %}"><i class="fa fa-files-o" aria-hidden="true"> </i><span>Invoices</span></a>
                             {% endif %}
 
                             <a href="{% url 'account' %}"><i class="fa fa-user"
                                                              aria-hidden="true"> </i><span>Account</span></a>
-                            {% if localite_checked or client_checked  %}
-                            <a href="{% url 'invoices' %}"><i class="fa fa-files-o" aria-hidden="true"> </i><span>Invoices</span></a>
-                            {% endif %}
+
                             {% if localite_checked %}
                             <a href="{% url 'create_invoice' %}"><span>Create New Invoice</span></a>
                             {% endif %}
@@ -232,7 +234,7 @@
 
                     {% else %}
                     <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
-                        <li><a href="{% url 'about_us' %}"> About Us</a></li>
+                    <li><a href="{% url 'main:anon_favorite_list' %}">Favorite</a> </li>                     <li><a href="{% url 'about_us' %}"> About Us</a></li>
                     <li><a href="{% url 'main:blog-post' %}">The Brucke</a></li>
                     <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
                     <li class="dropdown">

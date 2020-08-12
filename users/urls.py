@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from . import views
 
@@ -20,5 +20,12 @@ urlpatterns = [
     path("verify-client-request/<int:id>", views.VerifyClientRequestView.as_view(), name='verify_client_request'),
     path("become-provider", views.BecomeProviderView.as_view(), name='become_provider_temp'),
     path("become-localite", views.BecomeLocaliteView.as_view(), name='become_localite_temp'),
-    path('about-us', views.AboutUsView.as_view(), name='about_us')
+    path('about-us', views.AboutUsView.as_view(), name='about_us'),
+
+
+    # favorites links for add
+    path('favorites/<int:city_id>', views.AddCityInUserFavoriteView.as_view(), name='add_city_in_favorite'),
+    path('favorites_/<int:user_id>', views.AddLocOrProInUserFavoriteView.as_view(), name='add_loc_or_pro_in_favorite'),
+    path('user-favorites/', views.UserFavoriteListView.as_view(), name='user_favorite_list'),
+
 ]
