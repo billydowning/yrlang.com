@@ -387,15 +387,7 @@
                              width="45px" alt="">
                         <hr class="divider-grey">
                         <div class="uk-column-1-2@s uk-column-1-3@m uk-column-1-4@l row">
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <p class="bolder">Service Areas</p>
-                                <p class="turn-grey small footers_link">
-                                    <a href="">General</a>
-                                    <a href="">Medicine</a>
-                                    <a href="">Dental</a>
-                                    <a href="">Mental Health</a>
-                                </p>
-                            </div>
+
                             <div class="col-12 col-md-6 col-lg-3">
                                 <p class="bolder">Languages</p>
                                 <p class="turn-grey small footers_link">
@@ -413,14 +405,22 @@
                                     <a href="">Munich</a>
                                 </p>
                             </div>
+                             <div class="col-12 col-md-6 col-lg-3">
+                                <p class="bolder">The Bruck</p>
+                                <p class="turn-grey small footers_link">
+                                    {% for blog in blog_list %}
+                                    <a href="{% slugurl blog.slug %}">{{blog.title}}</a>
+                                        {% endfor %}
+                                </p>
+                            </div>
                             <div class="col-12 col-md-6 col-lg-3">
                                 <p class="bolder">Company</p>
                                 <p class="turn-grey small footers_link">
-                                    <a href="">Abuot Us</a>
-                                    <a href="">Our Team</a>
-                                    <a href="">Careers</a>
-                                    <a href="">News</a>
-                                    <a href="">Privacy & Terms</a>
+                                    <a href="{%  url 'about_us' %}">Abuot Us</a>
+                                    <a href="">Joim Our Team</a>
+                                    <a href="">Localite/Provider FAQs</a>
+                                    <a href="">Term & Condition</a>
+                                    <a href="">Trust & Safety</a>
                                 </p>
                             </div>
                         </div>
