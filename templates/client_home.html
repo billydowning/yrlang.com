@@ -19,7 +19,9 @@
 
                         <div class="row">
                             <div class="col-12">
+                                <form class="form-inline" method="get" action="{% url 'main:home' %}" id="localite_search_form">{{search_form.country}} <button type="submit"><i class="fa fa-search"></i></button> </form>
                                 <h1 class="page_main_header mb-3">{%if request.user.is_authenticated %} Near By{% endif %} Localites</h1>
+
                                 {% if localites %}
                                 {% for localite in localites %}
                                 <div class="profile_main_outer">
