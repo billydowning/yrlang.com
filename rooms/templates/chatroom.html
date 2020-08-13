@@ -30,7 +30,57 @@ p.turn-grey.small.footers_link {
 {% block content %}
 <div class="container mt-5">
     <div class="row">
-    <div class="col-12 col-md-10 m-auto">
+
+      <div class="col-12 col-md-4 col-lg-3">
+           <h6 class="font-weight-bold mb-3 text-center text-lg-left font_z20">Chat</h6>
+            <div class="white z-depth-1  pb-0">
+          <ul class="list-unstyled friend-list">
+              {% for msg in unread_messages %}
+            <li class=" p-1">
+              <a href="{% url 'chatroom' msg.message.room.id %}" class="d-flex justify-content-between">
+                    {% if  msg.chat_partner.profile_image %}
+                  <img src="{{ msg.chat_partner.profile_image.url }}" style="width:100px;height:100px;"  alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                  {% else %}
+                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-8.jpg"  style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                  {% endif %}
+                <div class="text-small">
+                  <strong>{{ msg.chat_partner.username|truncatechars:7 }}</strong>
+                  <p class="last-message text-muted">{{ msg.message.content|truncatechars:7 }}</p>
+                </div>
+                <div class="chat-footer">
+                  <p class="text-smaller text-muted mb-0">{{ msg.message.date_created |date:"SHORT_DATE_FORMAT"  }}</p>
+                  <span class="badge badge-danger float-right"> {{ msg.message.room.created_for }} Chat</span>
+                </div>
+              </a>
+            </li>
+            {% endfor %}
+              {% for msg in read_messages %}
+            <li class=" p-1">
+              <a href="{% url 'chatroom' msg.message.room.id %}" class="d-flex justify-content-between">
+                    {% if  msg.chat_partner.profile_image %}
+                  <img src="{{ msg.chat_partner.profile_image.url }}" style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                  {% else %}
+                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-8.jpg"  style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                  {% endif %}
+                <div class="text-small">
+                  <strong>{{ msg.chat_partner.username|truncatechars:7 }}</strong>
+                  <p class="last-message text-muted">{{ msg.message.content|truncatechars:7 }}</p>
+                </div>
+                <div class="chat-footer">
+                  <p class="text-smaller text-muted mb-0">{{ msg.message.date_created|date:"SHORT_DATE_FORMAT"  }}</p>
+                  <span class="badge badge-danger float-right"> {{ msg.message.room.created_for }} Chat</span>
+                </div>
+              </a>
+            </li>
+            {% endfor %}
+
+
+          </ul>
+        </div>
+      </div>
+
+    <div class="col-12 col-md-8 col-lg-9">
+        ￼￼￼￼
         <div id="frame">
             <div class="content chat_room_width" >
                 <div class="contact-profile">

@@ -60,14 +60,29 @@ class ChatRoomView(UserSessionAndLoginCheckMixing, FormView):
         room = Room.objects.get(id=self.kwargs.get('room_id'))
         if self.request.user.id == room.creator.id:
             chatpartner = CustomUser.objects.get(id=room.partner.id)
-            chat_messages = Message.objects.filter(room=room)
-            Message.objects.filter(room=room).update(is_read=True)
         elif self.request.user.id == room.partner.id:
             chatpartner = CustomUser.objects.get(id=room.creator.id)
-            chat_messages = Message.objects.filter(room=room)
-            Message.objects.filter(room=room).update(is_read=True)
+        user = CustomUser.get(self.request.user.id)
+        unread_messages = []
+        read_messages = []
+        room_list = user.creator.all() | user.partner.all()
+        for room in room_list:
+            if room.creator.id != user.id:
+                chat_partner = room.creator
+            else:
+                chat_partner = room.partner
+            newest_message = Message.objects.filter(room=room).reverse().first()
+            if newest_message:
+                if not newest_message.is_read:
+                    unread_message = {'chat_partner': chat_partner,
+                                      'message': newest_message}
+                    unread_messages.append(unread_message)
+                else:
+                    read_message = {'chat_partner': chat_partner, "message": newest_message}
+                    read_messages.append(read_message)
+        context["read_messages"] = read_messages
+        context["unread_messages"] = unread_messages
         context["room_id"] = room.id
-        context["chat_messages"] = chat_messages
         context["chatpartner"] = chatpartner
         return context
 
