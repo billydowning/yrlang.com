@@ -8,6 +8,7 @@ class Appointment(models.Model):
     CREATED = 'created'
     CONFIRMED = 'confirmed'
     RESCHEDULE_REQUESTED = 'rescheduled_requested'
+    RESCHEDULE_ACCEPTED = 'rescheduled_accepted'
     WITH_PROVIDER = 'with_provider'
     WITH_CLIENT = 'with_client'
     COMPLETED = 'completed'
@@ -16,17 +17,19 @@ class Appointment(models.Model):
     STATUS_CHOICES = [
         (CONFIRMED, 'Confirmed'),
         (CANCELED, 'Canceled'),
-        (CREATED, 'Request created (by client)'),
-        (RESCHEDULE_REQUESTED, 'Reschedule Requested (by client or provider)'),
-        (WITH_PROVIDER, 'Request accepted and appointment created (by provider)'),
-        (WITH_CLIENT, 'Request accepted by client (Final stage - means both client and provider accepted appointment)'),
-        (COMPLETED, 'Appointment completed (by provider)')
+        (CREATED, 'Request created (by Customer)'),
+        (RESCHEDULE_REQUESTED, 'Reschedule Requested (by Customer)'),
+        (RESCHEDULE_ACCEPTED, 'Reschedule Accepted (by Localite)'),
+        (WITH_PROVIDER, 'Request accepted and Booking created (by Localite)'),
+        (WITH_CLIENT, 'Request accepted by Customer (Final stage - means both Customer and Localite accepted Booking)'),
+        (COMPLETED, 'Booking completed (by Localite)')
     ]
 
     date_created = models.DateTimeField(auto_now=True)
     requestor = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="requestor")
     requestee = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="requestee")
-    notes = models.TextField(null=True, blank=True)
+    customer_comment = models.TextField(null=True, blank=True)
+    localite_comment = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=25, choices=STATUS_CHOICES, default=CREATED)
 
     def __str__(self):
@@ -42,6 +45,9 @@ class BookingDates(models.Model):
     start_time = models.TimeField()
     end_time = models.TimeField()
     confirmed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{} - {} - {}'.format(self.date, self.start_time, self.end_time)
 
 
 class ProviderAppointment(models.Model):

@@ -1,5 +1,6 @@
 # import code; code.interact(local=dict(globals(), **locals())
 import json
+from builtins import super
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -7,7 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, DeleteView
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView
 
 from .forms import ApproveProviderAppointmentForm, ProviderAppointmentCreateForm
 from .models import *
@@ -62,6 +63,37 @@ class NewAppointmentView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, De
 class AppointmentDetailView(UserSessionAndLoginCheckMixing, DetailView):
     model = Appointment
     template_name = 'appointment_detail.html'
+
+
+class EditBookingRequestView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, View):
+
+    def test_func(self):
+        return self.request.user.is_client_user(self.request.session.get('user_role')) \
+            or self.request.user.is_localite_user(self.request.session.get('user_role'))
+
+    def post(self, request, *args, **kwargs):
+        print('post', request.POST['id'], request.POST['message'], request.POST['status'])
+        id = request.POST.get('id', None)
+        message = request.POST.get('message', None)
+        status = request.POST.get('status', None)
+
+        obj = Appointment.objects.get(id=id)
+        if obj:
+            if status == Appointment.RESCHEDULE_REQUESTED:
+                obj.status = Appointment.RESCHEDULE_REQUESTED
+                obj.customer_comment = message
+                obj.save()
+            elif status == Appointment.CANCELED:
+                obj.status = Appointment.CANCELED
+                obj.localite_comment = message
+                obj.save()
+            else:
+                raise KeyError('Status is Not Allowed')
+        else:
+            raise KeyError('Object Not Found')
+
+        url = reverse_lazy('appointments')
+        return JsonResponse({'url': url})
 
 
 class ProviderAppointmentDetailView(UserSessionAndLoginCheckMixing, DetailView):
