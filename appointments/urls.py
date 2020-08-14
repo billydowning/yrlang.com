@@ -6,6 +6,7 @@ urlpatterns = [
     path('request-appointment/<int:pk>', views.AppoitnemtRequestView.as_view(), name='request_appointment'),
     path('appointments', views.AppointmentView.as_view(), name="appointments"),
     path('new-appointment/<int:pk>', views.NewAppointmentView.as_view(), name="new_appointment"),
+    path('edit-booking-request/', views.EditBookingRequestView.as_view(), name="edit_booking_appointment_request"),
     path('appointments-detail/<int:pk>', views.AppointmentDetailView.as_view(), name='appointments_detail'),
     path('provider-appointments-detail/<int:pk>', views.ProviderAppointmentDetailView.as_view(), name='provider_appointments_detail'),
     path('provider-request-appointment/<int:pk>', views.ProviderAppointmentCreateView.as_view(), name='create_provider_appointments'),
