@@ -27,7 +27,7 @@
                         {% endif %}
                     </div>
                     <div class="name_rate">
-                        <h5>{{ professional.username|title }}</h5>
+                        <a href="{% url 'public_profile' professional.id %}"><h5>{{ professional.username|title }}</h5></a>
                         <p>
                             <i class="fa fa-star" aria-hidden="true"></i>
                             <i class="fa fa-star" aria-hidden="true"></i>

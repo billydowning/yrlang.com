@@ -17,7 +17,6 @@ from yrlang.settings.development_example import EMAIL_HOST_USER
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 
 
-
 class AppoitnemtRequestView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DetailView):
     model = CustomUser
     template_name = 'request_appointment.html'

@@ -125,7 +125,7 @@
 
             <h5 class="my2">Providers</h5>
             {% for obj in providers %}
-            <li><a href="{{ obj.get_provider_absolute_url }}">{{ obj.username }}</a></li>
+            <li><a href="{{ obj.get_public_profile }}">{{ obj.username }}</a></li>
             {% endfor %}
         </div>
     </div>

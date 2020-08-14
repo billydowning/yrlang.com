@@ -1,14 +1,16 @@
 from datetime import datetime
 import pytz
-
-from django.views.generic import TemplateView, View, ListView, DetailView
+from django.contrib import messages
+from _collections import defaultdict
+from django.views.generic import TemplateView, View, ListView, DetailView, RedirectView
 from django.http import JsonResponse
 from django.db.models import Q
-
+from django.shortcuts import redirect
 from .constant import *
 from users.models import CustomUser, UserRole, UserRoleRequest
 from blogpost.models import BlogPostPage, CityPage, BruckePage
 from appointments.models import Appointment, ProviderAppointment
+from .forms import UserSearchFrom
 
 
 class HomeView(TemplateView):
@@ -17,21 +19,35 @@ class HomeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
 
-        context["localites"] = CustomUser.objects.filter( is_private=False,
-                                                         user_role__name__in=[UserRole.LOCALITE]). \
-                                   exclude(id=self.request.user.id).exclude(state__isnull=True,
-                                                                            country__isnull=True).order_by('?')[:3]
-        context["providers"] = CustomUser.objects.filter( is_private=False,
-                                                         user_role__name__in=[UserRole.PROVIDER]). \
-                                   exclude(id=self.request.user.id).exclude(state__isnull=True,
-                                                                            country__isnull=True).order_by('?')[:3]
+        search_form = UserSearchFrom(self.request.GET)
+
+        if search_form.is_valid():
+            print(search_form)
+            if search_form.cleaned_data.get('country'):
+                localite_list = CustomUser.objects.filter(Q(country=search_form.cleaned_data.get('country'))).\
+                                    filter(is_private=False, user_role__name__in=[UserRole.LOCALITE]). \
+                                    exclude(id=self.request.user.id, state__isnull=True, country__isnull=True).order_by('?')[:3]
+                provider_list = CustomUser.objects.filter(Q(country=search_form.cleaned_data.get('country'))).\
+                                    filter(is_private=False,user_role__name__in=[UserRole.PROVIDER]). \
+                                    exclude(id=self.request.user.id, state__isnull=True, country__isnull=True).order_by('?')[:3]
+
+            else:
+                localite_list = CustomUser.objects.filter(is_private=False,
+                                                          user_role__name__in=[UserRole.LOCALITE]). \
+                                    exclude(id=self.request.user.id).exclude(state__isnull=True,
+                                                                             country__isnull=True).order_by('?')[:3]
+                provider_list = CustomUser.objects.filter(is_private=False,
+                                                          user_role__name__in=[UserRole.PROVIDER]). \
+                                    exclude(id=self.request.user.id).exclude(state__isnull=True,
+                                                                             country__isnull=True).order_by('?')[:3]
 
         banner = ""
         if self.request.user.is_authenticated:
             if self.request.user.is_staff:
                 banner = "Logged in as Admin"
-                context["requests"] = UserRoleRequest.objects.order_by('requested_on').filter(status=UserRoleRequest.REQUESTED,
-                                                                    requested_for__name=UserRole.LANGUAGE_VERIFIER)
+                context["requests"] = UserRoleRequest.objects.order_by('requested_on').filter(
+                    status__in=[UserRoleRequest.REQUESTED, UserRoleRequest.VERIFIED],
+                    requested_for__name=UserRole.LANGUAGE_VERIFIER).exclude(user=self.request.user)[:3]
             elif self.request.user.is_client_user(self.request.session.get('user_role')):
                 banner = "Logged in as Client"
             elif self.request.user.is_provider_user(self.request.session.get('user_role')):
@@ -40,14 +56,19 @@ class HomeView(TemplateView):
                     '-created_date')[:3]
                 banner = "Logged in as Provider"
             elif self.request.user.is_localite_user(self.request.session.get('user_role')):
-                context["bookings"] = Appointment.objects.filter(requestee=self.request.user).order_by('-date_created')[:3]
+                context["bookings"] = Appointment.objects.filter(requestee=self.request.user).order_by('-date_created')[
+                                      :3]
                 banner = "Logged in as Localite"
             elif self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
-                context["requests"] = UserRoleRequest.objects.order_by('requested_on').filter(status__in=[UserRoleRequest.REQUESTED, UserRoleRequest.VERIFIED],
-                                                                      ).exclude(user=self.request.user)[:3]
+                context["requests"] = UserRoleRequest.objects.order_by('requested_on').filter(
+                    status__in=[UserRoleRequest.REQUESTED, UserRoleRequest.VERIFIED],
+                    requested_for__name__in=[UserRole.PROVIDER, UserRole.LOCALITE]).exclude(user=self.request.user)[:3]
         elif self.request.user.is_anonymous:
             banner = "You Are not logged in "
         context["banner"] = banner
+        context["localites"] = localite_list
+        context['providers'] = provider_list
+        context['search_form'] = search_form
         return context
 
 
@@ -170,15 +191,59 @@ class OurCities(DetailView):
             providers = CustomUser.objects.filter(
                 is_client=False, is_private=False,
                 user_role__name=UserRole.PROVIDER
-            ).exclude(id=self.request.user.id)\
+            ).exclude(id=self.request.user.id) \
                 .exclude(state__isnull=True, country__isnull=True).order_by('?')
 
             localites = CustomUser.objects.filter(
                 is_client=False, is_private=False,
                 user_role__name=UserRole.LOCALITE
-            ).exclude(id=self.request.user.id)\
+            ).exclude(id=self.request.user.id) \
                 .exclude(state__isnull=True, country__isnull=True).order_by('?')
 
         context['providers'] = providers
         context['localites'] = localites
+        return context
+
+
+class AddAnonymousUserFavoriteView(RedirectView):
+
+    def get(self, request, *args, **kwargs):
+        key = kwargs.get('object')
+        fav_dic = request.session.get('favorites_dic') or dict()
+        if key in fav_dic:
+            if kwargs.get('id') not in fav_dic[kwargs.get('object')]:
+                fav_dic[kwargs.get('object')].append(kwargs.get('id'))
+            else:
+                messages.success(request, "Already in Favorite")
+                return redirect('/')
+        else:
+            fav_dic[kwargs.get('object')] = [kwargs.get('id')]
+        request.session['favorites_dic'] = fav_dic
+        messages.success(request, "Added in Favorite")
+        return redirect('/')
+
+
+class ListOfnonymousUserFavoriteView(TemplateView):
+    template_name = 'users/anonymoususer_favorite_list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ListOfnonymousUserFavoriteView, self).get_context_data(**kwargs)
+        self.localite = 'localite'
+        self.provider = 'provider'
+        self.city = 'city'
+        if self.request.session.get('favorites_dic'):
+            if self.localite in self.request.session.get('favorites_dic'):
+                context['localites'] = CustomUser.objects.filter(is_private=False,
+                                                                 id__in=self.request.session['favorites_dic'][
+                                                                     'localite']). \
+                    exclude(id=self.request.user.id).exclude(state__isnull=True,
+                                                             country__isnull=True).order_by('?')
+            if self.provider in self.request.session.get('favorites_dic'):
+                context['providers'] = CustomUser.objects.filter(is_private=False,
+                                                                 id__in=self.request.session['favorites_dic'][
+                                                                     'provider']). \
+                    exclude(id=self.request.user.id).exclude(state__isnull=True,
+                                                             country__isnull=True).order_by('?')
+            if self.city in self.request.session.get('favorites_dic'):
+                context['citys'] = CityPage.objects.filter(id__in=self.request.session['favorites_dic']['city'])
         return context

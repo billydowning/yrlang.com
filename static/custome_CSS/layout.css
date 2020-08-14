@@ -956,6 +956,24 @@ p {
     background-position: center !important;
     background-attachment: fixed !important;padding: 100px 0}
 /*form*/
+.friend-list li
+{
+    margin-bottom: 15px;
+    padding-bottom: 15px !important;
+    border-bottom: 1px solid #eee;
+}
+.friend-list li a img {
+    width: 60px !important;
+    height: 60px !important;
+}
+.friend-list {
+    /* border: 1px solid #ccc; */
+    padding: 10px;
+    box-shadow: 0 0 4px #eee;
+  }
+.font_z20 {
+    font-size: 20px !important;
+}
 /*responsive*/
 
 @media(max-width: 767px)

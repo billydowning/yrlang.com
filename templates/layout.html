@@ -198,6 +198,9 @@
                         </a>
                         {% if request.session.user_role %}
                         <div class="dropdown-content custom-icons">
+                            {% if client_checked %}
+                            <a href="{% url 'user_favorite_list' %}">Favorite</a>
+                            {% endif %}
                             {% if provider_checked or client_checked %}
                             <a href="{% url 'provider_appointment' %}"><i class="fa fa-calendar"
                                                                           aria-hidden="true"> </i><span>Appointments</span></a>
@@ -207,6 +210,7 @@
                             {% if localite_checked or client_checked  %}
                             <a href="{% url 'appointments' %}"><i class="fa fa-calendar"
                                                                   aria-hidden="true"> </i><span>Booking </span></a>
+                            <a href="{% url 'invoices' %}"><i class="fa fa-files-o" aria-hidden="true"> </i><span>Invoices</span></a>
                             {% endif %}
 
                             <a href="{% url 'account' %}"><i class="fa fa-user"
@@ -214,6 +218,10 @@
                             {% if localite_checked or client_checked  %}
                             <a href="{% url 'invoices' %}"><i class="fa fa-files-o" aria-hidden="true"> </i><span>Invoices</span></a>
                             {% endif %}
+                            {% if provider_checked %}
+                            <a href="{% url 'provider_create_invoice' %}"><span>Create New Invoice</span></a>
+                            {% endif %}
+
                             {% if localite_checked %}
                             <a href="{% url 'create_invoice' %}"><span>Create New Invoice</span></a>
                             {% endif %}
@@ -232,8 +240,23 @@
 
                     {% else %}
                     <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+
                         <li><a href="{% url 'account_login' %}"> Become a Localite</a></li>
                         <li><a href="{% url 'account_login' %}"> Become a Provider</a></li>
+{#                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>#}
+{#                    <li class="dropdown">#}
+{#                        <a href="">Top Cities</a>#}
+{#                        <div class="dropdown-content">#}
+{#                            {% for city in city_list %}#}
+{#                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>#}
+{#                            {% endfor %}#}
+{#                            {% if  city_list.count > 3 %}#}
+{#                            <a href="{% slugurl city_parent.slug %}">View All.</a>#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                    </li>#}
+{#                    <li><a href="{% url 'main:anon_favorite_list' %}">Favorite</a> </li>                     <li><a href="{% url 'about_us' %}"> About Us</a></li>#}
+{#                    <li><a href="{% url 'main:blog-post' %}">The Brucke</a></li>#}
 {#                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>#}
 {#                    <li class="dropdown">#}
 {#                        <a href="">Top Cities</a>#}
@@ -314,6 +337,10 @@
             <a href="{% url 'create_invoice' %}"><span>Create New Invoice</span></a>
             {% endif %}
 
+            {% if provider_checked %}
+            <a href="{% url 'provider_create_invoice' %}"><span>Create New Invoice</span></a>
+            {% endif %}
+
             {% if request.user.user_role.count > 1 %}
             <a href="{% url 'user-role-select' %}">Swich Role</a>
             {% endif %}
@@ -375,15 +402,7 @@
                              width="45px" alt="">
                         <hr class="divider-grey">
                         <div class="uk-column-1-2@s uk-column-1-3@m uk-column-1-4@l row">
-                            <div class="col-12 col-md-6 col-lg-3">
-                                <p class="bolder">Service Areas</p>
-                                <p class="turn-grey small footers_link">
-                                    <a href="">General</a>
-                                    <a href="">Medicine</a>
-                                    <a href="">Dental</a>
-                                    <a href="">Mental Health</a>
-                                </p>
-                            </div>
+
                             <div class="col-12 col-md-6 col-lg-3">
                                 <p class="bolder">Languages</p>
                                 <p class="turn-grey small footers_link">
@@ -401,14 +420,22 @@
                                     <a href="">Munich</a>
                                 </p>
                             </div>
+                             <div class="col-12 col-md-6 col-lg-3">
+                                <p class="bolder">The Bruck</p>
+                                <p class="turn-grey small footers_link">
+                                    {% for blog in blog_list %}
+                                    <a href="{% slugurl blog.slug %}">{{blog.title}}</a>
+                                        {% endfor %}
+                                </p>
+                            </div>
                             <div class="col-12 col-md-6 col-lg-3">
                                 <p class="bolder">Company</p>
                                 <p class="turn-grey small footers_link">
-                                    <a href="">Abuot Us</a>
-                                    <a href="">Our Team</a>
-                                    <a href="">Careers</a>
-                                    <a href="">News</a>
-                                    <a href="">Privacy & Terms</a>
+                                    <a href="{%  url 'about_us' %}">Abuot Us</a>
+                                    <a href="">Joim Our Team</a>
+                                    <a href="">Localite/Provider FAQs</a>
+                                    <a href="">Term & Condition</a>
+                                    <a href="">Trust & Safety</a>
                                 </p>
                             </div>
                         </div>

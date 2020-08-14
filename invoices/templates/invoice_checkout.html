@@ -6,6 +6,19 @@
     <p>Created on {{ invoice.date_created }}</p>
     <!-- <button type="button" class="btn btn-primary" id="custom-button">Pay with Card</button> -->
   </div>
+
+  <div class="row">
+  {% for date in invoice.booking.booking.all %}
+  <div class="card col-3 my-2 mx-2">
+    <h5 class="card-header">{{ date.date }} - {{ invoice.booking.requestor.username }}</h5>
+    <div class="card-body">
+      <p class="card-text">start :- {{ date.start_time|time:'h:i a' }}</p>
+      <p class="card-text">end :- {{ date.end_time|time:'h:i a' }}</p>
+    </div>
+  </div>
+  {% endfor %}
+  </div>
+  <br>
   
   {% if request.user.id == invoice.payor.id and invoice.is_paid == False %}
   <form action="{% url 'charge' invoice.id %}" method="post">

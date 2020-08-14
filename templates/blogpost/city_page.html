@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags favorite_check %}
 {% load static %}
 {% block extra_css %}
 ul.menu li {
@@ -182,23 +182,10 @@ $(document).ready(function() {
 
 
 {% block content %}
-<div class="container mt-5">
-    <div class="">
-        <div class="row">
-            <div class="col-12">
+ {%if request.user.is_authenticated %}
+{% is_city_in_fav id=page.id current_u_id=request.user.id  as city_checked %}
+{% endif %}
 
-                <h1 class="page_main_header galarry_header">{{ page.title }}</h1>
-
-                {% if page.introduction %}
-                <div class="intro_div">
-                    <h3>introduction</h3>
-                    <p>{{ page.introduction }}</p>
-                </div>
-
-                {% endif %}
-            </div>
-        </div>
-</div></div>
         {% with images=page.gallery_image.all %}
         {% if images %}
        <div class="container-fluid">
@@ -214,6 +201,32 @@ $(document).ready(function() {
        </div>
         {% endif %}
         {% endwith %}
+<div class="container mt-5">
+    <div class="">
+        <div class="row">
+            <div class="col-12">
+
+                <h1 class="page_main_header galarry_header">{{ page.title }}</h1>
+                {%if request.user.is_authenticated %}
+                {% if city_checked  %}
+                <h5>Already in Favorite</h5>
+                {% else %}
+                <h5 class=""><a href="{% url 'add_city_in_favorite' page.id %}">Add to Favorite</a></h5>
+                {% endif %}
+                {% else %}
+                <h5 class=""><a href="{% url 'main:add_anon_favorite' 'city' page.id %}">Add to Favorite</a></h5>
+                {% endif %}
+
+                {% if page.introduction %}
+                <div class="intro_div">
+                    <h3>introduction</h3>
+                    <p>{{ page.introduction }}</p>
+                </div>
+
+                {% endif %}
+            </div>
+        </div>
+</div></div>
 
         {% if page.things_to_do %}
         <div class="row w-100">
@@ -226,6 +239,7 @@ $(document).ready(function() {
 
 <div class="container mt-5">
 <div class="">
+
         <div class="row w-100">
             <div class="col-12">
             {% with language=page.language.all %}

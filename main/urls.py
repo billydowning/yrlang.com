@@ -14,5 +14,13 @@ urlpatterns = [
     path('localites/', views.LocaliteListsView.as_view(), name='localite_list'),
     path('our-cities/<int:pk>/', views.OurCities.as_view(), name='our_cities'),
     path('our-cities/', views.OurCities.as_view(), name='our_cities'),
+
+    #favorites URLS for anonymousUSER
+    path('add-anon-favorite/<str:object>/<int:id>', views.AddAnonymousUserFavoriteView.as_view(), name='add_anon_favorite'),
+    path('favorites/', views.ListOfnonymousUserFavoriteView.as_view(), name='anon_favorite_list'),
+
     path('blog-post/', views.BlogPostView.as_view(), name='blog-post'),
+
+
+
 ]

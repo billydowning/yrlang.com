@@ -27,25 +27,25 @@
             </div>
 
             <!--            skills-->
-            <div class="my-5 ml-2">
-                <h3>Skills</h3>
-                <p class="mb-2">Web Designer</p>
-                <p class="mb-2">Web Developer</p>
-                <p class="mb-2">WordPress</p>
-                <p class="mb-2">WooCommerce</p>
-                <p class="mb-2">Python</p>
-                <br>
-            </div>
+<!--            <div class="my-5 ml-2">-->
+<!--                <h3>Skills</h3>-->
+<!--                <p class="mb-2">Web Designer</p>-->
+<!--                <p class="mb-2">Web Developer</p>-->
+<!--                <p class="mb-2">WordPress</p>-->
+<!--                <p class="mb-2">WooCommerce</p>-->
+<!--                <p class="mb-2">Python</p>-->
+<!--                <br>-->
+<!--            </div>-->
         </div>
         <div class="col-8">
             <div class="row">
                 <div class="col-8">
-                    <h2>{{ user.first_name }} {{ user.last_name }}</h2>
+                    <h2>{{ user.email }} </h2>
                     {% if loc %}
                     <div class="row">
                         {% for obj in user.profession.all %}
                         <div class="col-4">
-                            <p> | {{ obj }}</p>
+                            <p>  {{ obj }} |</p>
                         </div>
                         {% endfor %}
                     </div>
@@ -55,14 +55,23 @@
                     <div class="row">
                         {% for obj in user.providercategories_set.all %}
                         <div class="col-4">
-                            <p> | {{ obj.category }}</p>
+                            <p>  {{ obj.category }} |</p>
                         </div>
                         {% endfor %}
                     </div>
                     {% endif %}
                 </div>
                 <div class="col-4">
-                    <button class="btn btn-secondary">Book...!</button>
+                    {% if pro and request.user.is_authenticated %}
+                    <a href="{% url 'create_provider_appointments' user.id %}">
+                        <button class="btn btn-secondary my-2">Book Appointment</button>
+                    </a>
+                    {% endif %}
+                    {% if loc and request.user.is_authenticated %}
+                    <a href="{% url 'request_appointment' user.id %}">
+                        <button class="btn btn-secondary my-2" type="button">Book Visit!</button>
+                    </a>
+                    {% endif %}
                 </div>
             </div>
 
@@ -92,17 +101,15 @@
 
                     <!--                    About-->
                     <div class="my-5 mx-5">
-                        <div class="row">
-                            <div class="col-6"><h4><b>User Id</b></h4></div>
-                            <div class="col-6">000{{ user.id }}</div>
-                        </div>
+
                         <div class="row mt-3">
                             <div class="col-6"><h4><b>City</b></h4></div>
                             <div class="col-6">{{ user.state }}, {{ user.country }}</div>
                         </div>
+
                         <div class="row mt-3">
                             <div class="col-6"><h4><b>Name</b></h4></div>
-                            <div class="col-6">{{ user.first_name }} {{ user.last_name }}</div>
+                            <div class="col-6">{% firstof user.first_name "No name" %} {{ user.last_name }}</div>
                         </div>
                         <div class="row mt-3">
                             <div class="col-6"><h4><b>Email</b></h4></div>
@@ -118,8 +125,11 @@
                             <div class="col-6"><h4><b>Profession</b></h4></div>
                             <div class="col-6">
                                 {% for obj in user.profession.all %}
-                                | {{ obj }}
+                                {{ obj }} |
+                                {% empty %}
+                                No data
                                 {% endfor %}
+
                             </div>
                         </div>
                         {% endif %}
@@ -129,8 +139,11 @@
                             <div class="col-6"><h4><b>Services</b></h4></div>
                             <div class="col-6">
                                 {% for obj in user.providercategories_set.all %}
-                                | {{ obj.category }}
+                                 {{ obj.category }} |
+                                {% empty %}
+                                No data
                                 {% endfor %}
+
                             </div>
                         </div>
                         {% endif %}

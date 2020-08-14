@@ -26,7 +26,7 @@
                         {% endif %}
                     </div>
                     <div class="name_rate">
-                        <h5>{{ localite.username|title }}</h5>
+                        <a href="{% url 'public_profile' localite.id %}"><h5>{{ localite.username|title }}</h5></a>
                         <p>
                             <i class="fa fa-star" aria-hidden="true"></i>
                             <i class="fa fa-star" aria-hidden="true"></i>
