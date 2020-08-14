@@ -22,7 +22,7 @@ class HomeView(TemplateView):
         search_form = UserSearchFrom(self.request.GET)
 
         if search_form.is_valid():
-            print(search_form)
+
             if search_form.cleaned_data.get('country'):
                 localite_list = CustomUser.objects.filter(Q(country=search_form.cleaned_data.get('country'))).\
                                     filter(is_private=False, user_role__name__in=[UserRole.LOCALITE]). \

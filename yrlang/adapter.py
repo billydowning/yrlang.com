@@ -1,6 +1,8 @@
 from django.shortcuts import resolve_url, redirect
 from django.conf import settings
-from users.models import UserRole
+from blogpost.models.city_page import CityPage
+from django.contrib.contenttypes.models import ContentType
+from users.models import UserRole, CustomUser, UserFavorite
 from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter as DefaultSocialAdepter
 
@@ -14,6 +16,7 @@ class MyAccountAdapter(DefaultAccountAdapter):
         return super(MyAccountAdapter, self).logout(request)
 
     def get_login_redirect_url(self, request):
+
         if request.user.user_role.count() > 1:
             return resolve_url("/users/user-role")
         if self.request.user.user_role.filter(name=UserRole.CLIENT).exists():
