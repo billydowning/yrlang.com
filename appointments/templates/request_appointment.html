@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% load static %}
+{% load static check_status %}
 
 {% block calendar_extras %}
 
@@ -35,29 +35,31 @@
     var multi_day = false;
 
     {% for booking in customuser.requestee.all %}
-        {% for event in booking.booking.all %}
-            {% if event.confirmed is True %}
-                event_data.push({
-                    start: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.start_time|time:'H:i:s' }}'),
-                    end: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.end_time|time:'H:i:s' }}'),
-                    rendering: 'background',
-                    overlap: false,
-                    color: '#8d99ae',
-                });
-                var id = '{{ event.date|date:'m-d' }}' + '-{{ event.start_time|time:'H' }}';
-                block_data.push(id)
-            {% else %}
-                event_data.push({
-                    start: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.start_time|time:'H:i:s' }}'),
-                    end: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.end_time|time:'H:i:s' }}'),
-                    rendering: 'background',
-                    overlap: false,
-                    color: '#8d99ae',
-                });
-                var id = '{{ event.date|date:'m-d' }}' + '-{{ event.start_time|time:'H' }}';
-                block_data.push(id)
-            {% endif %}
-        {% endfor %}
+        {% if not booking.status|is_canceled %}
+            {% for event in booking.booking.all %}
+                {% if event.confirmed is True %}
+                    event_data.push({
+                        start: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.start_time|time:'H:i:s' }}'),
+                        end: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.end_time|time:'H:i:s' }}'),
+                        rendering: 'background',
+                        overlap: false,
+                        color: '#8d99ae',
+                    });
+                    var id = '{{ event.date|date:'m-d' }}' + '-{{ event.start_time|time:'H' }}';
+                    block_data.push(id)
+                {% else %}
+                    event_data.push({
+                        start: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.start_time|time:'H:i:s' }}'),
+                        end: '{{ event.date|date:'Y-m-d' }}' + 'T' + getTimeFormat('{{ event.end_time|time:'H:i:s' }}'),
+                        rendering: 'background',
+                        overlap: false,
+                        color: '#8d99ae',
+                    });
+                    var id = '{{ event.date|date:'m-d' }}' + '-{{ event.start_time|time:'H' }}';
+                    block_data.push(id)
+                {% endif %}
+            {% endfor %}
+        {% endif  %}
     {% endfor %}
 
     {% if customuser.multi_day %}
