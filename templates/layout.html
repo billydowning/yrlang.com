@@ -232,26 +232,26 @@
 
                     {% else %}
                     <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
-                        <li><a href="{% url 'about_us' %}"> About Us</a></li>
-                    <li><a href="{% url 'main:blog-post' %}">The Brucke</a></li>
-                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
-                    <li class="dropdown">
-                        <a href="">Top Cities</a>
-                        <div class="dropdown-content">
-                            {% for city in city_list %}
-                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>
-                            {% endfor %}
-                            {% if  city_list.count > 3 %}
-                            <a href="{% slugurl city_parent.slug %}">View All.</a>
-                            {% endif %}
-                        </div>
-                    </li>
+                        <li><a href="{% url 'account_login' %}"> Become a Localite</a></li>
+                        <li><a href="{% url 'account_login' %}"> Become a Provider</a></li>
+{#                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>#}
+{#                    <li class="dropdown">#}
+{#                        <a href="">Top Cities</a>#}
+{#                        <div class="dropdown-content">#}
+{#                            {% for city in city_list %}#}
+{#                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>#}
+{#                            {% endfor %}#}
+{#                            {% if  city_list.count > 3 %}#}
+{#                            <a href="{% slugurl city_parent.slug %}">View All.</a>#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                    </li>#}
                     <li><a href="{% url 'account_login' %}"><i class="fa fa-sign-in top_0"
                                                                aria-hidden="true"> </i><span>Login</span></a></li>
                     <li><a href="{% url 'client_signup_view' %}"><i class="fa fa-user-plus top_0"
                                                                     aria-hidden="true"> </i><span>Register</span></a>
                     </li>
-
+                    <li><a href="{% url 'about_us' %}"> About Us</a></li>
                     {% endif %}
                 </ul>
             </div>
