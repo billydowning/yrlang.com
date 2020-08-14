@@ -6,14 +6,14 @@ body
 {
     font-size: 15.5px;
     line-height: 23.4px;
-    letter-spacing: -0.5px; 
+    letter-spacing: -0.5px;
     word-spacing: 0;
 }
 a
 {
     font-size: 15.5px !important;
     line-height: 23.4px !important;
-    letter-spacing: -0.5px !important; 
+    letter-spacing: -0.5px !important;
     word-spacing: 0 !important;
 }
 
@@ -704,7 +704,7 @@ button#btn_search{outline: none;}
 }
 
 /*8-06*/
-.profile_im 
+.profile_im
 {
     width: 50px;
     height: 50px;
@@ -875,14 +875,14 @@ ul.about_user_pro li span {
     padding: 8px 30px 8px 32px !important;
     text-decoration: none;
     font-size: 18px;
-    color: #3a3a3a !important;
+    color: #fff !important;
     display: block;
     transition: 0.3s;
-    text-align: right;
-    border-bottom: 1px solid #eaeaea !important;
+    text-align: left;
+    border-bottom: 1px solid #60a73f !important;
 }
 .sidenav a i {
-    color: #3a3a3a !important;
+    color: #fff !important;
     padding-right: 10px;
 }
 .sidenav .closebtn {
@@ -954,26 +954,16 @@ p {
     background-repeat: no-repeat !important;
     background-size: cover !important;
     background-position: center !important;
-    background-attachment: fixed !important;padding: 100px 0}
+    background-attachment: fixed !important;
+    padding: 100px 0 !important;
+}
+.slider_section{padding:100px 0;}
+.sidenav {
+    background-color: #6ac241 !important;
+    }
+ .white_text{color:#fff !important;text-align:left !important;}
+ h3#word{color:#fff !important}
 /*form*/
-.friend-list li
-{
-    margin-bottom: 15px;
-    padding-bottom: 15px !important;
-    border-bottom: 1px solid #eee;
-}
-.friend-list li a img {
-    width: 60px !important;
-    height: 60px !important;
-}
-.friend-list {
-    /* border: 1px solid #ccc; */
-    padding: 10px;
-    box-shadow: 0 0 4px #eee;
-  }
-.font_z20 {
-    font-size: 20px !important;
-}
 /*responsive*/
 
 @media(max-width: 767px)
