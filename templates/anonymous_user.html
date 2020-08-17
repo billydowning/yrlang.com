@@ -363,6 +363,11 @@
 
 												</div>
 											</div>
+                                        <div class="row mt-5">
+											<div class="col-12 text-center">
+                                                <a href="{% url 'account_login' %}"> <button class="btn main_btn" type="button">Join us today </button></a>
+											</div>
+										</div>
 										</div>
 									</section>
 									{% endif %}
@@ -486,82 +491,81 @@
 									<!-- testimonial -->
 
 									<!-- join us today -->
-									<section class="our_solution_section">
-										<div class="container">
-
-											<div class="row">
-												<div class="col-12 col-lg-5 ">
-													<h4>Join us today!<span class="bottom_line"></span></h4>
-													<h6 class="mt-5">Make living abroad about exploring and enjoying your experience, and leave the rest to us - join YrLang for free</h6>
-													<h5 class="mt-3 mb-5">Join us today and see how easy life can be when you know where to start!</h5>
-													<div class="text-left">
-														<button class="btn main_btn" type="button">Join us today </button>
-													</div>
-												</div>
-												<div class="col-12 col-lg-6 offset-lg-1">
-													<div class="landing_links">
-														<p>Want to know more about living remotely, checkout our free “Good-to-Know” checklists for our first rollout cities...</p>
-														<ul class="lading_links">
-															<li>
-																<a href="">Berlin Landing page</a>
-															</li>
-															<li>
-																<a href="">Berlin Landing page</a>
-															</li>
-															<li>
-																<a href="">Berlin Landing page</a>
-															</li>
-														</ul>
-													</div>
-												</div>
-											</div>
-										</div>
-									</section>
+{#									<section class="our_solution_section">#}
+{#										<div class="container">#}
+{##}
+{#											<div class="row">#}
+{#												<div class="col-12 col-lg-5 ">#}
+{#													<h4>Join us today!<span class="bottom_line"></span></h4>#}
+{#													<h6 class="mt-5">Make living abroad about exploring and enjoying your experience, and leave the rest to us - join YrLang for free</h6>#}
+{#													<h5 class="mt-3 mb-5">Join us today and see how easy life can be when you know where to start!</h5>#}
+{#													<div class="text-left">#}
+{#														<button class="btn main_btn" type="button">Join us today </button>#}
+{#													</div>#}
+{#												</div>#}
+{#												<div class="col-12 col-lg-6 offset-lg-1">#}
+{#													<div class="landing_links">#}
+{#														<p>Want to know more about living remotely, checkout our free “Good-to-Know” checklists for our first rollout cities...</p>#}
+{#														<ul class="lading_links">#}
+{#															<li>#}
+{#																<a href="">Berlin Landing page</a>#}
+{#															</li>#}
+{#															<li>#}
+{#																<a href="">Berlin Landing page</a>#}
+{#															</li>#}
+{#															<li>#}
+{#																<a href="">Berlin Landing page</a>#}
+{#															</li>#}
+{#														</ul>#}
+{#													</div>#}
+{#												</div>#}
+{#											</div>#}
+{#										</div>#}
+{#									</section>#}
 									<!-- join us today -->
 									<!-- blog section -->
-									{% if blog_list%}
-									<section class="bog_section bottom_blog_design">
-										<div class="container">
-											<div class="row">
-												<div class="col-12">
-
-													<h4>Our Blog, The Brucke  <span class="bottom_line"></span></h4>
-													<p>We want to share our journey, and help you along yours -that’s why we came up with our blog, <strong>The Brücke</strong>. It means bridge in Deutsch and captures the essence of what we see for YrLang -its purpose is to help you cross language barriers and connect more with where you are and where you want to be,  while also sharing some of our ‘life’ lessons as former expats in Berlin.</p>
-
-												</div>
-											</div>
-											<div class="blog_outer_section">
-												<div class="row">
-													{% for blog in blog_list %}
-													<div class="col-12 col-md-4">
-
-														<div class="blog_img">
-															<a href="{% slugurl blog.slug %}">
-																<div class="blog_img_container">
-																	{% with blog.image as image %}
-																	{% if image %}{% image image fill-350x200 %}
-																	{% else %}<img src="{% static 'images/city_banner.jpg' %}">
-																	{% endif %}
-																	{% endwith %}
-
-																</div></a>
-																<div class="blog_text">
-																	<h5>{{blog.title}}</h5>
-																	<p>{{blog.introduction|truncatechars:80}}</p>
-																</div>
-															</div>
-														</div>
-														{% endfor %}
-													</div>
-												</div>
-											</div>
-										</section>
-										{% endif  %}
-										<!-- blog section end -->
-
-									</div>
-
-								</div> <!-- wrapper_end -->
+{#									{% if blog_list%}#}
+{#									<section class="bog_section bottom_blog_design">#}
+{#										<div class="container">#}
+{#											<div class="row">#}
+{#												<div class="col-12">#}
+{##}
+{#													<h4>Our Blog, The Brucke  <span class="bottom_line"></span></h4>#}
+{#													<p>We want to share our journey, and help you along yours -that’s why we came up with our blog, <strong>The Brücke</strong>. It means bridge in Deutsch and captures the essence of what we see for YrLang -its purpose is to help you cross language barriers and connect more with where you are and where you want to be,  while also sharing some of our ‘life’ lessons as former expats in Berlin.</p>#}
+{##}
+{#												</div>#}
+{#											</div>#}
+{#											<div class="blog_outer_section">#}
+{#												<div class="row">#}
+{#													{% for blog in blog_list %}#}
+{#													<div class="col-12 col-md-4">#}
+{##}
+{#														<div class="blog_img">#}
+{#															<a href="{% slugurl blog.slug %}">#}
+{#																<div class="blog_img_container">#}
+{#																	{% with blog.image as image %}#}
+{#																	{% if image %}{% image image fill-350x200 %}#}
+{#																	{% else %}<img src="{% static 'images/city_banner.jpg' %}">#}
+{#																	{% endif %}#}
+{#																	{% endwith %}#}
+{##}
+{#																</div></a>#}
+{#																<div class="blog_text">#}
+{#																	<h5>{{blog.title}}</h5>#}
+{#																	<p>{{blog.introduction|truncatechars:80}}</p>#}
+{#																</div>#}
+{#															</div>#}
+{#														</div>#}
+{#														{% endfor %}#}
+{#													</div>#}
+{#												</div>#}
+{#											</div>#}
+{#										</section>#}
+{#										{% endif  %}#}
+{#										<!-- blog section end -->#}
+{##}
+{#									</div>#}
+{#								</div> <!-- wrapper_end -->#}
 
 								<!-- SCRIPTS -->
 								<script type="text/javascript" src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
