@@ -218,6 +218,48 @@
 {#									</div>#}
 {#								</section>#}
 {#								<!-- srch city end -->#}
+        <!-- blog section -->
+								{% if blog_list %}
+								<section class="bog_section">
+									<div class="container">
+										<div class="row">
+											<div class="col-12">
+
+												<h4>Our Blog, The Brucke  <span class="bottom_line"></span></h4>
+												<p>We want to share our journey, and help you along yours -that’s why we came up with our blog, <strong>The Brücke</strong>. It means bridge in Deutsch and captures the essence of what we see for YrLang -its purpose is to help you cross language barriers and connect more with where you are and where you want to be,  while also sharing some of our ‘life’ lessons as former expats in Berlin.</p>
+
+											</div>
+										</div>
+										<div class="blog_outer_section">
+											<div class="row">
+												{% for blog in blog_list %}
+												<div class="col-12 col-md-4">
+
+													<div class="blog_img">
+														<a href="{% slugurl blog.slug %}">
+															<div class="blog_img_container">
+																{% with blog.image as image %}
+																{% if image %}{% image image fill-350x200 %}
+																{% else %}<img src="{% static 'images/city_banner.jpg' %}">
+																{% endif %}
+																{% endwith %}
+
+															</div></a>
+															<div class="blog_text">
+																<h5>{{blog.title}}</h5>
+																<p>{{blog.introduction|truncatechars:80}}</p>
+															</div>
+														</div>
+													</div>
+													{% endfor %}
+
+
+												</div>
+											</div>
+										</div>
+									</section>
+									{% endif %}
+									<!-- blog section end -->
 								<!-- getting started -->
 								<section class="getting_started_section">
 									<div class="container">
@@ -277,55 +319,13 @@
 										</div>
 										<div class="row mt-5">
 											<div class="col-12 text-center">
-												<button class="btn main_btn" type="button">Join us today </button>
+                                                <a href="{% url 'account_login' %}"> <button class="btn main_btn" type="button">Join us today </button></a>
 											</div>
 										</div>
 									</div>
 								</section>
 								<!-- getting started end -->
 
-								<!-- blog section -->
-								{% if blog_list %}
-								<section class="bog_section">
-									<div class="container">
-										<div class="row">
-											<div class="col-12">
-
-												<h4>Our Blog, The Brucke  <span class="bottom_line"></span></h4>
-												<p>We want to share our journey, and help you along yours -that’s why we came up with our blog, <strong>The Brücke</strong>. It means bridge in Deutsch and captures the essence of what we see for YrLang -its purpose is to help you cross language barriers and connect more with where you are and where you want to be,  while also sharing some of our ‘life’ lessons as former expats in Berlin.</p>
-
-											</div>
-										</div>
-										<div class="blog_outer_section">
-											<div class="row">
-												{% for blog in blog_list %}
-												<div class="col-12 col-md-4">
-
-													<div class="blog_img">
-														<a href="{% slugurl blog.slug %}">
-															<div class="blog_img_container">
-																{% with blog.image as image %}
-																{% if image %}{% image image fill-350x200 %}
-																{% else %}<img src="{% static 'images/city_banner.jpg' %}">
-																{% endif %}
-																{% endwith %}
-
-															</div></a>
-															<div class="blog_text">
-																<h5>{{blog.title}}</h5>
-																<p>{{blog.introduction|truncatechars:80}}</p>
-															</div>
-														</div>
-													</div>
-													{% endfor %}
-
-
-												</div>
-											</div>
-										</div>
-									</section>
-									{% endif %}
-									<!-- blog section end -->
 
 									<!-- populr city -->
 									{% if city_list %}
