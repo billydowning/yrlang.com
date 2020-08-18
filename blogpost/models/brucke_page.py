@@ -41,14 +41,8 @@ class BruckePage(Page):
 
     def get_context(self, request):
         context = super().get_context(request)
-        context['localite'] = query = CustomUser.objects.filter(
-            is_client=False, is_private=False,
-            state__name__icontains=self.state,
-            user_role__name=UserRole.LOCALITE)
-        context['provider'] = query = CustomUser.objects.filter(
-            is_client=False, is_private=False,
-            state__name__icontains=self.state,
-            user_role__name=UserRole.PROVIDER)
+        context['state_brucks'] = BruckePage.objects.filter(state=self.state).exclude(id=self.pk)
+        context['brucks'] = BruckePage.objects.all().exclude(state=self.state).exclude(id=self.pk)
         return context
 
 
