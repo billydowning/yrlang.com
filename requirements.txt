@@ -56,6 +56,7 @@ pyasn1-modules==0.2.8
 pycparser==2.20
 Pygments==2.6.1
 PyHamcrest==2.0.2
+PyJWT==1.7.1
 pyOpenSSL==19.1.0
 python-dateutil==2.8.1
 python3-openid==3.1.0
@@ -69,6 +70,7 @@ soupsieve==2.0
 sqlparse==0.3.1
 stripe==2.48.0
 traitlets==4.3.3
+twilio==6.44.2
 Twisted==20.3.0
 txaio==20.4.1
 Unidecode==1.1.1

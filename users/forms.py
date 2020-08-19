@@ -182,10 +182,19 @@ class UpdateAccountForm(ModelForm):
         self.request = request
         super(UpdateAccountForm, self).__init__(*args, **kwargs)
         self.fields['role'].queryset = UserRole.objects.exclude(id__in=self.instance.user_role.all())
+        self.fields['phone_number'].required = True
+        self.fields['phone_number'].widget.attrs.update({
+            'autocomplete': 'off', 'type': 'tel',
+            'pattern': "[\+]\d{2}\d{3}[\-]\d{3}[\-]\d{4}",
+
+        })
 
     class Meta:
         model = CustomUser
-        fields = ["username", "email", 'profile_image']
+        fields = ["username", "email", 'profile_image', 'phone_number']
+        help_texts = {
+            'phone_number': 'Use Formate Like This +91999-999-9999 '
+        }
 
     def save(self, commit=True):
         instance = super(UpdateAccountForm, self).save(commit=False)
@@ -204,7 +213,7 @@ class UpdateAccountForm(ModelForm):
 
         if profile_image:
             instance.profile_image = profile_image
-            instance.save()
+        instance.save()
         return instance
 
 
@@ -232,7 +241,7 @@ class ProviderAccountForm(ModelForm):
         model = CustomUser
         fields = ['country', 'state', 'phone_number']
         help_texts = {
-            'phone_number': 'Use Formate Like This 999-999-9999 '
+            'phone_number': 'Use Formate Like This +91999-999-9999 '
         }
 
     def __init__(self, request=None, *args, **kwargs):
@@ -243,7 +252,7 @@ class ProviderAccountForm(ModelForm):
         self.fields['phone_number'].required = True
         self.fields['phone_number'].widget.attrs.update({
             'autocomplete': 'off', 'type': 'tel',
-            'pattern': "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+             'pattern': "[\+]\d{2}\d{3}[\-]\d{3}[\-]\d{4}",
 
         })
 
@@ -282,7 +291,7 @@ class UpdateProviderAccountForm(ModelForm):
         fields = ['username', 'email', 'bio', 'phone_number', 'state',
                   'country', 'language', 'profile_image']
         help_texts = {
-            'phone_number': 'Use Formate Like This 999-999-9999 '
+            'phone_number': 'Use Formate Like This +91999-999-9999 '
         }
 
     def __init__(self, request=None, *args, **kwargs):
@@ -291,7 +300,7 @@ class UpdateProviderAccountForm(ModelForm):
         self.fields['role'].queryset = UserRole.objects.exclude(id__in=self.instance.user_role.all())
         self.fields['phone_number'].widget.attrs.update({
             'autocomplete': 'off', 'type': 'tel',
-            'pattern': "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+            'pattern': "[\+]\d{2}\d{3}[\-]\d{3}[\-]\d{4}",
         })
 
     def save(self, commit=True):

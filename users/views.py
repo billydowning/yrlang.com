@@ -95,7 +95,7 @@ class AccountView(UserSessionAndLoginCheckMixing, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         accounts = PaymentAccount.objects.filter(user=request.user)
-        print(accounts.first())
+
         for account in accounts:
             if account.account_status == "False":
                 stripe.api_key = settings.STRIPE_KEYS['secret_key']
