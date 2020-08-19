@@ -193,7 +193,7 @@ $(document).ready(function() {
             <div class="col-12 pl-0 pr-0">
                 <div class="gallary_images">
                     {% for pictures in images %}
-                    {% image pictures.image fill-320x300 %}
+                    {% image pictures.image original %}
                     {% endfor %}
                 </div>
             </div>

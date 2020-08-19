@@ -963,6 +963,18 @@ p {
     }
  .white_text{color:#fff !important;text-align:left !important;}
  h3#word{color:#fff !important}
+/* 19-08-2020*/
+.card_view .btn {
+    padding: 0;
+    background: transparent;
+    color: #6ac241 !important;
+    font-weight: 600;
+    letter-spacing: 2px !important;
+}
+.card_view .card-body .card-text
+{
+  min-height: 45px;
+}
 /*form*/
 /*responsive*/
 
