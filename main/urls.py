@@ -19,7 +19,7 @@ urlpatterns = [
     path('add-anon-favorite/<str:object>/<int:id>', views.AddAnonymousUserFavoriteView.as_view(), name='add_anon_favorite'),
     path('favorites/', views.ListOfnonymousUserFavoriteView.as_view(), name='anon_favorite_list'),
 
-    path('blog-post/', views.BlogPostView.as_view(), name='blog-post'),
+    path('blog-post/', views.BlogPostView.as_view(), name='blog_post'),
 
 
 

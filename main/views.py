@@ -156,8 +156,12 @@ class IndexView(TemplateView):
 
 
 class BlogPostView(TemplateView):
-    template_name = 'blogpost/brucke_page.html'
-    queryset = BruckePage.objects.all().order_by("?")[:3]
+    template_name = 'blogpost/brucke_page_home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(BlogPostView, self).get_context_data()
+        context['brucks'] = BruckePage.objects.all().order_by("date")
+        return context
 
 
 class OurCities(DetailView):
