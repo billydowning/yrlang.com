@@ -833,6 +833,24 @@ ul.social_icons_listing li img
 {
     margin-bottom: 40px;
 }
+.sidebar_links{padding: 0;margin: 0;}
+.sidenav a
+{
+    position: relative;
+}
+.sidenav a i
+{
+    color: #fff !important;
+    position: absolute;
+    top: 10px !important;
+    left: 8px;
+}
+.sidebar_links li{list-style: none;}
+.submenu_links {
+    display: none;
+    background: #63b63c;
+    padding-left: 15px;
+}
 /*19-08-2020*/
 
 

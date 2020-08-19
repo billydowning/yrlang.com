@@ -102,7 +102,26 @@
 
     {% block calendar_extras %}
     {% endblock calendar_extras %}
-
+<style>
+    .sidebar_links{padding: 0;margin: 0;}
+.sidenav a
+{
+    position: relative;
+}
+.sidenav a i
+{
+    color: #fff !important;
+    position: absolute;
+    top: 10px !important;
+    left: 8px;
+}
+.sidebar_links li{list-style: none;}
+.submenu_links {
+    display: none;
+    background: #63b63c;
+    padding-left: 15px;
+}
+</style>
 </head>
 <body>
 <div class="wrapper">
@@ -239,9 +258,24 @@
                     {% endif %}
 
                     {% else %}
+                        <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+                        <li class="dropdown">
+                        <a href="">Join Our Platform</a>
+                        <div class="dropdown-content">
+                            {% for city in city_list %}
+
+                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>
+
+                            {% endfor %}
+                             {% if  city_list.count > 3 %}
+                            <a href="{% slugurl city_parent.slug %}">View All.</a>
+                            {% endif %}
+                        </div>
+                    </li>
+
                      <li><a href="{% url 'account_login' %}"> Become a Localite</a></li>
                         <li><a href="{% url 'account_login' %}"> Become a Provider</a></li>
-                    <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+
                     <li><a href="{% url 'about_us' %}"> About Us</a></li>
 
 
@@ -311,59 +345,77 @@
         {% endif %}
 
         <hr class="my-3">
-        <br>
+        <ul class="sidebar_links">
+            <li class="opn_submenu">
+            <a href="#" class="opned">Our Cities</a>
+            <div class="submenu_links">
+                 <a href="#">Berlin</a>
+                  <a href="#">Milan</a>
+                  <a href="#">Paris</a>
+            </div>
+        </li>
 
-        <a href="#">About</a>
-        <a href="#">Services</a>
-        <a href="#">Clients</a>
-        <a href="#">Contact</a>
-        <a href="{% url 'main:our_cities' %}">Our Cities</a>
-
-        {% if request.session.user_role %}
-        <div>
-            <a href="{% url 'account' %}"><span>Account</span></a>
-            {% if provider_checked or client_checked %}
-            <a href="{% url 'provider_appointment' %}"><span>Appointments</span></a>
-            <a href="{% url 'inbox' %}"><span>Messages</span></a>
+            {% if request.user.is_authenticated %}
+            <li><a href="#">My Dashboard</a></li>
+                <li><a href="#">Become a Localite</a></li>
+            <li><a href="#">Become a Provider</a></li>
             {% endif %}
+        <li><a href="#">Become a Localite</a></li>
+            <li><a href="#">Become a Provider</a></li>
+         <li class="opn_submenu">
+            <a href="#" class="opned">The Brucke</a>
+            <div class="submenu_links">
+                 <a href="#">sub</a>
+                  <a href="#">Clients</a>
+            </div>
+        </li>
+       </ul>
 
-            {% if localite_checked or client_checked %}
-            <a href="{% url 'appointments' %}"><span>Booking </span></a>
-            {% endif %}
-
-            {% if localite_checked or client_checked %}
-            <a href="{% url 'invoices' %}"><span>Invoices</span></a>
-            {% endif %}
-
-            {% if localite_checked %}
-            <a href="{% url 'create_invoice' %}"><span>Create New Invoice</span></a>
-            {% endif %}
-
-            {% if provider_checked %}
-            <a href="{% url 'provider_create_invoice' %}"><span>Create New Invoice</span></a>
-            {% endif %}
-
-            {% if request.user.user_role.count > 1 %}
-            <a href="{% url 'user-role-select' %}">Swich Role</a>
-            {% endif %}
-
-            <a href="{% url 'account_logout' %}"><span>Logout</span></a>
-        </div>
-        {% else %}
-        <a href="{% url 'main:home' %}"> <span>Expore</span></a>
-
-        <a href="{% url 'account_login' %}">
-            <i class="fa fa-sign-in top_0" aria-hidden="true"> </i>
-            <span>Login</span>
-        </a>
-        <a href="{% url 'client_signup_view' %}">
-            <i class="fa fa-user-plus top_0" aria-hidden="true"> </i>
-            <span>Register</span>
-        </a>
-        {% endif %}
+{#        {% if request.session.user_role %}#}
+{#        <div>#}
+{#            <a href="{% url 'account' %}"><span>Account</span></a>#}
+{#            {% if provider_checked or client_checked %}#}
+{#            <a href="{% url 'provider_appointment' %}"><span>Appointments</span></a>#}
+{#            <a href="{% url 'inbox' %}"><span>Messages</span></a>#}
+{#            {% endif %}#}
+{##}
+{#            {% if localite_checked or client_checked %}#}
+{#            <a href="{% url 'appointments' %}"><span>Booking </span></a>#}
+{#            {% endif %}#}
+{##}
+{#            {% if localite_checked or client_checked %}#}
+{#            <a href="{% url 'invoices' %}"><span>Invoices</span></a>#}
+{#            {% endif %}#}
+{##}
+{#            {% if localite_checked %}#}
+{#            <a href="{% url 'create_invoice' %}"><span>Create New Invoice</span></a>#}
+{#            {% endif %}#}
+{##}
+{#            {% if provider_checked %}#}
+{#            <a href="{% url 'provider_create_invoice' %}"><span>Create New Invoice</span></a>#}
+{#            {% endif %}#}
+{##}
+{#            {% if request.user.user_role.count > 1 %}#}
+{#            <a href="{% url 'user-role-select' %}">Swich Role</a>#}
+{#            {% endif %}#}
+{##}
+{#            <a href="{% url 'account_logout' %}"><span>Logout</span></a>#}
+{#        </div>#}
+{#        {% else %}#}
+{#        <a href="{% url 'main:home' %}"> <span>Expore</span></a>#}
+{##}
+{#        <a href="{% url 'account_login' %}">#}
+{#            <i class="fa fa-sign-in top_0" aria-hidden="true"> </i>#}
+{#            <span>Login</span>#}
+{#        </a>#}
+{#        <a href="{% url 'client_signup_view' %}">#}
+{#            <i class="fa fa-user-plus top_0" aria-hidden="true"> </i>#}
+{#            <span>Register</span>#}
+{#        </a>#}
+{#        {% endif %}#}
 
         <div class="my-3 mx-5">
-            <p class="text-center white_text">Yr lang</p>
+            <p class="text-center white_text">Yrlang</p>
         </div>
 
     </div>
@@ -403,7 +455,7 @@
                         <img src="https://uploads-ssl.webflow.com/5d2f9334e480cd760d273d52/5d30e566e9af515a05fd982a_yr_lang_bubble_1.png"
                              width="45px" alt="">
                         <hr class="divider-grey">
-                        <div class="uk-column-1-2@s uk-column-1-3@m uk-column-1-4@l row">
+                        <div class="row">
 
                             <div class="col-12 col-md-6 col-lg-3">
                                 <p class="bolder">Languages</p>
@@ -450,5 +502,9 @@
 </body>
 <script>
 $(".content").css("padding-bottom", $("footer").outerHeight()+'px');
+
+   $('.opn_submenu > a.opned').hover(function() {
+    $(this).next('.submenu_links').slideToggle();
+});
 </script>
 </html>
