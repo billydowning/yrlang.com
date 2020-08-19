@@ -247,3 +247,11 @@ class ListOfnonymousUserFavoriteView(TemplateView):
             if self.city in self.request.session.get('favorites_dic'):
                 context['citys'] = CityPage.objects.filter(id__in=self.request.session['favorites_dic']['city'])
         return context
+
+
+class JoinOurTeam(TemplateView):
+    template_name = 'main_join_our_team.html'
+
+
+class TrustAndSaftey(TemplateView):
+    template_name = 'main_trust_and_saftey.html'
