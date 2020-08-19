@@ -23,6 +23,7 @@ urlpatterns = [
     path('blog-post/', views.BlogPostView.as_view(), name='blog_post'),
 
     path('join-team/', views.JoinOurTeam.as_view(), name='join_our_team'),
+    path('terms-condition/', views.TermsCondition.as_view(), name='terms-condition'),
     path('trust-and-saftey/', views.TrustAndSaftey.as_view(), name='trust_and_saftey'),
 
 ]

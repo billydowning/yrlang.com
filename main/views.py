@@ -257,5 +257,9 @@ class JoinOurTeam(TemplateView):
     template_name = 'main_join_our_team.html'
 
 
+class TermsCondition(TemplateView):
+    template_name = 'term_condition.html'
+
+
 class TrustAndSaftey(TemplateView):
     template_name = 'main_trust_and_saftey.html'
