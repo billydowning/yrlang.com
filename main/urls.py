@@ -20,7 +20,7 @@ urlpatterns = [
          name='add_anon_favorite'),
     path('favorites/', views.ListOfnonymousUserFavoriteView.as_view(), name='anon_favorite_list'),
 
-    path('blog-post/', views.BlogPostView.as_view(), name='blog-post'),
+    path('blog-post/', views.BlogPostView.as_view(), name='blog_post'),
 
     path('join-team/', views.JoinOurTeam.as_view(), name='join_our_team'),
     path('trust-and-saftey/', views.TrustAndSaftey.as_view(), name='trust_and_saftey'),
