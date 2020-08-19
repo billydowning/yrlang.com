@@ -239,10 +239,12 @@
                     {% endif %}
 
                     {% else %}
-                    <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
-
-                        <li><a href="{% url 'account_login' %}"> Become a Localite</a></li>
+                     <li><a href="{% url 'account_login' %}"> Become a Localite</a></li>
                         <li><a href="{% url 'account_login' %}"> Become a Provider</a></li>
+                    <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+                    <li><a href="{% url 'about_us' %}"> About Us</a></li>
+
+
 {#                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>#}
 {#                    <li class="dropdown">#}
 {#                        <a href="">Top Cities</a>#}
@@ -274,7 +276,7 @@
                     <li><a href="{% url 'client_signup_view' %}"><i class="fa fa-user-plus top_0"
                                                                     aria-hidden="true"> </i><span>Register</span></a>
                     </li>
-                    <li><a href="{% url 'about_us' %}"> About Us</a></li>
+
                     {% endif %}
                 </ul>
             </div>
@@ -432,10 +434,10 @@
                                 <p class="bolder">Company</p>
                                 <p class="turn-grey small footers_link">
                                     <a href="{%  url 'about_us' %}">Abuot Us</a>
-                                    <a href="">Joim Our Team</a>
+                                    <a href="{% url 'main:join_our_team' %}">Joim Our Team</a>
                                     <a href="">Localite/Provider FAQs</a>
-                                    <a href="">Term & Condition</a>
-                                    <a href="">Trust & Safety</a>
+                                    <a href="{% static 'files/terms_and_conditions_docs/sample.pdf' %}">Term & Condition</a>
+                                    <a href="{% url 'main:trust_and_saftey' %}">Trust & Safety</a>
                                 </p>
                             </div>
                         </div>

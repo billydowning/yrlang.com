@@ -16,6 +16,7 @@ from webpush import send_user_notification
 from django.core.mail import send_mail
 from yrlang.settings.development_example import EMAIL_HOST_USER
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
+from users.twillo_messages_to_user import SendSMSWithTwillo
 
 
 class AppoitnemtRequestView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DetailView):
@@ -234,14 +235,19 @@ class SaveBookings(UserSessionAndLoginCheckMixing, View):
                 "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
             }
             send_user_notification(user=booking.requestee, payload=payload_data, ttl=100)
+            message_data = 'You have booking schedule with '+ str(booking.requestee) + ' on '+ data[0]['date']+'with start time respectivly with end time ' +  data[0]['start'] + ' '+ data[0]['end'],
             send_mail(
                 'Booking scheduled on ' + data[0]['date'],
-                'You have booking schedule with '+ str(booking.requestor) + ' on '+ data[0]['date']+
-                'with start time respectivly with end time ' +  data[0]['start'] + ' '+ data[0]['end'],
+                message_data,
                 EMAIL_HOST_USER,
-                [str(booking.requestee.email)],
+                [str(booking.requestor.email)],
                 fail_silently=True,
             )
+            if booking.requestor.phone_number:
+                str_phone_number = str(booking.requestor.phone_number)
+                to = str_phone_number.replace('-', '')
+                twillo = SendSMSWithTwillo()
+                twillo.send_messsge_to_user(to, message_data)
 
             for obj in data:
                 BookingDates.objects.create(booking=booking, date=obj['date'], start_time=obj['start'], end_time=obj['end'])
@@ -288,14 +294,21 @@ class SaveAppointments(UserSessionAndLoginCheckMixing, View):
                     "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
                 }
                 send_user_notification(user=instance.requestee, payload=payload_data, ttl=100)
-
+                message_data = 'Your  appointment schedule with ' + str(instance.requestee) + ' on ' + ''+ data['request_date']
                 send_mail(
                     'Appointment scheduled on '+ data['request_date'],
-                    'You have booking schedule with ' + str(instance.requestor) + ' on ' + ''+data['request_date'],
+                    message_data,
                     EMAIL_HOST_USER,
-                    [str(instance.requestee.email)],
+                    [str(instance.requestor.email)],
                     fail_silently=True,
                 )
+                if instance.requestor.phone_number:
+                    str_phone_number = str(instance.requestor.phone_number)
+                    to = str_phone_number.replace('-', '')
+                    twillo = SendSMSWithTwillo()
+                    twillo.send_messsge_to_user(to, message_data)
+
+
 
         if appointment_id:
             appointment = ProviderAppointment.objects.get(id=appointment_id)
