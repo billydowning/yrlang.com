@@ -5,6 +5,7 @@ from main import views
 app_name = 'main'
 urlpatterns = [
     path('home', views.HomeView.as_view(), name='home'),
+    path('location-ajax', views.SetLonAndLatInSession.as_view(), name='set_location_ajax'),
     path('', views.IndexView.as_view(), name='index'),
     path('search/', views.Search.as_view(), name='search'),
     path('time-zone/', views.TimeZone.as_view(), name='time_zone'),

@@ -3,7 +3,7 @@ import pytz
 from django.contrib import messages
 from _collections import defaultdict
 from django.views.generic import TemplateView, View, ListView, DetailView, RedirectView
-from django.http import JsonResponse
+
 from django.db.models import Q
 from django.shortcuts import redirect
 from .constant import *
@@ -14,28 +14,43 @@ from .forms import UserSearchFrom
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
+from django.http import HttpResponseRedirect, JsonResponse
 
 class HomeView(TemplateView):
     template_name = "home.html"
-    longitude = 52.5083702
-    latitude = 13.2809474
+    longitude = None
+    latitude = None
 
-    def get_context_data(self, **kwargs):
-        context = super(HomeView, self).get_context_data(**kwargs)
-        user_location = Point(self.longitude, self.latitude, srid=4326)
-        #print(user_location)
+    def get(self, request, *args, **kwargs):
+        localite_list = None
+        provider_list = None
         search_form = UserSearchFrom(self.request.GET)
-        city_data = State.objects.annotate(distance=Distance('location',user_location)).order_by('distance')[0:6]
-        #print(city_data)
-        if search_form.is_valid():
 
+
+
+        if search_form.is_valid():
             if search_form.cleaned_data.get('country'):
-                localite_list = CustomUser.objects.filter(Q(country=search_form.cleaned_data.get('country'))).\
+                localite_list = CustomUser.objects.filter(Q(country=search_form.cleaned_data.get('country'))). \
                                     filter(is_private=False, user_role__name__in=[UserRole.LOCALITE]). \
-                                    exclude(id=self.request.user.id, state__isnull=True, country__isnull=True).order_by('?')[:3]
-                provider_list = CustomUser.objects.filter(Q(country=search_form.cleaned_data.get('country'))).\
-                                    filter(is_private=False,user_role__name__in=[UserRole.PROVIDER]). \
-                                    exclude(id=self.request.user.id, state__isnull=True, country__isnull=True).order_by('?')[:3]
+                                    exclude(id=self.request.user.id, state__isnull=True, country__isnull=True).order_by(
+                    '?')[:3]
+                provider_list = CustomUser.objects.filter(Q(country=search_form.cleaned_data.get('country'))). \
+                                    filter(is_private=False, user_role__name__in=[UserRole.PROVIDER]). \
+                                    exclude(id=self.request.user.id, state__isnull=True, country__isnull=True).order_by(
+                    '?')[:3]
+
+            elif request.session.get('log') and request.session.get('lat'):
+                self.latitude  = request.session.get('lat')
+                self.longitude = request.session.get('log')
+                user_location = Point(float(self.longitude), float(self.latitude), srid=4326)
+                state_data = State.objects.annotate(distance=Distance('location',user_location)).order_by('distance').first()
+                print(state_data.distance)
+                localite_list = state_data.customuser_set.filter(is_private=False,
+                                                          user_role__name__in=[UserRole.LOCALITE]
+                                                                 ).exclude(id=self.request.user.id).order_by('?')[:3]
+                provider_list = state_data.customuser_set.filter(is_private=False,
+                                                          user_role__name__in=[UserRole.PROVIDER]
+                                                                 ).exclude(id=self.request.user.id).order_by('?')[:3]
 
             else:
                 localite_list = CustomUser.objects.filter(is_private=False,
@@ -46,6 +61,23 @@ class HomeView(TemplateView):
                                                           user_role__name__in=[UserRole.PROVIDER]). \
                                     exclude(id=self.request.user.id).exclude(state__isnull=True,
                                                                              country__isnull=True).order_by('?')[:3]
+
+
+
+
+        context = self.get_context_data(**kwargs)
+        context["localites"] = localite_list
+        context['providers'] = provider_list
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+
+        context = super(HomeView, self).get_context_data(**kwargs)
+
+
+        search_form = UserSearchFrom(self.request.GET)
+       # city_data = State.objects.annotate(distance=Distance('location',user_location)).order_by('distance').first()
+
 
         banner = ""
         if self.request.user.is_authenticated:
@@ -72,8 +104,7 @@ class HomeView(TemplateView):
         elif self.request.user.is_anonymous:
             banner = "You Are not logged in "
         context["banner"] = banner
-        context["localites"] = localite_list
-        context['providers'] = provider_list
+
         context['search_form'] = search_form
         return context
 
@@ -269,3 +300,15 @@ class TermsCondition(TemplateView):
 
 class TrustAndSaftey(TemplateView):
     template_name = 'main_trust_and_saftey.html'
+
+
+class SetLonAndLatInSession(View):
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            if not request.session.get('log') and not request.session.get('lat'):
+                request.session['log']  = request.GET.get('longitude')
+                request.session['lat'] = request.GET.get('latitude')
+                return JsonResponse(data={'not_here': 'data set'})
+            else:
+                return JsonResponse(data={'already_here':'data found'})
+        return super(SetLonAndLatInSession, self).get( request, *args, **kwargs)
