@@ -8,15 +8,19 @@ function closeNav() {
 
 $(function () {
   count = 0;
-  wordsArray = [
-  "Bonjour", "Guten Tag",
-   "Hola", "Salve",
-   "Yassas", "Zdravstvuyte",
-   "Konnichiwa", "Olá",
-   "Goddag", "Goedendag",
-   "Shikamoo", "Dzień dobry",
-   "Namaskar", "Merhaba"
+  words = [
+  "Hello", "Hola",
+  "नमस्कार", "Bonjour",
+  "નમસ્તે",
+  "你好", "Привет",
+  "selamat siang", "হ্যালো",
+  "Olá", "Halo",
+  "Olá", "Guten Tag",
+  "こんにちは", "Merhaba",
+  "Hujambo", "dzień dobry",
   ];
+  words2 = ["ہیلو","مرحبا"];
+  wordsArray = words.concat(words2);
   setInterval(function () {
     count++;
     $("#word").fadeOut(400, function () {
