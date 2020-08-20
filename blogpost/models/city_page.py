@@ -85,6 +85,7 @@ class CityPage(Page):
         return context
 
     parent_page_types = ['CityIndexPage']
+    subpage_types = []
 
 
 class CityIndexPage(Page):
