@@ -1,19 +1,16 @@
 from django.db import models
 
-from modelcluster.fields import ParentalKey, ParentalManyToManyField
+from modelcluster.fields import ParentalKey
 from wagtail.core.models import Page, Orderable
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.core.fields import RichTextField
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel
-
-from users.models import CustomUser, UserRole
+from wagtail.admin.edit_handlers import FieldPanel, InlinePanel
 
 
 class BruckePage(Page):
-    introduction = models.TextField(help_text="About Your blog", null=True, blank=True)
     date = models.DateField(auto_now=True)
     bruke_content = RichTextField(blank=True,
-                                 help_text='describe the thing that we are allow to do ')
+                                  help_text='describe the thing that we are allow to do ')
     image = models.ForeignKey('wagtailimages.Image',
                               null=True,
                               blank=True,
@@ -28,7 +25,6 @@ class BruckePage(Page):
                               )
 
     content_panels = Page.content_panels + [
-        FieldPanel('introduction'),
         FieldPanel('state'),
         FieldPanel('bruke_content'),
         ImageChooserPanel('image'),
