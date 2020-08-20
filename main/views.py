@@ -7,20 +7,26 @@ from django.http import JsonResponse
 from django.db.models import Q
 from django.shortcuts import redirect
 from .constant import *
-from users.models import CustomUser, UserRole, UserRoleRequest
+from users.models import CustomUser, UserRole, UserRoleRequest, State
 from blogpost.models import BlogPostPage, CityPage, BruckePage
 from appointments.models import Appointment, ProviderAppointment
 from .forms import UserSearchFrom
-
+from django.contrib.gis.geos import fromstr
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import Point
 
 class HomeView(TemplateView):
     template_name = "home.html"
+    longitude = 52.5083702
+    latitude = 13.2809474
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
-
+        user_location = Point(self.longitude, self.latitude, srid=4326)
+        #print(user_location)
         search_form = UserSearchFrom(self.request.GET)
-
+        city_data = State.objects.annotate(distance=Distance('location',user_location)).order_by('distance')[0:6]
+        #print(city_data)
         if search_form.is_valid():
 
             if search_form.cleaned_data.get('country'):
