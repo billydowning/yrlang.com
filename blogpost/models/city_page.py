@@ -7,9 +7,11 @@ from wagtail.core.models import Page, Orderable
 from wagtail.images.edit_handlers import ImageChooserPanel
 from wagtail.core.fields import RichTextField
 from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel
-from users.models import CustomUser, UserRole
+from users.models import CustomUser, UserRole, State
 # from users.models import( UserRole, CustomUser)
 from .brucke_page import (BruckePage)
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import Point
 
 
 class CityPage(Page):
@@ -55,16 +57,30 @@ class CityPage(Page):
         return reverse('main:our_cities', args=[self.pk])
 
     def get_context(self, request, *args, **kwargs):
-        city_id = self._get_pk_val()
-        city = CityPage.objects.get(id=city_id)
-        state=city.state
         context = super(CityPage, self).get_context(request, *args, **kwargs)
-        context['localites'] = CustomUser.objects.filter(user_role__name=UserRole.LOCALITE,
-                                                     is_private=False, state=state).\
-            exclude(id=request.user.id).order_by('?')[:2]
-        context['providers'] = CustomUser.objects.filter(user_role__name=UserRole.PROVIDER,
-                                                     is_private=False,state=state).\
-            exclude(id=request.user.id).order_by('?')[:2]
+        if request.session.get('log') and request.session.get('lat'):
+            self.latitude = request.session.get('lat')
+            self.longitude = request.session.get('log')
+            user_location = Point(float(self.longitude), float(self.latitude), srid=4326)
+            state_data = State.objects.filter(name=str(self.state)).annotate(distance=Distance('location', user_location)).order_by('distance').first()
+            context['distance'] = 'You are ' +str(state_data.distance)[:10] + ' meter away'
+
+            localites_list = state_data.customuser_set.filter(is_private=False,
+                                                          user_role__name__in=[UserRole.LOCALITE]
+                                                                 ).exclude(id=request.user.id).order_by('?')
+            provider_list = state_data.customuser_set.filter(is_private=False,
+                                                          user_role__name__in=[UserRole.PROVIDER]
+                                                          ).exclude(id=request.user.id).order_by('?')
+        else:
+            localites_list =  CustomUser.objects.filter(user_role__name=UserRole.LOCALITE,
+                                                     is_private=False, state__name=self.state).\
+            exclude(id=request.user.id).order_by('?')
+            provider_list =  CustomUser.objects.filter(user_role__name=UserRole.PROVIDER,
+                                                     is_private=False, state__name=self.state).\
+            exclude(id=request.user.id).order_by('?')
+        context['localite_total'] = str(localites_list.count()) + ' localites in city'
+        context['localites'] = localites_list[:2]
+        context['providers'] = provider_list[:2]
         context['brukes'] = BruckePage.objects.filter(state=self.state)[:3]
         return context
 
