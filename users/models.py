@@ -16,11 +16,13 @@ from wagtail.admin.edit_handlers import FieldPanel
 from wagtail.core.models import Page
 
 from .managers import CustomUserManager
+from django.contrib.gis.db import models as gis_model
 
 
 @register_snippet
 class State(models.Model):
     name = models.CharField(max_length=50)
+    location = gis_model.PointField(null=True, blank=True)
 
     panels = [
         FieldPanel('name')

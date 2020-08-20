@@ -5,6 +5,7 @@ from invoices.models import Invoice
 from appointments.models import Appointment
 from blogpost.models.modelpost import BlogPostPage
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
+from django.contrib.gis.admin import OSMGeoAdmin
 
 
 class BlogPostInline(admin.TabularInline):
@@ -92,8 +93,8 @@ class CustomerAdmin(AuthUserAdmin):
 admin.site.register(CustomUser, CustomerAdmin)
 
 
-class StateAdmin(admin.ModelAdmin):
-    list_display = ('__str__',)
+class StateAdmin(OSMGeoAdmin):
+    list_display = ('__str__','location')
     list_display_links = ('__str__',)
     list_filter = ('name',)
     list_per_page = 25
