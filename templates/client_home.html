@@ -75,7 +75,8 @@
                                     </div>
                                     <ul class="about_user_pro">
                                         <li>
-                                            <span>State:</span>{{ localite.state }} - {{ localite.country }}
+                                             {% if localite.distance   %}<span>Distance: </span>{{localite.distance}}{% endif %}
+                                             <span>State:</span>{{ localite.state }} - {{ localite.country }}
                                             <div class="div_sp pl-5">
                                                 <span>Profession:</span> {% for profession in localite.profession.all %}{{ profession.name }},{%endfor%}
                                             </div>

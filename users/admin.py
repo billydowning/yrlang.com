@@ -61,11 +61,11 @@ class ProviderCategoriesInline(admin.TabularInline):
     verbose_name_plural = 'Provider Categories'
 
 
-class CustomerAdmin(AuthUserAdmin):
+class CustomerAdmin(OSMGeoAdmin):
     ordering = ('email',)
-    list_display = ('__str__', 'is_client', 'phone_number')
+    list_display = ('__str__', 'is_client', 'phone_number', 'last_location')
     list_display_links = ('__str__',)
-    list_filter = ('is_client', 'country', 'state')
+    list_filter = ('is_client', 'country', 'state','user_role')
     list_per_page = 25
     search_fields = ['email', 'language__name', 'country__name', 'state__name']
     fieldsets = (
@@ -77,7 +77,7 @@ class CustomerAdmin(AuthUserAdmin):
             'classes': ('collapse',),
             'fields': ('first_name', 'last_name', 'bio', 'phone_number', 'state',
                        'country', 'language', 'profession',
-                       'stripe_id', 'user_role', 'profile_image', 'multi_day'),
+                       'stripe_id', 'user_role', 'profile_image', 'multi_day','last_location'),
         }),
         ('Groups & Permission', {
             'classes': ('collapse',),

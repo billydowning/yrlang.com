@@ -94,6 +94,7 @@ class CustomUser(AbstractUser):
     user_role = models.ManyToManyField(UserRole, null=True, blank=True)
     is_private = models.BooleanField('private', default=False)
     multi_day = models.BooleanField(default=False)
+    last_location = gis_model.PointField(null=True, blank=True)
 
 
     USERNAME_FIELD = 'email'
