@@ -340,10 +340,10 @@ padding-left: 0px !important;
 margin-top: 10px;
 }
 .start_inner{min-height: 320px !important;}
-a.page_link {
-    text-align: left;
-    display: block;
-    margin-top: 10px;
+.home-link{
+    text-decoration: none;
+    float: right;
+    color: #6ac241;
 }
 .getting_start_step_outer .row .col-12:last-child .start_inner{ min-height: 250px !important;}
 
