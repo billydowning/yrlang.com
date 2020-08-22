@@ -50,6 +50,8 @@ class HomeView(TemplateView):
                                     exclude(id=self.request.user.id).exclude(state__isnull=True,
                                                                              country__isnull=True).\
                                     annotate(distance=Distance('last_location',request.user.last_location)).order_by('distance')[:3]
+                for i in localite_list:
+                    print(i.distance, i)
 
             else:
                 localite_list = CustomUser.objects.filter(is_private=False,
