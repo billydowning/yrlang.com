@@ -73,64 +73,8 @@ background-image: url({% static 'images/line.png' %});
         </div>
     </div>
     <hr class="star-line" style="border: none;">
+
     {% for page in state_brucks %}
-    <div class="container ml-2 mr-5 pl-5 pr-5">
-        <div class="row mx-1 mt-5">
-            <div class="mr-3">THE BRUKE</div>
-            |
-            <div class="ml-3">{{ page.date|date:'F d, Y' }}</div>
-        </div>
-        <h1>{{ page.title }}</h1>
-        <h6 class="mt-2">By Yr-Lang</h6>
-        {% if page.introduction %}
-        <h3><b>{{ page.introduction }}</b></h3>
-        {% endif %}
-        {% if page.image %}
-        <div class="row">
-            <div class="col-2"></div>
-            <div class="col-8">
-                {% image page.image width-400 as phot %}
-                <img src="{{ phot.url }}" height="200" width="800" alt="">
-            </div>
-            <div class="col-2"></div>
-        </div>
-        {% endif %}
-
-        {% if page.bruke_content %}
-        <p class="my-5">{{ page.bruke_content|richtext }}</p>
-        {% endif %}
-
-        <div>
-            {% with related_posts=page.related_posts.all %}
-
-            {% if related_posts %}
-            <hr size="2">
-            {% for posts in related_posts %}
-
-
-            <h3>{{ posts.title }}</h3>
-            {% with posts.image as image %}
-            <center>{% if image %}{% image image fill-400x250 %}{% endif %}</center>
-            {% endwith %}
-            <p>{{ posts.body|richtext }}</p>
-            {% if posts.check_out %}
-            <b><h5>Check out</h5></b>
-            <p>{{ posts.check_out}}</p>
-            {% endif %}
-            {% if posts.walking_distance %}
-            <b><h5>Walking Distance </h5></b>
-            <p>{{ posts.walking_distance}}</p>
-            {% endif %}
-            {% endfor %}
-
-            {% endif%}
-            {% endwith %}
-        </div>
-    </div>
-    <hr class="star-line" style="border: none;">
-    {% endfor %}
-
-    {% for page in brucks %}
     <div class="container ml-2 mr-5 pl-5 pr-5">
         <div class="row mx-1 mt-5">
             <div class="mr-3">THE BRUKE</div>
