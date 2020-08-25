@@ -22,6 +22,7 @@ django-channels==0.7.0
 django-crontab==0.7.1
 django-debug-toolbar==2.2
 django-jsonfield==1.4.0
+django-leaflet==0.27.1
 django-modelcluster==5.0.1
 django-multiupload2==0.5.3
 django-paypal==1.0.0

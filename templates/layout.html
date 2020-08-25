@@ -157,6 +157,7 @@
                     <li><a href="{% url 'main:home' %}"> Explore</a></li>
                     <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
 
+
                     <li class="dropdown">
                         <a href="">Top City</a>
                         <div class="dropdown-content">
@@ -170,6 +171,8 @@
                             {% endif %}
                         </div>
                     </li>
+                    <li><a href="{% url 'inbox' %}"><i class="fa fa-envelope "
+                                                           aria-hidden="true"></i>Messages</a></li>
 
                     {% if request.user.is_staff == True %}
 
@@ -223,8 +226,6 @@
                             {% if provider_checked or client_checked %}
                             <a href="{% url 'provider_appointment' %}"><i class="fa fa-calendar"
                                                                           aria-hidden="true"> </i><span>Appointments</span></a>
-                            <a href="{% url 'inbox' %}"><i class="fa fa-envelope "
-                                                           aria-hidden="true"> </i> <span>Messages</span></a>
                             {% endif %}
                             {% if localite_checked or client_checked  %}
                             <a href="{% url 'appointments' %}"><i class="fa fa-calendar"

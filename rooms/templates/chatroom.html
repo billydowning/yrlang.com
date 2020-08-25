@@ -33,6 +33,7 @@ p.turn-grey.small.footers_link {
 
       <div class="col-12 col-md-4 col-lg-3">
            <h6 class="font-weight-bold mb-3 text-center text-lg-left font_z20">Chat</h6>
+          <input type="text" id="mysearchInp" class="form-control" placeholder="Search by name"  />
             <div class="white z-depth-1  pb-0">
           <ul class="list-unstyled friend-list">
               {% for msg in unread_messages %}
@@ -232,6 +233,24 @@ $(document).ready(function(){
         };
 });
 
+</script>
+
+<script>
+    $('#mysearchInp').keyup(function(){
+
+    var that = this;
+    var all_list = $('ul > li');
+
+    var matching_list = all_list.filter(function(i, li){
+        var list_item_text = $(li).text().toUpperCase();
+        var search_text = that.value.toUpperCase();
+        return ~list_item_text.indexOf(search_text);
+    });
+
+    all_list.hide();
+    matching_list.show();
+
+});
 </script>
 
 

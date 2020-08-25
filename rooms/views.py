@@ -25,7 +25,7 @@ class ContactPersonView(UserSessionAndLoginCheckMixing, FormView):
             if self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
                 role = UserRole.objects.get(name=UserRole.LANGUAGE_VERIFIER)
             else:
-                role = UserRole.objects.get(name=UserRole.LOCALITE)
+                role = UserRole.objects.get(name=UserRole.CLIENT)
         current_user = CustomUser.get(self.request.user.id)
         partner = CustomUser.get(self.kwargs.get('partner_id'))
         room = Room.create(current_user, partner, role)
@@ -41,7 +41,7 @@ class ContactPersonView(UserSessionAndLoginCheckMixing, FormView):
             if self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
                 role = UserRole.objects.get(name=UserRole.LANGUAGE_VERIFIER)
             else:
-                role = UserRole.objects.get(name=UserRole.LOCALITE)
+                role = UserRole.objects.get(name=UserRole.CLIENT)
         if Room.objects.filter(creator=current_user, partner=partner, created_for=role).exists():
             room = Room.objects.filter(creator=current_user, partner=partner).first()
             return redirect('chatroom', room_id=room.id)
@@ -124,7 +124,7 @@ class InboxView(UserSessionAndLoginCheckMixing, TemplateView):
                 chat_partner = room.partner
             newest_message = Message.objects.filter(room=room).reverse().first()
             if newest_message:
-                if newest_message.reciepent.id == user.id:
+               # if newest_message.reciepent.id == user.id:
                     if not newest_message.is_read:
                         unread_message = {'chat_partner': chat_partner,
                                           'message': newest_message}
