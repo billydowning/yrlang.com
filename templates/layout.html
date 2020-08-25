@@ -355,21 +355,19 @@
                   <a href="#">Paris</a>
             </div>
         </li>
-
+            <li><a href="#">Become a Localite</a></li>
+            <li><a href="#">Become a Provider</a></li>
             {% if request.user.is_authenticated %}
-            <li><a href="#">My Dashboard</a></li>
-                <li><a href="#">Become a Localite</a></li>
-            <li><a href="#">Become a Provider</a></li>
-            {% endif %}
-        <li><a href="#">Become a Localite</a></li>
-            <li><a href="#">Become a Provider</a></li>
-         <li class="opn_submenu">
-            <a href="#" class="opned">The Brucke</a>
+                <li class="opn_submenu">
+            <a href="#" class="opned">My Dashboard</a>
             <div class="submenu_links">
-                 <a href="#">sub</a>
-                  <a href="#">Clients</a>
+                 <a href="#">Calender</a>
+                  <a href="#">Settings</a>
+                  <a href="#">Messages</a>
             </div>
         </li>
+            {% endif %}
+         <li><a href="#">The Brucke</a></li>
        </ul>
 
 {#        {% if request.session.user_role %}#}
