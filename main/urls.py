@@ -21,7 +21,7 @@ urlpatterns = [
          name='add_anon_favorite'),
     path('favorites/', views.ListOfnonymousUserFavoriteView.as_view(), name='anon_favorite_list'),
 
-    path('blog-post/', views.BlogPostView.as_view(), name='blog_post'),
+    path('blog-post/', views.BlogPostView.as_view(), name='blog-post'),
 
     path('join-team/', views.JoinOurTeam.as_view(), name='join_our_team'),
     path('terms-condition/', views.TermsCondition.as_view(), name='terms-condition'),
