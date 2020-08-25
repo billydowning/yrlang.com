@@ -348,7 +348,17 @@ margin-top: 10px;
 .getting_start_step_outer .row .col-12:last-child .start_inner{ min-height: 250px !important;}
 
 
-
+.bottom_social_icons ul.social_icons_listing {
+    display: flex;
+    justify-content: flex-end;
+        margin-right: 42px;
+}
+.bottom_social_icons ul.social_icons_listing li {
+    padding-right: 10px;
+}
+.bottom_social_icons ul.social_icons_listing li img{
+    width: 30px;
+}
 
 
 
