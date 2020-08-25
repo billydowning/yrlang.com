@@ -154,22 +154,32 @@
                     {% is_localite user_role=request.session.user_role as localite_checked %}
                     {% is_language_veri user_role=request.session.user_role as is_language_veri_checked %}
 
-                    <li><a href="{% url 'main:home' %}"> Explore</a></li>
-                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>
-
-                    <li class="dropdown">
-                        <a href="">Top City</a>
+{#                    <li><a href="{% url 'main:home' %}"> Explore</a></li>#}
+{#                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>#}
+{##}
+{#                    <li class="dropdown">#}
+{#                        <a href="">Top City</a>#}
+{#                        <div class="dropdown-content">#}
+{#                            {% for city in city_list %}#}
+{##}
+{#                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>#}
+{##}
+{#                            {% endfor %}#}
+{#                             {% if  city_list.count > 3 %}#}
+{#                            <a href="{% slugurl city_parent.slug %}">View All.</a>#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                    </li>#}
+                        <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+                        <li class="dropdown">
+                        <a href="">Join Our Platform</a>
                         <div class="dropdown-content">
-                            {% for city in city_list %}
-
-                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>
-
-                            {% endfor %}
-                             {% if  city_list.count > 3 %}
-                            <a href="{% slugurl city_parent.slug %}">View All.</a>
-                            {% endif %}
+                            <a href="{% url 'become_localite_temp' %}">Become a Localite</a>
+                            <a href="{% url 'become_provider_temp' %}">Become a Provider</a>
                         </div>
                     </li>
+                        <li><a href="{% url 'main:blog-post' %}"> The Brucke</a></li>
+                        <li><a href="{% url 'about_us' %}"> About Us</a></li>
 
                     {% if request.user.is_staff == True %}
 
@@ -262,21 +272,12 @@
                         <li class="dropdown">
                         <a href="">Join Our Platform</a>
                         <div class="dropdown-content">
-                            {% for city in city_list %}
-
-                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>
-
-                            {% endfor %}
-                             {% if  city_list.count > 3 %}
-                            <a href="{% slugurl city_parent.slug %}">View All.</a>
-                            {% endif %}
+                            <a href="{% url 'become_localite_temp' %}">Become a Localite</a>
+                            <a href="{% url 'become_provider_temp' %}">Become a Provider</a>
                         </div>
                     </li>
-
-                     <li><a href="{% url 'account_login' %}"> Become a Localite</a></li>
-                        <li><a href="{% url 'account_login' %}"> Become a Provider</a></li>
-
-                    <li><a href="{% url 'about_us' %}"> About Us</a></li>
+                        <li><a href="{% url 'main:blog-post' %}"> The Brucke</a></li>
+                        <li><a href="{% url 'about_us' %}"> About Us</a></li>
 
 
 {#                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>#}
