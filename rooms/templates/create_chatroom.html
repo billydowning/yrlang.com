@@ -4,7 +4,7 @@
     <div class="content-section">
     <form method="POST" action="">
         <fieldset class="form-group">
-            <legend class="border-bottom mb-4">Contacting - {{ recipient.name }}</legend>
+
             <div class="form-group">
                 {% csrf_token %}
                 {% if form.content.errors %}
@@ -20,7 +20,7 @@
             </div>
         </fieldset>
         <div class="form-group">
-            <button class="btn" type="submit">Save</button>
+            <button class="btn" type="submit">Send</button>
         </div>
     </form>
 </div>
