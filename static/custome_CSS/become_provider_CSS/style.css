@@ -854,11 +854,7 @@ ul.social_icons_listing li img
 /*19-08-2020*/
 
 .start_inner{min-height: 320px !important;}
-a.page_link {
-    text-align: left;
-    display: block;
-    margin-top: 10px;
-}
+
 .getting_start_step_outer .row .col-12:last-child .start_inner{ min-height: 250px;}
 /***************Responsive*****************/
 @media (max-width: 1199.98px) { 

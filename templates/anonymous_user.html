@@ -316,18 +316,15 @@
 												</div>
 												<div class="col-12">
 													<div class="start_inner">
-														<p class="blog_count">6</p>
+														<p class="blog_count">5</p>
 														<h5>Our goal is to make connecting with individuals in foreign cities who speak your language easier.</h5>
-														<p>Need a travel companion that takes the guesswork out of speaking to locals?<a href="" class="page_link">book a Localite</a></p>
-
+														<p>Need a travel companion that takes the guesswork out of speaking to locals?<a href="{% url 'main:home' %}" class="home-link">Book a Localite</a></p>
+														<p>Need help scheduling an appointment quickly + easily with a service provider near you who speaks your language fluently?<a href="{% url 'main:home' %}" class="home-link">Book a Provider with YrLang Connect</a></p>
+                                                        <div class="col-12 text-center">
+                                                            <a href="{% url 'main:home' %}"> <button class="btn main_btn" type="button">Join us today </button></a>
+											            </div>
 													</div>
-												</div>
-											</div>
-										</div>
-										<div class="row mt-5">
-											<div class="col-12 text-center">
-                                                <a href="{% url 'account_login' %}"> <button class="btn main_btn" type="button">Join us today </button></a>
-											</div>
+												</di</div>
 										</div>
 									</div>
 								</section>
@@ -416,6 +413,14 @@
                                                 <a href="{% url 'account_login' %}"> <button class="btn main_btn" type="button">Join us today </button></a>
 											</div>
 										</div>
+                                         <div class="social_icons_left bottom_social_icons">
+					 						<ul class="social_icons_listing">
+					 							<li><a href="https://www.facebook.com/yrlangdotcom/"><img src="{% static 'images/facebook.png' %}"></a></li>
+					 							<li><a href="https://www.instagram.com/yrlangdotcom/"><img src="{% static 'images/instagram.png' %}"></a></li>
+					 							<li><a href="https://www.pinterest.com/yrlangdotcom/"><img src="{% static 'images/pinterest.png' %}"></a></li>
+					 							<li><a href="https://www.youtube.com/channel/UCzNHoOOOrG3fiajJ38A3ttA"><img src="{% static 'images/youtube.png' %}"></a></li>
+					 						</ul>
+						 				</div>
 										</div>
 									</section>
 									{% endif %}
