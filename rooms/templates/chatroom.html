@@ -88,7 +88,7 @@ p.turn-grey.small.footers_link {
                 <div class="contact-profile">
                     <h1>You are Chatting With {{ chatpartner.username }}</h1>
                 </div>
-                <div class="messages">
+                <div class="messages" id="messgaes_div">
                     <ul id="chat-log">
 
                 <li class="sent">
@@ -116,6 +116,10 @@ p.turn-grey.small.footers_link {
 </div>
 <script>
 $(document).ready(function(){
+
+  $('#messgaes_div').animate({
+        scrollTop: $('#messgaes_div').get(0).scrollHeight
+    }, 1000);
         const roomId = {{ request.resolver_match.kwargs.room_id }};
            var a = 0;
          var roomUrl = "{% url 'chatroom_ajax' request.resolver_match.kwargs.room_id %}";
