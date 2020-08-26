@@ -58,7 +58,19 @@ class CityPage(Page):
 
     def get_context(self, request, *args, **kwargs):
         context = super(CityPage, self).get_context(request, *args, **kwargs)
-        if request.session.get('log') and request.session.get('lat'):
+        if request.user.is_authenticated:
+            user_location =request.user.last_location
+            state_data = State.objects.filter(name=str(self.state)).annotate(
+                distance=Distance('location', user_location)).order_by('distance').first()
+            context['distance'] = 'You are ' + str(state_data.distance)[:10] + ' meter away'
+
+            localites_list = state_data.customuser_set.filter(is_private=False,
+                                                              user_role__name__in=[UserRole.LOCALITE]
+                                                              ).exclude(id=request.user.id).order_by('?')
+            provider_list = state_data.customuser_set.filter(is_private=False,
+                                                             user_role__name__in=[UserRole.PROVIDER]
+                                                             ).exclude(id=request.user.id).order_by('?')
+        elif request.session.get('log') and request.session.get('lat'):
             self.latitude = request.session.get('lat')
             self.longitude = request.session.get('log')
             user_location = Point(float(self.longitude), float(self.latitude), srid=4326)
