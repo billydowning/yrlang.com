@@ -60,8 +60,10 @@ class ChatRoomView(UserSessionAndLoginCheckMixing, FormView):
         room = Room.objects.get(id=self.kwargs.get('room_id'))
         if self.request.user.id == room.creator.id:
             chatpartner = CustomUser.objects.get(id=room.partner.id)
+            Message.objects.filter(room=room).update(is_read=True)
         elif self.request.user.id == room.partner.id:
             chatpartner = CustomUser.objects.get(id=room.creator.id)
+            Message.objects.filter(room=room).update(is_read=True)
         user = CustomUser.get(self.request.user.id)
         unread_messages = []
         read_messages = []
@@ -114,6 +116,11 @@ class InboxView(UserSessionAndLoginCheckMixing, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(InboxView, self).get_context_data(**kwargs)
         user = CustomUser.get(self.request.user.id)
+        chat_role = UserRole.objects.get(name=UserRole.ADMIN)
+        admin = CustomUser.objects.filter(is_staff=True).order_by('date_joined').first()
+        if not Room.objects.filter(creator=admin, partner=user, created_for=chat_role).exists():
+            room_id = Room.create(admin, user, chat_role)
+            Message.objects.create(author=admin, reciepent=user, content='Hello User', room=room_id)
         unread_messages = []
         read_messages = []
         room_list = user.creator.all() | user.partner.all()

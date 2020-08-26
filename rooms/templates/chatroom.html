@@ -45,12 +45,13 @@ p.turn-grey.small.footers_link {
                 <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-8.jpg"  style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
                   {% endif %}
                 <div class="text-small">
-                  <strong>{{ msg.chat_partner.username|truncatechars:7 }}</strong>
+                  <strong>{% if msg.chat_partner.is_staff %} Yr-Admin{% else %}{{ msg.chat_partner.username|truncatechars:7 }}{% endif %}</strong>
                   <p class="last-message text-muted">{{ msg.message.content|truncatechars:7 }}</p>
                 </div>
                 <div class="chat-footer">
                   <p class="text-smaller text-muted mb-0">{{ msg.message.date_created |date:"SHORT_DATE_FORMAT"  }}</p>
                   <span class="badge badge-danger float-right"> {{ msg.message.room.created_for }} Chat</span>
+                    <span class="badge badge-danger float-right">Unread </span>
                 </div>
               </a>
             </li>
@@ -64,7 +65,7 @@ p.turn-grey.small.footers_link {
                 <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-8.jpg"  style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
                   {% endif %}
                 <div class="text-small">
-                  <strong>{{ msg.chat_partner.username|truncatechars:7 }}</strong>
+                  <strong>{% if msg.chat_partner.is_staff %} Yr-Admin{% else %}{{ msg.chat_partner.username|truncatechars:7 }}{% endif %}</strong>
                   <p class="last-message text-muted">{{ msg.message.content|truncatechars:7 }}</p>
                 </div>
                 <div class="chat-footer">
@@ -87,7 +88,7 @@ p.turn-grey.small.footers_link {
                 <div class="contact-profile">
                     <h1>You are Chatting With {{ chatpartner.username }}</h1>
                 </div>
-                <div class="messages">
+                <div class="messages" id="messgaes_div">
                     <ul id="chat-log">
 
                 <li class="sent">
@@ -115,6 +116,10 @@ p.turn-grey.small.footers_link {
 </div>
 <script>
 $(document).ready(function(){
+
+  $('#messgaes_div').animate({
+        scrollTop: $('#messgaes_div').get(0).scrollHeight
+    }, 1000);
         const roomId = {{ request.resolver_match.kwargs.room_id }};
            var a = 0;
          var roomUrl = "{% url 'chatroom_ajax' request.resolver_match.kwargs.room_id %}";
