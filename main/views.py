@@ -296,6 +296,9 @@ class TermsCondition(TemplateView):
 class TrustAndSaftey(TemplateView):
     template_name = 'main_trust_and_saftey.html'
 
+class FAQS(TemplateView):
+    template_name = 'FAQ.html'
+
 
 class SetLonAndLatInSession(View):
     def get(self, request, *args, **kwargs):
@@ -313,3 +316,4 @@ class SetLonAndLatInSession(View):
             else:
                 return JsonResponse(data={'already_here':'data found'})
         return True
+
