@@ -263,3 +263,7 @@ class TermsCondition(TemplateView):
 
 class TrustAndSaftey(TemplateView):
     template_name = 'main_trust_and_saftey.html'
+
+
+class FAQS(TemplateView):
+    template_name = 'FAQ.html'
