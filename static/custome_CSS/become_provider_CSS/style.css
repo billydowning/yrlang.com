@@ -856,6 +856,11 @@ ul.social_icons_listing li img
 .start_inner{min-height: 320px !important;}
 
 .getting_start_step_outer .row .col-12:last-child .start_inner{ min-height: 250px;}
+.slider_inner_form h2{font-size: 27px !important;}
+.slider_inner_form .form-control {
+    height: 38px !important;
+    margin-bottom: 16px !important;}
+
 /***************Responsive*****************/
 @media (max-width: 1199.98px) { 
 	
