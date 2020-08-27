@@ -4,7 +4,7 @@ from .base import *
 
 
 DEBUG = False
-ALLOWED_HOSTS = ['18.216.99.152']
+ALLOWED_HOSTS = ['18.216.99.152', 'yrlang.com']
 
 DATABASES = {
     'default': {

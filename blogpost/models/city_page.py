@@ -86,10 +86,10 @@ class CityPage(Page):
         else:
             localites_list =  CustomUser.objects.filter(user_role__name=UserRole.LOCALITE,
                                                      is_private=False, state__name=self.state).\
-            exclude(id=request.user.id).order_by('?')
+                        exclude(id=request.user.id).order_by('?')
             provider_list =  CustomUser.objects.filter(user_role__name=UserRole.PROVIDER,
                                                      is_private=False, state__name=self.state).\
-            exclude(id=request.user.id).order_by('?')
+                        exclude(id=request.user.id).order_by('?')
         context['localite_total'] = str(localites_list.count()) + ' localites in city'
         context['localites'] = localites_list[:2]
         context['providers'] = provider_list[:2]
