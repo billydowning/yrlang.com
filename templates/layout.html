@@ -180,6 +180,8 @@
                     </li>
                         <li><a href="{% url 'main:blog-post' %}"> The Brucke</a></li>
                         <li><a href="{% url 'about_us' %}"> About Us</a></li>
+                    <li><a href="{% url 'inbox' %}"><i class="fa fa-envelope "
+                                                           aria-hidden="true"></i>Messages</a></li>
 
                     {% if request.user.is_staff == True %}
 
@@ -233,8 +235,6 @@
                             {% if provider_checked or client_checked %}
                             <a href="{% url 'provider_appointment' %}"><i class="fa fa-calendar"
                                                                           aria-hidden="true"> </i><span>Appointments</span></a>
-                            <a href="{% url 'inbox' %}"><i class="fa fa-envelope "
-                                                           aria-hidden="true"> </i> <span>Messages</span></a>
                             {% endif %}
                             {% if localite_checked or client_checked  %}
                             <a href="{% url 'appointments' %}"><i class="fa fa-calendar"

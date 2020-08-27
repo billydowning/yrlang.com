@@ -44,7 +44,7 @@ background-image: url({% static 'images/line.png' %});
         {% if page.bruke_content %}
         <p class="my-5">{{ page.bruke_content|richtext }}</p>
         {% endif %}
-
+        <hr class="star-line" style="border: none;">
         <div>
             {% with related_posts=page.related_posts.all %}
 
@@ -55,7 +55,7 @@ background-image: url({% static 'images/line.png' %});
 
             <h3>{{ posts.title }}</h3>
             {% with posts.image as image %}
-            <center>{% if image %}{% image image fill-400x250 %}{% endif %}</center>
+            <center>{% if image %}{% image image fill-500x350 %}{% endif %}</center>
             {% endwith %}
             <p>{{ posts.body|richtext }}</p>
             {% if posts.check_out %}
@@ -72,7 +72,7 @@ background-image: url({% static 'images/line.png' %});
             {% endwith %}
         </div>
     </div>
-    <hr class="star-line" style="border: none;">
+
 
     {% for page in state_brucks %}
     <div class="container ml-2 mr-5 pl-5 pr-5">

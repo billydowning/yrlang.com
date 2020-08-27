@@ -33,6 +33,7 @@ p.turn-grey.small.footers_link {
 
       <div class="col-12 col-md-4 col-lg-3">
            <h6 class="font-weight-bold mb-3 text-center text-lg-left font_z20">Chat</h6>
+          <input type="text" id="mysearchInp" class="form-control" placeholder="Search by name"  />
             <div class="white z-depth-1  pb-0">
           <ul class="list-unstyled friend-list">
               {% for msg in unread_messages %}
@@ -44,12 +45,13 @@ p.turn-grey.small.footers_link {
                 <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-8.jpg"  style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
                   {% endif %}
                 <div class="text-small">
-                  <strong>{{ msg.chat_partner.username|truncatechars:7 }}</strong>
+                  <strong>{% if msg.chat_partner.is_staff %} Yr-Admin{% else %}{{ msg.chat_partner.username|truncatechars:7 }}{% endif %}</strong>
                   <p class="last-message text-muted">{{ msg.message.content|truncatechars:7 }}</p>
                 </div>
                 <div class="chat-footer">
                   <p class="text-smaller text-muted mb-0">{{ msg.message.date_created |date:"SHORT_DATE_FORMAT"  }}</p>
                   <span class="badge badge-danger float-right"> {{ msg.message.room.created_for }} Chat</span>
+                    <span class="badge badge-danger float-right">Unread </span>
                 </div>
               </a>
             </li>
@@ -63,7 +65,7 @@ p.turn-grey.small.footers_link {
                 <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-8.jpg"  style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
                   {% endif %}
                 <div class="text-small">
-                  <strong>{{ msg.chat_partner.username|truncatechars:7 }}</strong>
+                  <strong>{% if msg.chat_partner.is_staff %} Yr-Admin{% else %}{{ msg.chat_partner.username|truncatechars:7 }}{% endif %}</strong>
                   <p class="last-message text-muted">{{ msg.message.content|truncatechars:7 }}</p>
                 </div>
                 <div class="chat-footer">
@@ -86,7 +88,7 @@ p.turn-grey.small.footers_link {
                 <div class="contact-profile">
                     <h1>You are Chatting With {{ chatpartner.username }}</h1>
                 </div>
-                <div class="messages">
+                <div class="messages" id="messgaes_div">
                     <ul id="chat-log">
 
                 <li class="sent">
@@ -114,6 +116,10 @@ p.turn-grey.small.footers_link {
 </div>
 <script>
 $(document).ready(function(){
+
+  $('#messgaes_div').animate({
+        scrollTop: $('#messgaes_div').get(0).scrollHeight
+    }, 1000);
         const roomId = {{ request.resolver_match.kwargs.room_id }};
            var a = 0;
          var roomUrl = "{% url 'chatroom_ajax' request.resolver_match.kwargs.room_id %}";
@@ -232,6 +238,24 @@ $(document).ready(function(){
         };
 });
 
+</script>
+
+<script>
+    $('#mysearchInp').keyup(function(){
+
+    var that = this;
+    var all_list = $('ul > li');
+
+    var matching_list = all_list.filter(function(i, li){
+        var list_item_text = $(li).text().toUpperCase();
+        var search_text = that.value.toUpperCase();
+        return ~list_item_text.indexOf(search_text);
+    });
+
+    all_list.hide();
+    matching_list.show();
+
+});
 </script>
 
 

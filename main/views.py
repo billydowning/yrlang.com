@@ -39,18 +39,19 @@ class HomeView(TemplateView):
                                     exclude(id=self.request.user.id, state__isnull=True, country__isnull=True).order_by(
                     '?')[:3]
 
-            elif request.session.get('log') and request.session.get('lat'):
-                self.latitude  = request.session.get('lat')
-                self.longitude = request.session.get('log')
-                user_location = Point(float(self.longitude), float(self.latitude), srid=4326)
-                state_data = State.objects.annotate(distance=Distance('location',user_location)).order_by('distance').first()
-                print(state_data.distance)
-                localite_list = state_data.customuser_set.filter(is_private=False,
-                                                          user_role__name__in=[UserRole.LOCALITE]
-                                                                 ).exclude(id=self.request.user.id).order_by('?')[:3]
-                provider_list = state_data.customuser_set.filter(is_private=False,
-                                                          user_role__name__in=[UserRole.PROVIDER]
-                                                                 ).exclude(id=self.request.user.id).order_by('?')[:3]
+            elif request.user.is_authenticated and request.user.last_location:
+                provider_list = CustomUser.objects.filter(is_private=False,
+                                                          user_role__name__in=[UserRole.PROVIDER]). \
+                                    exclude(id=self.request.user.id).exclude(state__isnull=True,
+                                                                             country__isnull=True).\
+                                    annotate(distance=Distance('last_location',request.user.last_location)).order_by('distance')[:3]
+                localite_list = CustomUser.objects.filter(is_private=False,
+                                                          user_role__name__in=[UserRole.LOCALITE]). \
+                                    exclude(id=self.request.user.id).exclude(state__isnull=True,
+                                                                             country__isnull=True).\
+                                    annotate(distance=Distance('last_location',request.user.last_location)).order_by('distance')[:3]
+                for i in localite_list:
+                    print(i.distance, i)
 
             else:
                 localite_list = CustomUser.objects.filter(is_private=False,
@@ -71,14 +72,8 @@ class HomeView(TemplateView):
         return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
-
         context = super(HomeView, self).get_context_data(**kwargs)
-
-
         search_form = UserSearchFrom(self.request.GET)
-       # city_data = State.objects.annotate(distance=Distance('location',user_location)).order_by('distance').first()
-
-
         banner = ""
         if self.request.user.is_authenticated:
             if self.request.user.is_staff:
@@ -305,10 +300,16 @@ class TrustAndSaftey(TemplateView):
 class SetLonAndLatInSession(View):
     def get(self, request, *args, **kwargs):
         if request.is_ajax():
-            if not request.session.get('log') and not request.session.get('lat'):
+            if request.user.is_authenticated:
+                last_loc = Point(float(request.GET.get('longitude')), float(request.GET.get('latitude')),srid=4326)
+                cur_user = CustomUser.get(request.user.id)
+                cur_user.last_location = last_loc
+                cur_user.save()
+                return JsonResponse(data={'already_here': 'data set'})
+            elif not request.session.get('log') and not request.session.get('lat'):
                 request.session['log']  = request.GET.get('longitude')
                 request.session['lat'] = request.GET.get('latitude')
                 return JsonResponse(data={'not_here': 'data set'})
             else:
                 return JsonResponse(data={'already_here':'data found'})
-        return super(SetLonAndLatInSession, self).get( request, *args, **kwargs)
+        return True

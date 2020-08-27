@@ -9,7 +9,7 @@ from .utils import group_obj
 from django.forms import modelformset_factory, BaseModelFormSet
 from django.core.mail import send_mail
 from yrlang.settings.development_example import EMAIL_HOST_USER
-
+from rooms.models import Room, Message
 
 class ClientSignupForm(SignupForm):
     terms = forms.BooleanField(widget=forms.CheckboxInput())
@@ -23,7 +23,11 @@ class ClientSignupForm(SignupForm):
     def save(self, request):
         user = super(ClientSignupForm, self).save(request)
         role = UserRole.objects.get(name=UserRole.CLIENT)
+        chat_role = UserRole.objects.get(name=UserRole.ADMIN)
         user.user_role.add(role)
+        admin = CustomUser.objects.filter(is_staff=True).order_by('date_joined').first()
+        room_id = Room.create(admin, user, chat_role)
+        Message.objects.create(author=admin, reciepent=user, content='Hello User', room=room_id)
         send_mail(
             'Welcome To YR-lang ' ,
             'Your account fo the YR-lang is been created welcome to our family of YR-lang.',

@@ -88,6 +88,8 @@ INSTALLED_APPS = [
     'wagtail.search',
     'wagtail.admin',
     'wagtail.core',
+    #django map
+    "leaflet",
 
     # middele ware thaat support for waigtail
     'modelcluster',

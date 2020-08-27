@@ -67,11 +67,13 @@ class UserRole(models.Model):
     LOCALITE = 'localite'
     PROVIDER = 'provider'
     LANGUAGE_VERIFIER = 'language_verifier'
+    ADMIN = 'admin'
     ROLE_CHOICES = (
         (CLIENT, 'Client'),
         (LOCALITE, 'Localite'),
         (PROVIDER, 'Provider'),
-        (LANGUAGE_VERIFIER, 'Language Verifier')
+        (LANGUAGE_VERIFIER, 'Language Verifier'),
+        (ADMIN, 'admin')
 
     )
     name = models.CharField(max_length=20, choices=ROLE_CHOICES)
@@ -94,6 +96,7 @@ class CustomUser(AbstractUser):
     user_role = models.ManyToManyField(UserRole, null=True, blank=True)
     is_private = models.BooleanField('private', default=False)
     multi_day = models.BooleanField(default=False)
+    last_location = gis_model.PointField(null=True, blank=True)
 
 
     USERNAME_FIELD = 'email'

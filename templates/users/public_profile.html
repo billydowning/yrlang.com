@@ -1,6 +1,13 @@
 {% extends "layout.html" %}
 {% load static check_role %}
 
+{% load leaflet_tags %}
+
+{% block link_css %}
+{% leaflet_css %}
+{% leaflet_js %}
+{% endblock link_css %}
+
 
 {% block content %}
 {% localite user=user as loc %}
@@ -136,6 +143,12 @@
                             </div>
                         </div>
                         {% endif %}
+                        {% if user.last_location %}
+                        <div class="row mt-3">
+                            <div class="col-6"><h4><b>User Last Locatin</b></h4></div>
+                            <div class="col-6">   {% leaflet_map "main" callback="map_init" %}</div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel"
@@ -178,4 +191,18 @@
     </div>
 
 </div>
+
+<script type="text/javascript">
+{% if user.last_location %}
+    function map_init(map, options) {
+        // get point lat and lon
+        var lon = "{{ user.last_location.x }}";
+        var lat = "{{ user.last_location.y }}";
+
+        // zoom to point & add it to map
+        map.setView([lat, lon], 12);
+        L.marker([lat, lon]).addTo(map);
+    }
+    {% endif %}
+</script>
 {% endblock content %}
