@@ -446,18 +446,18 @@ class CreateRequestForLanguageVerifier(UserSessionAndLoginCheckMixing, UserPasse
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class BecomeProviderView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, TemplateView):
+class BecomeProviderView(TemplateView):
     template_name = 'users/become_provider.html'
 
-    def test_func(self):
-        return self.request.user.is_client_user(self.request.session.get('user_role'))
+    # def test_func(self):
+    #     return self.request.user.is_client_user(self.request.session.get('user_role'))
 
 
-class BecomeLocaliteView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, TemplateView):
+class BecomeLocaliteView(TemplateView):
     template_name = 'users/become_localite.html'
 
-    def test_func(self):
-        return self.request.user.is_client_user(self.request.session.get('user_role'))
+    # def test_func(self):
+    #     return self.request.user.is_client_user(self.request.session.get('user_role'))
 
 
 class AboutUsView(TemplateView):
