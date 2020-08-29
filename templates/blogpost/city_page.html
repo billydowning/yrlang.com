@@ -1,6 +1,12 @@
 {% extends "layout.html" %}
 {% load wagtailcore_tags wagtailimages_tags favorite_check %}
 {% load static %}
+{% load leaflet_tags %}
+
+{% block link_css %}
+{% leaflet_css %}
+{% leaflet_js %}
+{% endblock link_css %}
 {% block extra_css %}
 ul.menu li {
 display:inline;
@@ -206,7 +212,7 @@ $(document).ready(function() {
         <div class="row">
             <div class="col-12">
 
-                <h1 class="page_main_header galarry_header">{{ page.title }}</h1>
+                <h1 class="page_main_header galarry_header">{{ page.title }} </h1>
                 <h5> {% firstof distance 'No Location' %}</h5>
                 <h5> {% firstof localite_total 'No Localite' %}</h5>
                 {%if request.user.is_authenticated %}
@@ -389,10 +395,30 @@ $(document).ready(function() {
             </div>
         {% endfor %}
     </div>
+                {% if page.state.location %}
+
+                        <div class="">
+
+                            <div class="">   {% leaflet_map "main" callback="map_init" %}</div>
+                        </div>
+                        {% endif %}
     <h2 class="mt-5"><a href="{{ page.get_parent.url }}" class="theme_btn">Back</a></h2>
 </div>
 
 
+<script type="text/javascript">
+{% if page.state.location %}
+    function map_init(map, options) {
+        // get point lat and lon
+        var lon = "{{ page.state.location.x }}";
+        var lat = "{{ page.state.location.y }}";
+
+        // zoom to point & add it to map
+        map.setView([lat, lon], 12);
+        L.marker([lat, lon]).addTo(map);
+    }
+    {% endif %}
+</script>
 
 
 

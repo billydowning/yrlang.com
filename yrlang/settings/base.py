@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.sites',
+#feed back app
+    'tellme',
 
     # all_auth
     'allauth',
@@ -98,6 +100,7 @@ INSTALLED_APPS = [
     # paypal
     'paypal.standard.ipn',
     'webpush',
+
 
 ]
 
@@ -239,3 +242,5 @@ WEBPUSH_SETTINGS = {
     "VAPID_PRIVATE_KEY":"eyH6m2JH3pDaT6m9nX58y0KejEICQ_nwOHdJEegAn9s",
     "VAPID_ADMIN_EMAIL": "trootechak@gmail.com"
 }
+#feed back emial
+TELLME_FEEDBACK_EMAIL = 'admin@tellme.com'
