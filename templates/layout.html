@@ -23,6 +23,7 @@
     <script href="{% static 'javascript/master.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.25/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.25/js/uikit-icons.min.js"></script>
+    <link href="{% static 'tellme/feedback.min.css' %}" rel="stylesheet">
     <!--    fa fa icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/regular.min.css"
@@ -120,6 +121,14 @@
     display: none;
     background: #63b63c;
     padding-left: 15px;
+}
+.vertical-right-aligned {
+    transform: rotate(-90deg);
+    transform-origin: 100% 100%;
+    position: fixed;
+    right: 0;
+    top: 50%;
+    z-index: 100;
 }
 </style>
 </head>
@@ -222,7 +231,7 @@
 
                     <li class="dropdown">
                         <a href="" class="user_links">
-                            <div class="user_img">
+                            <div class="user_img ">
                                 {% if request.user.profile_image %}
                                 <img src="{{ request.user.profile_image.url }}">
                                 {% else %}
@@ -507,45 +516,13 @@
         </div>
     </footer>
 </div>
+<button type="button" id="feedback-btn" class="btn btn-info vertical-right-aligned">
+    Feedback <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
+</button>
+{%  include 'tellme/js_inc.html' %}
 </body>
-<script>
+{% block bottom_js %}{% endblock %}
 
-    if ("geolocation" in navigator){ //check geolocation available
-	//try to get user current location using getCurrentPosition() method
-	var url_user_loc = "{% url 'main:set_location_ajax' %}";
-	navigator.geolocation.getCurrentPosition(function(position){
-
-
-                         $.ajax({
-                type: "GET",
-                url: url_user_loc,
-                data: { latitude: position.coords.latitude,
-                                longitude:  position.coords.longitude },
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function(data) {
-
-                    if(data.not_here){
-
-                    location.reload()
-                    }else{
-
-
-                    }
-
-
-                },
-                error: function(data){
-                    console.log("fail");
-                }
-            });
-
-
-		});
-}else{
-	console.log("Browser doesn't support geolocation!");
-}
-</script>
 <script>
 $(".content").css("padding-bottom", $("footer").outerHeight()+'px');
 

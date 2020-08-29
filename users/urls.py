@@ -29,3 +29,5 @@ urlpatterns = [
     path('user-favorites/', views.UserFavoriteListView.as_view(), name='user_favorite_list'),
 
 ]
+
+import tellme
