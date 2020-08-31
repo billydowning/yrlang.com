@@ -22,7 +22,7 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
-urlpatterns = [     re_path(r'^tellme/', include("tellme.urls")),
+urlpatterns = [   re_path(r'^tellme/', include("tellme.urls")),
                   path('paypal/', include('paypal.standard.ipn.urls')),
                   path('admin/', admin.site.urls),
                   path('accounts/', include('allauth.urls')),
@@ -32,7 +32,8 @@ urlpatterns = [     re_path(r'^tellme/', include("tellme.urls")),
                   path('', include('appointments.urls')),
                   path('', include('blogpost.urls')),
                   path('', include('invoices.urls')),
-                  path('payment/', include('payment.urls'))
+                  path('payment/', include('payment.urls')),
+                  re_path(r'^ratings/', include('star_ratings.urls', namespace='ratings' )),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # wagtail Url
@@ -59,3 +60,5 @@ if settings.DEBUG:
 admin.site.site_header = 'Yr-lang'
 admin.site.site_title = 'Yr-lang admin'
 admin.site.index_title = 'Yr-lang administration'
+
+import star_ratings

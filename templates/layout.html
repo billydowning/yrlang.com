@@ -29,6 +29,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/regular.min.css"
           integrity="sha256-xhLSlzXTxex6fzNDBzh5DkYvf95P9Dpfv9LpTfq4D1E=" crossorigin="anonymous"/>
 
+<!--    rating CSS and JS-->
+    <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+<script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+<!--    &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
     {% if title %}
     <title>{{ title }}</title>
     {% else %}

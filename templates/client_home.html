@@ -1,4 +1,5 @@
 {% load static check_role check_request favorite_check %}
+{% load ratings %}
 {% is_provider user_role=request.session.user_role as provider_checked %}
 {% is_localite user_role=request.session.user_role as localite_checked %}
 {% is_client user_role=request.session.user_role as client_checked %}
@@ -36,13 +37,7 @@
                                             </div>
                                             <div class="name_rate">
                                                 <a href="{% url 'public_profile' localite.id %}"><h5>{{ localite.username|title }}</h5></a>
-                                                <p>
-                                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-
+                                                <p> {% ratings localite %}
 
                                                 </p>
                                             </div>
@@ -109,12 +104,8 @@
                                             </div>
                                             <div class="name_rate">
                                                 <a href="{% url 'public_profile' professional.id %}"><h5>{{ professional.username|title }}</h5></a>
-                                                <p>
-                                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                                    <i class="fa fa-star" aria-hidden="true"></i>
-                                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                                <p> {% ratings professional %}
+
                                                 </p>
                                             </div>
                                         </div>
