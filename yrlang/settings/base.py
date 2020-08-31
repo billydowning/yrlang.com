@@ -77,6 +77,8 @@ INSTALLED_APPS = [
     'blogpost',
     'invoices',
     'payment',
+    #for user rating
+    'star_ratings',
 
     # django-wagtail
     'wagtail.contrib.forms',
@@ -244,3 +246,7 @@ WEBPUSH_SETTINGS = {
 }
 #feed back emial
 TELLME_FEEDBACK_EMAIL = 'admin@tellme.com'
+
+
+#rating app
+STAR_RATINGS_ANONYMOUS = False
