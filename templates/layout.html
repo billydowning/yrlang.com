@@ -129,13 +129,13 @@
     <nav class="uk-navbar-container ">
         <div class="container uk-navbar">
             <div class="uk-navbar-left">
-
-
+                {% if  request.path == '/' %}
                 <ul class="uk-navbar-nav">
                     <li class="uk-active">
                         <span style="font-size:30px;cursor:pointer" onmouseover="openNav()" onclick="openNav()">&#9776;</span>
                     </li>
                 </ul>
+                {% endif %}
                 <ul class="uk-navbar-nav logo_container">
                     <li class="uk-active"><a href="/" class="logo_font"><img
                             src="https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"></a>
