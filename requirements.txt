@@ -18,14 +18,17 @@ decorator==4.4.2
 defusedxml==0.6.0
 Django==3.0.6
 django-allauth==0.41.0
+django-braces==1.14.0
 django-channels==0.7.0
 django-crontab==0.7.1
 django-debug-toolbar==2.2
 django-jsonfield==1.4.0
 django-leaflet==0.27.1
+django-model-utils==4.0.0
 django-modelcluster==5.0.1
 django-multiupload2==0.5.3
 django-paypal==1.0.0
+django-star-ratings==0.9.1
 django-taggit==1.2.0
 django-tellme==0.6.5
 django-treebeard==4.3.1
@@ -71,6 +74,7 @@ six==1.14.0
 soupsieve==2.0
 sqlparse==0.3.1
 stripe==2.48.0
+swapper==1.1.2.post1
 traitlets==4.3.3
 twilio==6.44.2
 Twisted==20.3.0
