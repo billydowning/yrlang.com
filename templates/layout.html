@@ -260,14 +260,12 @@
                             {% if localite_checked or client_checked  %}
                             <a href="{% url 'appointments' %}"><i class="fa fa-calendar"
                                                                   aria-hidden="true"> </i><span>Booking </span></a>
-                            <a href="{% url 'invoices' %}"><i class="fa fa-files-o" aria-hidden="true"> </i><span>Invoices</span></a>
+
                             {% endif %}
 
                             <a href="{% url 'account' %}"><i class="fa fa-user"
                                                              aria-hidden="true"> </i><span>Account</span></a>
-                            {% if localite_checked or client_checked  %}
                             <a href="{% url 'invoices' %}"><i class="fa fa-files-o" aria-hidden="true"> </i><span>Invoices</span></a>
-                            {% endif %}
                             {% if provider_checked %}
                             <a href="{% url 'provider_create_invoice' %}"><span>Create New Invoice</span></a>
                             {% endif %}

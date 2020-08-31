@@ -8,6 +8,7 @@
   </div>
 
   <div class="row">
+  {% if invoice.booking %}
   {% for date in invoice.booking.booking.all %}
   <div class="card col-3 my-2 mx-2">
     <h5 class="card-header">{{ date.date }} - {{ invoice.booking.requestor.username }}</h5>
@@ -17,6 +18,18 @@
     </div>
   </div>
   {% endfor %}
+  {% endif %}
+
+  {% if invoice.appointment %}
+  <div class="card col-3 my-2 mx-2">
+    <h5 class="card-header">{{ invoice.appointment.requestor.username }}</h5>
+    <div class="card-body">
+      <p class="card-text"><b>Date :- </b>{{ invoice.appointment.request_date|date:'Y-M-d  D' }}</p>
+      <p><b>Amount :- </b>{{ invoice.amount }}</p>
+      <p>{{ invoice.appointment.get_payment_method_display }}</p>
+    </div>
+  </div>
+  {% endif %}
   </div>
   <br>
   
