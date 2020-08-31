@@ -55,6 +55,8 @@ class ProviderAppointment(models.Model):
     APPROVED = 'approved'
     CANCELED = 'canceled'
     COMPLETED = 'completed'
+    THROUGH_PLATFORM = 'through_platform'
+    OTHER_OPTIONS = 'other_options'
 
     STATUS_CHOICES = [
         (REQUESTED, 'Requested By Customer'),
@@ -63,11 +65,21 @@ class ProviderAppointment(models.Model):
         (COMPLETED, 'Appointment Completed'),
     ]
 
+    PAYMENT_METHODS_CHOICES = [
+        (THROUGH_PLATFORM, 'Payment Through Platform'),
+        (OTHER_OPTIONS, 'Other Payment Options'),
+    ]
+
     requestor = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='client')
     requestee = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='provider')
     client_comment = models.TextField(null=True, blank=True)
     provider_comment = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=REQUESTED)
+    payment_method = models.CharField(
+        max_length=20,
+        choices=PAYMENT_METHODS_CHOICES,
+        default=THROUGH_PLATFORM
+    )
     created_date = models.DateTimeField(auto_now=True)
     approved_date = models.DateTimeField(null=True, blank=True)
     request_date = models.DateField(null=True, blank=True)

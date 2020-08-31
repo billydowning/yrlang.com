@@ -152,7 +152,20 @@
         });
     });
 
+    $('#payment_method').change(function () {
+        console.info(this.value);
+        var val = this.value;
+        if (val != ''){
+            $('#confirmBtn').prop('disabled', false);
+        }
+        else {
+            $('#confirmBtn').prop('disabled', true);
+        }
+    });
+
   });
+
+
 
 </script>
 
@@ -173,6 +186,8 @@
     color: #8d99ae;
   }
 
+
+
 </style>
 
 {% endblock calendar_extras %}
@@ -182,35 +197,35 @@
 {% is_client user_role=request.session.user_role as client_checked %}
 <div class="container">
 
-{% if request.session.user_role == 'localite' %}
-<h2>Status :- {{ appointment.get_status_display }}</h2>
+    {% if request.session.user_role == 'localite' %}
+    <h2>Status :- {{ appointment.get_status_display }}</h2>
 
-<h2>Accepted Meeting Schedule </h2>
-<p>Start :- {{ appointment.start_time }}</p>
-<p>End :- {{ appointment.end_time }}</p>
-<p>Notes :- {{ appointment.notes }}</p>
+    <h2>Accepted Meeting Schedule </h2>
+    <p>Start :- {{ appointment.start_time }}</p>
+    <p>End :- {{ appointment.end_time }}</p>
+    <p>Notes :- {{ appointment.notes }}</p>
 
-<hr>
-<p>appointment From :- {{ appointment.requestor }}</p>
-<p>appointment To :- {{ appointment.requestee }}</p>
-<hr>
-<h2>created date :- {{ appointment.date_created }}</h2>
-<h3>Requested Time</h3>
-<h5>Request Schedule 1</h5>
-<p>Date :- {{ appointment.requested_date_1 }}</p>
-<p>Time Slot :- {{ appointment.requested_date_1_timeslots }}</p>
+    <hr>
+    <p>appointment From :- {{ appointment.requestor }}</p>
+    <p>appointment To :- {{ appointment.requestee }}</p>
+    <hr>
+    <h2>created date :- {{ appointment.date_created }}</h2>
+    <h3>Requested Time</h3>
+    <h5>Request Schedule 1</h5>
+    <p>Date :- {{ appointment.requested_date_1 }}</p>
+    <p>Time Slot :- {{ appointment.requested_date_1_timeslots }}</p>
 
-<h5>Request Schedule 2</h5>
-<p>Date :- {{ appointment.requested_date_2 }}</p>
-<p>Time Slot :- {{ appointment.requested_date_2_timeslots }}</p>
+    <h5>Request Schedule 2</h5>
+    <p>Date :- {{ appointment.requested_date_2 }}</p>
+    <p>Time Slot :- {{ appointment.requested_date_2_timeslots }}</p>
 
-{% elif provider_checked %}
-<h2>Status :- {{ appointment.get_status_display }}</h2>
-<hr>
-<p>appointment From :- {{ appointment.requestor }}</p>
-<p>appointment To :- {{ appointment.requestee }}</p>
-<hr>
-{% if appointment.status != 'requested' %}
+    {% elif provider_checked %}
+    <h2>Status :- {{ appointment.get_status_display }}</h2>
+    <hr>
+    <p>appointment From :- {{ appointment.requestor }}</p>
+    <p>appointment To :- {{ appointment.requestee }}</p>
+    <hr>
+    {% if appointment.status != 'requested' %}
     <h2>Appointment </h2>
     {% if appointment.status == 'approved' %}
     <p>date :- {{ appointment.approved_date.date }}</p>
@@ -218,90 +233,105 @@
     {% endif %}
     <p>Notes :- {{ appointment.provider_comment }}</p>
     <hr>
-{% endif %}
+    {% endif %}
 
-<h2>created date :- {{ appointment.created_date.date}}</h2>
-<h3>Requested Time</h3>
-<p>Date :- {{ appointment.request_date }}</p>
-<p>Comment From Client  :- {{ appointment.client_comment }}</p>
-<hr>
-{% if appointment.status|is_requested   %}
-<div class="container">
-    <div class="row">
-    <div class="col-1">
-    </div>
-    <div class="col-10">
-        <div class="req_appontment_form">
-            <div id='calendar'></div>
+    <h2>created date :- {{ appointment.created_date.date}}</h2>
+    <h3>Requested Time</h3>
+    <p>Date :- {{ appointment.request_date }}</p>
+    <p>Comment From Client :- {{ appointment.client_comment }}</p>
+    <hr>
+    {% if appointment.status|is_requested %}
+    <div class="container">
+        <div class="row">
+            <div class="col-1">
+            </div>
+            <div class="col-10">
+                <div class="req_appontment_form">
+                    <div id='calendar'></div>
+                </div>
+            </div>
+            <div class="col-1">
+            </div>
         </div>
     </div>
-    <div class="col-1">
-    </div>
-    </div>
-</div>
-    {% elif  appointment.status|is_approved %}
+    {% elif appointment.status|is_approved %}
     <button class="btn mx-2 btn-success" data-toggle="modal"
             data-target="#exampleModal"
             data-btn="approve"
             data-title="Update"
-    >Upadate</button>
+    >Upadate
+    </button>
     <button style="background:red; " class="btn mx-2  btn-danger" data-toggle="modal"
             data-target="#exampleModal"
             data-btn="cancel"
             data-title="Cancel"
-    >Cancel</button>
-{% endif %}
+    >Cancel
+    </button>
+    {% endif %}
 
-{% endif %}
+    {% endif %}
 
 </div>
 
 <!-- Cancel Modal -->
-<div class="modal fade" id="cancelForm" tabindex="-1" role="dialog" aria-labelledby="cancelFormTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-        <form action="">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Cancel Are Sure ...!!!</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-               <div class="form-group">
-                <label for="cancelNote">Notes</label>
-                <textarea class="form-control" id="cancelNote" rows="3" required></textarea>
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" id="cancelBtn" class="btn btn-primary">Save changes</button>
-          </div>
-        </form>
+<div class="modal fade" id="cancelForm" tabindex="-1" role="dialog" aria-labelledby="cancelFormTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Cancel Are Sure ...!!!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="cancelNote">Notes</label>
+                        <textarea class="form-control" id="cancelNote" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="cancelBtn" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Confirm Modal -->
-<div class="modal fade" id="confirmForm" tabindex="-1" role="dialog" aria-labelledby="confirmFormTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmFormTitle">Confirm Booking</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-           <div class="form-group">
-            <label for="cancelNote">Notes</label>
-            <textarea class="form-control" id="confirmNote" rows="3" required></textarea>
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" id="confirmBtn" class="btn btn-primary" data-dismiss="modal">Confirm Booing</button>
-      </div>
+<div class="modal fade" id="confirmForm" tabindex="-1" role="dialog" aria-labelledby="confirmFormTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmFormTitle">Confirm Booking</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="cancelNote">Notes <small>(optional)</small> </label>
+                        <textarea class="form-control" id="confirmNote" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="payment_method">Payment Method</label>
+                        <select id="payment_method" required>
+                            <option value="" disabled selected hidden>Select Payment Method</option>
+                            <option value="through_platform">Payment Through Platform</option>
+                            <option value="other_options">I Have Other Options</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="confirmBtn" class="btn btn-primary" disabled>Confirm Booing</button>
+                    <!--        <button type="submit" id="cancelBtn" class="btn btn-primary">Save changes</button>-->
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
 
 {% endblock content %}

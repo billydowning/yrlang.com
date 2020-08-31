@@ -1,4 +1,6 @@
 {% extends "layout.html" %}
+{% load check_status %}
+
 {% block content %}
 <div class="container">
 {% if invoices %}
@@ -14,11 +16,11 @@
                     <li data-status="unpaid">
                         <div class="uk-card uk-card-default uk-card-body uk-width-1-1@m">
                             <div class="uk-card-badge uk-card uk-card-primary">Unpaid</div>
-                            <h3 class="uk-card-title">{{ invoice.title }}</h3>
-                            <p>{{ invoice.amount }}</p>
-                            {% if current_user.user_client == True %}
-                                <a class="btn btn-light" href="">Pay</a>
-                            {% else %}s
+                            <h3 class="uk-card-title"><b>{{ invoice.title }}</b></h3>
+                            <p><b>Amount : </b>{{ invoice.amount }}</p>
+                            {% if invoice.appointment.payment_method|is_payment_other_options %}
+                                <p><b>Payment Method : </b>{{ invoice.appointment.get_payment_method_display }}</p>
+                            {% else %}
                                 <a class="btn btn-light" href="{% url 'invoice' invoice.id %}">View</a>
                             {% endif %}
                         </div>

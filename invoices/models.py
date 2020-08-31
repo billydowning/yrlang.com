@@ -1,6 +1,6 @@
 from django.db import models
 
-from appointments.models import Appointment
+from appointments.models import Appointment, ProviderAppointment
 from users.models import CustomUser
 
 
@@ -15,6 +15,7 @@ class Invoice(models.Model):
 	payor = models.ForeignKey(CustomUser, blank=True, null=True, related_name="payor", on_delete=models.CASCADE)
 	stripe_payment_id = models.CharField(max_length=150, blank=True, null=True)
 	booking = models.ForeignKey(Appointment, on_delete=models.CASCADE, blank=True, null=True)
+	appointment = models.ForeignKey(ProviderAppointment, on_delete=models.CASCADE, blank=True, null=True)
 
 	def __str__(self):
 		return str(self.id)
