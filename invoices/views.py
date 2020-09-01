@@ -55,7 +55,8 @@ class ProviderInvoiceCreateView(UserSessionAndLoginCheckMixing, UserPassesTestMi
         current_user = CustomUser.get(self.request.user.id)
         invoice = form.save(commit=False)
         invoice.payee = current_user
-        invoice.payor = form.cleaned_data.get('payor')
+        appointment = form.cleaned_data.get('appointment')
+        invoice.payor = appointment.requestor
         invoice.save()
         messages.success(self.request, 'Your invoice has been created and sent to the client!')
         return HttpResponseRedirect('/')

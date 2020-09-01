@@ -4,7 +4,7 @@ from django import forms
 
 from .models import Invoice
 from users.models import CustomUser
-from appointments.models import Appointment
+from appointments.models import Appointment, ProviderAppointment
 
 
 class CreateInvoiceForm(ModelForm):
@@ -24,7 +24,7 @@ class CreateInvoiceForm(ModelForm):
 
 
 class ProviderCreateInvoiceForm(ModelForm):
-	payor = forms.ModelChoiceField(queryset=CustomUser.objects.filter())
+	appointment = forms.ModelChoiceField(queryset=ProviderAppointment.objects.filter())
 	class Meta:
 		model=Invoice
-		fields=["title","amount"]
+		fields=["title","amount", "appointment"]

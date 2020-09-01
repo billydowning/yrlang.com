@@ -22,7 +22,17 @@ def ckeck_is_canceled(status):
 
 @register.filter(name='is_approved')
 def ckeck_is_approved(status):
-    return ProviderAppointment.APPROVED == status
+    return ProviderAppointment.APPROVED == status\
+
+# payment method check tags
+@register.filter(name='is_payment_through_platform')
+def ckeck_is_approved(method):
+    return ProviderAppointment.THROUGH_PLATFORM == method
+
+
+@register.filter(name='is_payment_other_options')
+def ckeck_is_approved(method):
+    return ProviderAppointment.OTHER_OPTIONS == method
 
 
 @register.filter(name='is_completed')
