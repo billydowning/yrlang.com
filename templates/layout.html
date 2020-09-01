@@ -44,9 +44,8 @@
       {% endblock extra_css %}
 </style>
     <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
     <!-- XDSoft DateTimePicker -->
     <link rel="stylesheet"
@@ -514,10 +513,14 @@
         </div>
     </footer>
 </div>
+
 <button type="button" id="feedback-btn" class="btn btn-info vertical-right-aligned">
     Feedback <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
 </button>
-{%  include 'tellme/js_inc.html' %}
+{%  include 'tellme/js_inc_2.html' %}
+{% block feedback_btn %}
+
+{% endblock %}
 </body>
 {% block bottom_js %}{% endblock %}
 

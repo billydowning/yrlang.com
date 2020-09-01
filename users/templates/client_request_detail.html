@@ -2,9 +2,10 @@
 {% load check_role js_tag %}
 {% block content %}
 <div class="content-section container mt-5">
-    <div class="media">{% if req.user.profile_image %}
+    <div class="media">
         <div class="profile_d row">
             <div class="col-12 col-md-3 col-lg-2">
+                {% if req.user.profile_image %}
                 <img class="uk-border-circle" width="40" height="40" src="{{ req.user.profile_image.url }}">
                 {% else %}
                 <img class="uk-border-circle" width="40" height="40" src="{{ avtar }}">
@@ -42,11 +43,11 @@
 
     </div>
     {% if req.status == 'requested' %}
-    <button><a href="{% url 'verify_client_request' req.id %}">Verify</a></button>
+    <a style="background:#008CBA; color: white; " href="{% url 'verify_client_request' req.id %}" class="btn btn-theme">Verify</a>
     {% elif req.status == 'verified' or req.status == 'approved' %}
     <form action="{{req.get_detail}}" method="post">
         {% csrf_token %}
-        <div class="col-12  col-md-6 col-lg-4">
+
             {% if req.meeting_on %}
             <p>You already scheuled ones with : {{req.meeting_on}}</p>
             {% endif %}
@@ -59,24 +60,23 @@
                 {{ form.meeting_on }}
 
             </p>
-            {% if req.status == 'approved'%}
-            <button type="submit" class="btn btn-theme">Update</button>
-            {% else %}
-            <button type="submit" class="btn btn-theme">Approved</button>
-            {% endif %}
-            {% endif %}
-        </div>
 
-    </form>
-
-    <br>
-    <button style="background:red; " class="btn mx-2  btn-danger" data-toggle="modal"
+            <button type="submit" class="btn btn-theme">{% if req.status == 'approved'%}Update{% else %}Approved{% endif %}</button>
+        <a style="background:red; color: white; " class="btn mx-2  btn-danger" data-toggle="modal"
             data-target="#exampleModal"
             data-btn="cancel"
             data-title="Cancel">Cancel
-    </button>
+    </a>
+            {% endif %}
+
+
+    </form>
+
+
     {% endif %}
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+
+</div>
+ <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog" role="document">
             <form method="POST">
@@ -108,7 +108,6 @@
             </form>
         </div>
     </div>
-</div>
 <script>
      $(document).ready(function() {
 
@@ -175,6 +174,5 @@ var availableTimes = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:
 
 });
 </script>
-
 
 {% endblock content %}
