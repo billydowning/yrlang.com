@@ -67,7 +67,10 @@
                             <a href="{% url 'client_request_list' %}" class="view_all_link"> View All</a>
                         </div>
                         {% else %}
-                        <h3>No Requests Found </h3>
+                        <h3>No New Requests Found </h3>
+                        <div class="text-center mt-5">
+                            <a href="{% url 'client_request_list' %}" class="view_all_link"> View All</a>
+                        </div>
                         {% endif %}
                     </div>
                 </div>

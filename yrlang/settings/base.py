@@ -240,8 +240,8 @@ CRONJOBS = [
     ]
 
 WEBPUSH_SETTINGS = {
-    "VAPID_PUBLIC_KEY":"BPFHKZ8EDMVFgfPZ6P8vrbLGP0sNlaNMs6ss5x1WZ9HlNdrNVZcsZToBnfvo4-pbSQQxQLv8VxHUnt_-1wKLWBk",
-    "VAPID_PRIVATE_KEY":"eyH6m2JH3pDaT6m9nX58y0KejEICQ_nwOHdJEegAn9s",
+    "VAPID_PUBLIC_KEY":"BEzBMh-Wf7CBbeFJxIgzxPk5fShqObwsLpppouG4lpuv5OxYgxLb8mhhPm_dUi0foNmBI39hRk2rOU8Cad-sxQ4",
+    "VAPID_PRIVATE_KEY":"4wssULgXoSGhURkeuO7kWyr6VYcrw1rKoUd5RcW2Z3E",
     "VAPID_ADMIN_EMAIL": "trootechak@gmail.com"
 }
 #feed back emial

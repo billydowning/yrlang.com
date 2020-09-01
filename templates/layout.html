@@ -23,7 +23,7 @@
     <script href="{% static 'javascript/master.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.25/js/uikit.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.25/js/uikit-icons.min.js"></script>
-    <link href="{% static 'tellme/feedback.min.css' %}" rel="stylesheet">
+
     <!--    fa fa icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/regular.min.css"
@@ -31,7 +31,7 @@
 
 <!--    rating CSS and JS-->
     <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
-<script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+
 <!--    &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
     {% if title %}
     <title>{{ title }}</title>
@@ -43,7 +43,18 @@
 
       {% endblock extra_css %}
 </style>
+    <!-- jQuery -->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <!-- XDSoft DateTimePicker -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
+          integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"
+            integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'custome_CSS/layout.css' %}">
+    <link href="{% static 'tellme/feedback.min.css' %}" rel="stylesheet">
 
 
     <script src="https://js.stripe.com/v3/"></script>
@@ -70,31 +81,13 @@
         });
         {% endif %}
 
-
-
-
-
-
-
-
-
     </script>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-            crossorigin="anonymous"></script>
 
-    <!-- XDSoft DateTimePicker -->
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
-          integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"
-            integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
     {# dropdown CSS #}
     <link rel="stylesheet" href="{% static 'custome_CSS/dropdown_menu.css' %}">
     <!--    customr Js-->
     <script type="text/javascript" src="{% static 'custom_JS/change_role.js' %}"></script>
-
+    <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
     <!--  Bootstrap for POPup  -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
@@ -518,10 +511,14 @@
         </div>
     </footer>
 </div>
+
 <button type="button" id="feedback-btn" class="btn btn-info vertical-right-aligned">
     Feedback <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
 </button>
-{%  include 'tellme/js_inc.html' %}
+{%  include 'tellme/js_inc_2.html' %}
+{% block feedback_btn %}
+
+{% endblock %}
 </body>
 {% block bottom_js %}{% endblock %}
 
