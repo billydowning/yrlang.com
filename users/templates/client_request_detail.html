@@ -3,59 +3,70 @@
 {% block content %}
 <div class="content-section container mt-5">
     <div class="media">
-        <div class="profile_d row">
-            <div class="col-12 col-md-3 col-lg-2">
-                {% if req.user.profile_image %}
-                <img class="uk-border-circle" width="40" height="40" src="{{ req.user.profile_image.url }}">
-                {% else %}
-                <img class="uk-border-circle" width="40" height="40" src="{{ avtar }}">
-                {% endif %}
-            </div>
-            <div class="col-12 col-md-9 col-lg-10">
-                <div class="media-body text-left w-100">
-                    <h2>{{ req.user.username }} &nbsp;&nbsp; <a href="{% url 'contact' req.user.id %}"> <i
+        <div class="profile_d ">
+            <div class="row">
+            <div class="col-12">
+               <div class="req_flex_sec">
+                   <div class="req_profile">
+                        {% if req.user.profile_image %}
+                        <img class="uk-border-circle" width="40" height="40" src="{{ req.user.profile_image.url }}">
+                        {% else %}
+                        <img class="uk-border-circle" width="40" height="40" src="{{ avtar }}">
+                        {% endif %}
+                       </div>
+                    <div class="media-body text-left w-100">
+                   <div class="media_bottom_line">
+                        <h2 class="profile_main_title">{{ req.user.username }} &nbsp;&nbsp; <a href="{% url 'contact' req.user.id %}"> <i
                             class="fa fa-comments-o fa-2x" aria-hidden="true">&nbsp;Chat with requestor</i></a></h2>
-                    <h2>Requested For : {{ req.requested_for }}</h2>
+                    <h2 class="req_itle">Requested For : {{ req.requested_for }}</h2>
                     <div class="row">
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Requested For : {{ req.requested_for }}</p>
+                            <p class="tag_color">Requested For : {{ req.requested_for }}</p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Requested Date : {{req.requested_on.date}} </p>
+                            <p class="tag_color">Requested Date : {{req.requested_on.date}} </p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Requested Time : {{req.requested_on.time}} </p>
+                            <p class="tag_color">Requested Time : {{req.requested_on.time}} </p>
                         </div>
-                        <div class="col-12  col-md-6 col-lg-4">
-                            {% for clip in videos %}
-                            <p>Language :{{clip.language}}</p>
-                            <p>Videos :
-                                <video width="530" height="440" controls>
-                                    <source src="{{clip.files.url}}" type="video/mp4"/>
-                                </video>
-                            </p>
-                            {%endfor%}
+
+                    </div>
+                   </div>
+                    <div class="row">
+                         <div class="col-12  col-md-6 col-lg-3">
+                            <div class="video_outer">
+                                {% for clip in videos %}
+                                <p>Language :{{clip.language}}</p>
+
+                                    <video width="530" height="440" controls>
+                                        <source src="{{clip.files.url}}" type="video/mp4"/>
+                                    </video>
+                                {%endfor%}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+               </div>
+                    </div>
 
+
+        </div>
+</div>
     </div>
     {% if req.status == 'requested' %}
     <a style="background:#008CBA; color: white; " href="{% url 'verify_client_request' req.id %}" class="btn btn-theme">Verify</a>
     {% elif req.status == 'verified' or req.status == 'approved' %}
-    <form action="{{req.get_detail}}" method="post">
+    <form action="{{req.get_detail}}" method="post" class="mt-5">
         {% csrf_token %}
 
             {% if req.meeting_on %}
-            <p>You already scheuled ones with : {{req.meeting_on}}</p>
+            <p class="mb-2">You already scheuled ones with : {{req.meeting_on}}</p>
             {% endif %}
 
 
             {% if form.meeting_on  %}
-            <p>Schedule Your Meeting :</p>
-            <p>Select Date:
+            <h4 class="date_select_gallary_title mb-0">Schedule Your Meeting :</h4>
+            <p class="date_section mt-2"><span class="pb-2">Select Date:</span>
                 <span>{{ form.meeting_on.errors }}</span>
                 {{ form.meeting_on }}
 
