@@ -86,7 +86,10 @@
                             <a href="{% url 'appointments' %}" class="view_all_link"> View All</a>
                         </div>
                         {% else %}
-                        <h3>No Booking Found </h3>
+                        <h3>No New Booking Found </h3>
+                        <div class="text-center mt-5">
+                            <a href="{% url 'appointments' %}" class="view_all_link"> View Others</a>
+                        </div>
                         {% endif %}
                     </div>
                 </div>

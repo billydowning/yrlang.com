@@ -16,7 +16,11 @@ from wagtail.admin.edit_handlers import FieldPanel
 from wagtail.core.models import Page
 
 from .managers import CustomUserManager
+#For pointing the user locations Fields
 from django.contrib.gis.db import models as gis_model
+#rating 
+from django.contrib.contenttypes.fields import GenericRelation
+from star_ratings.models import Rating
 
 
 @register_snippet
@@ -97,6 +101,7 @@ class CustomUser(AbstractUser):
     is_private = models.BooleanField('private', default=False)
     multi_day = models.BooleanField(default=False)
     last_location = gis_model.PointField(null=True, blank=True)
+    ratings = GenericRelation(Rating, related_query_name='users_ratings')
 
 
     USERNAME_FIELD = 'email'

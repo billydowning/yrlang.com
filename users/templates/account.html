@@ -1,19 +1,5 @@
 {% extends "layout.html" %}
-{% load check_role static %}
- {% block extra_css %}
-
-<style>
-    .vertical-right-aligned {
-    transform: rotate(-90deg);
-    transform-origin: 100% 100%;
-    position: fixed;
-    right: 0;
-    top: 50%;
-    z-index: 100;
-}
-</style>
-      {% endblock extra_css %}
-
+{% load check_role %}
 {% block content %}
 {% load webpush_notifications %}
  {% block link_css %}
@@ -21,9 +7,12 @@
     {% endblock link_css %}
 
 <div class="content-section container mt-5">
-    <a class="button secondaryAction" href="{% url 'account_change_password' %}">Change Password?</a>
+   <div class="padding_top_ch">
+     <a class="button secondaryAction" href="{% url 'account_change_password' %}">Change Password?</a>
     {% webpush_button with_class="btn btn-theme"  %}
-    <div class="media">
+   </div>
+   <div class="profile_flex_direction">
+     <div class="media mr-5">
         {% if request.user.profile_image %}
         <img class="uk-border-circle" width="40" height="40" src="{{ request.user.profile_image.url }}">
         {% else %}
@@ -31,12 +20,12 @@
         {% endif %}
 
         <div class="media-body">
-            <h2 class="page_main_header">{{ request.user.username }}</h2>
+            <h4 class="">{{ request.user.username }}</h4>
         </div>
     </div>
     <form method="POST" action="" enctype="multipart/form-data">
         {% csrf_token %}
-        <fieldset class="form-group">
+        <fieldset class="form-group mt-0">
             <legend class="border-bottom mb-4">Account Info</legend>
             <div class="form-group">
                 {{ form.username.label }}
@@ -116,15 +105,6 @@
             <button class="btn" type="submit">Update</button>
         </div>
     </form>
-    <button type="button" id="feedback-btn" class="btn btn-info vertical-right-aligned">
-    Feedback <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
-</button>
-
+   </div>
 </div>
-
 {% endblock content %}
-
-{% block bottom_js %}
-
-
-{% endblock %}

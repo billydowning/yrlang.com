@@ -9,6 +9,7 @@ from wagtail.admin.edit_handlers import FieldPanel, InlinePanel
 
 class BruckePage(Page):
     date = models.DateField(auto_now=True)
+    introduction =  models.CharField(max_length=50, null=True, help_text='shot description about the page')
     bruke_content = RichTextField(blank=True,
                                   help_text='describe the thing that we are allow to do ')
     image = models.ForeignKey('wagtailimages.Image',
@@ -26,6 +27,7 @@ class BruckePage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel('state'),
+        FieldPanel('introduction'),
         FieldPanel('bruke_content'),
         ImageChooserPanel('image'),
         InlinePanel('related_posts', label="Related Post"),
