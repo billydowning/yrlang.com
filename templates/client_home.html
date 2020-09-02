@@ -75,7 +75,8 @@
                                     </div>
                                     <ul class="about_user_pro">
                                         <li>
-                                            <span>State:</span>{{ localite.state }} - {{ localite.country }}
+                                             {% if localite.distance   %}<span>Distance: </span>{{localite.distance}}{% endif %}
+                                             <span>State:</span>{{ localite.state }} - {{ localite.country }}
                                             <div class="div_sp pl-5">
                                                 <span>Profession:</span> {% for profession in localite.profession.all %}{{ profession.name }},{%endfor%}
                                             </div>
@@ -128,6 +129,11 @@
                                             {% endif %}
                                             <a href="{% url 'create_provider_appointments' professional.id %}">
                                                 <button class="btn theme_btn" type="button">Book Appointment!</button>
+                                            </a>
+                                             &nbsp; <a href="{% url 'contact' professional.id %}">
+                                            <button class="btn theme_btn" type="button">Contact</button>
+                                        </a>
+
                                                 {% else %}
                                                 <h5><a href="{% url 'main:add_anon_favorite' 'provider' professional.id %}">Add to Favorite</a></h5>
                                                 <a href="{% url 'account_login' %}">

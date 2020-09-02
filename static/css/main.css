@@ -339,14 +339,53 @@ padding-left: 0px !important;
 .uk-grid + .uk-grid, .uk-grid > .uk-grid-margin, * + .uk-grid-margin {
 margin-top: 10px;
 }
+.start_inner{min-height: 320px !important;}
+.home-link{
+    text-decoration: none;
+    float: right;
+    color: #6ac241;
+}
+.getting_start_step_outer .row .col-12:last-child .start_inner{ min-height: 250px !important;}
 
 
+.bottom_social_icons ul.social_icons_listing {
+    display: flex;
+    justify-content: flex-end;
+        margin-right: 42px;
+}
+.bottom_social_icons ul.social_icons_listing li {
+    padding-right: 10px;
+}
+.bottom_social_icons ul.social_icons_listing li img{
+    width: 30px;
+}
 
-
-
-
-
-
+.login_signup_btn span {
+    width: 100% !important;
+    background: #6ac241;
+    color: #fff;
+    border-radius: 50px;
+    padding: 4px 10px;
+    display: inline-block;
+    font-size: 14px;
+}
+.lang_drop_down span
+{
+	padding-right: 5px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.lang_drop_down .btn-secondary
+{
+	padding: 0;
+    background: transparent !important;
+    color: #000 !IMPORTANT;
+    border: 0 !IMPORTANT;
+    min-width: 100px;
+    outline: none !IMPORTANT;
+    box-shadow: none !important;
+}
+.logo_container{align-items:center !important;}
 
 
 

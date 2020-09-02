@@ -1,6 +1,12 @@
 {% extends "layout.html" %}
 {% load wagtailcore_tags wagtailimages_tags favorite_check %}
 {% load static %}
+{% load leaflet_tags %}
+
+{% block link_css %}
+{% leaflet_css %}
+{% leaflet_js %}
+{% endblock link_css %}
 {% block extra_css %}
 ul.menu li {
 display:inline;
@@ -193,7 +199,7 @@ $(document).ready(function() {
             <div class="col-12 pl-0 pr-0">
                 <div class="gallary_images">
                     {% for pictures in images %}
-                    {% image pictures.image fill-320x300 %}
+                    {% image pictures.image original %}
                     {% endfor %}
                 </div>
             </div>
@@ -206,7 +212,9 @@ $(document).ready(function() {
         <div class="row">
             <div class="col-12">
 
-                <h1 class="page_main_header galarry_header">{{ page.title }}</h1>
+                <h1 class="page_main_header galarry_header">{{ page.title }} </h1>
+                <h5> {% firstof distance 'No Location' %}</h5>
+                <h5> {% firstof localite_total 'No Localite' %}</h5>
                 {%if request.user.is_authenticated %}
                 {% if city_checked  %}
                 <h5>Already in Favorite</h5>
@@ -348,63 +356,11 @@ $(document).ready(function() {
 
         <div class="">
             <div class="row mt-4">
-                <div class="col-md-6" id="cal">
-                    <!-- <p>CALENDAR</p> -->
-                    <div id='calendar'></div>
-                    <div class="col-md-12 mt-3">
-                        Timezone:
-                        <select id='timezone-selector'>
-                            <option value='' selected>none</option>
-                            <option value='local'>local</option>
-                            <option value='UTC'>UTC</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="col-md-6" id="slot" hidden>
-                    <div class="row">
-                        <div class="col-md-12 text-left">
-                            <button id="back_to_calendar" class="theme_btn">Back</button>
-                        </div>
-                        <div class="col-md-6">
-                            <h4 id="day">Day</h4>
-                            <h6 id="date">Date</h6>
-                            <hr>
-                            <h2>Select Time</h2>
-                            <p>Duration: 360 min</p>
-                            <div class="row" id="slot1">
-                                <div id="slot1_div1">
-                                    <button id="btn1" class="btn btn-primary btn-block">12 : 00</button>
-                                </div>
-                                <div id="slot1_div2" hidden>
-                                    <div class="col-md-6">
-                                        <button class="btn btn-primary btn-block" disabled>12 : 00</button>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <button id="confirm1" class="btn btn-primary btn-block">Confirm</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <br>
-                            <br>
-                            <div class="row" id="slot2">
-                                <div id="slot2_div1">
-                                    <button id="btn2" class="btn btn-primary btn-block">06 : 00</button>
-                                </div>
-                                <div id="slot2_div2" hidden>
-                                    <div class="col-md-6">
-                                        <button class="btn btn-primary btn-block" disabled>06 : 00</button>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <button id="confirm2" class="btn btn-primary btn-block">Confirm</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="col-md-6" id="booking" hidden>
+
+
+                <div class="col-md-6" id="" hidden>
                     <div class="row">
                         <div class="col-md-6">
                             <button id="back_to_slot" class="theme_btn">Back</button>
@@ -439,10 +395,30 @@ $(document).ready(function() {
             </div>
         {% endfor %}
     </div>
+                {% if page.state.location %}
+
+                        <div class="">
+
+                            <div class="">   {% leaflet_map "main" callback="map_init" %}</div>
+                        </div>
+                        {% endif %}
     <h2 class="mt-5"><a href="{{ page.get_parent.url }}" class="theme_btn">Back</a></h2>
 </div>
 
 
+<script type="text/javascript">
+{% if page.state.location %}
+    function map_init(map, options) {
+        // get point lat and lon
+        var lon = "{{ page.state.location.x }}";
+        var lat = "{{ page.state.location.y }}";
+
+        // zoom to point & add it to map
+        map.setView([lat, lon], 12);
+        L.marker([lat, lon]).addTo(map);
+    }
+    {% endif %}
+</script>
 
 
 

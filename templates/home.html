@@ -124,7 +124,45 @@
       {% if request.user.is_staff or lang_veri_checked %}
     {% include 'admin_home.html' %}
     {% endif %}
-
+        {{ne_data}}
 
 </div>
+<script>
+
+    if ("geolocation" in navigator){ //check geolocation available
+	//try to get user current location using getCurrentPosition() method
+	var url_user_loc = "{% url 'main:set_location_ajax' %}";
+	navigator.geolocation.getCurrentPosition(function(position){
+
+
+                         $.ajax({
+                type: "GET",
+                url: url_user_loc,
+                data: { latitude: position.coords.latitude,
+                                longitude:  position.coords.longitude },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+
+                    if(data.not_here){
+
+                    location.reload()
+                    }else{
+
+
+                    }
+
+
+                },
+                error: function(data){
+                    console.log("fail");
+                }
+            });
+
+
+		});
+}else{
+	console.log("Browser doesn't support geolocation!");
+}
+</script>
 {% endblock %}

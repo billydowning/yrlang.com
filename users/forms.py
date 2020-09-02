@@ -9,7 +9,7 @@ from .utils import group_obj
 from django.forms import modelformset_factory, BaseModelFormSet
 from django.core.mail import send_mail
 from yrlang.settings.development_example import EMAIL_HOST_USER
-
+from rooms.models import Room, Message
 
 class ClientSignupForm(SignupForm):
     terms = forms.BooleanField(widget=forms.CheckboxInput())
@@ -23,7 +23,11 @@ class ClientSignupForm(SignupForm):
     def save(self, request):
         user = super(ClientSignupForm, self).save(request)
         role = UserRole.objects.get(name=UserRole.CLIENT)
+        chat_role = UserRole.objects.get(name=UserRole.ADMIN)
         user.user_role.add(role)
+        admin = CustomUser.objects.filter(is_staff=True).order_by('date_joined').first()
+        room_id = Room.create(admin, user, chat_role)
+        Message.objects.create(author=admin, reciepent=user, content='Hello User', room=room_id)
         send_mail(
             'Welcome To YR-lang ' ,
             'Your account fo the YR-lang is been created welcome to our family of YR-lang.',
@@ -182,10 +186,19 @@ class UpdateAccountForm(ModelForm):
         self.request = request
         super(UpdateAccountForm, self).__init__(*args, **kwargs)
         self.fields['role'].queryset = UserRole.objects.exclude(id__in=self.instance.user_role.all())
+        self.fields['phone_number'].required = True
+        self.fields['phone_number'].widget.attrs.update({
+            'autocomplete': 'off', 'type': 'tel',
+            'pattern': "[\+]\d{2}\d{3}[\-]\d{3}[\-]\d{4}",
+
+        })
 
     class Meta:
         model = CustomUser
-        fields = ["username", "email", 'profile_image']
+        fields = ["username", "email", 'profile_image', 'phone_number']
+        help_texts = {
+            'phone_number': 'Use Formate Like This +91999-999-9999 '
+        }
 
     def save(self, commit=True):
         instance = super(UpdateAccountForm, self).save(commit=False)
@@ -204,7 +217,7 @@ class UpdateAccountForm(ModelForm):
 
         if profile_image:
             instance.profile_image = profile_image
-            instance.save()
+        instance.save()
         return instance
 
 
@@ -232,7 +245,7 @@ class ProviderAccountForm(ModelForm):
         model = CustomUser
         fields = ['country', 'state', 'phone_number']
         help_texts = {
-            'phone_number': 'Use Formate Like This 999-999-9999 '
+            'phone_number': 'Use Formate Like This +91999-999-9999 '
         }
 
     def __init__(self, request=None, *args, **kwargs):
@@ -243,7 +256,7 @@ class ProviderAccountForm(ModelForm):
         self.fields['phone_number'].required = True
         self.fields['phone_number'].widget.attrs.update({
             'autocomplete': 'off', 'type': 'tel',
-            'pattern': "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+             'pattern': "[\+]\d{2}\d{3}[\-]\d{3}[\-]\d{4}",
 
         })
 
@@ -282,7 +295,7 @@ class UpdateProviderAccountForm(ModelForm):
         fields = ['username', 'email', 'bio', 'phone_number', 'state',
                   'country', 'language', 'profile_image']
         help_texts = {
-            'phone_number': 'Use Formate Like This 999-999-9999 '
+            'phone_number': 'Use Formate Like This +91999-999-9999 '
         }
 
     def __init__(self, request=None, *args, **kwargs):
@@ -291,7 +304,7 @@ class UpdateProviderAccountForm(ModelForm):
         self.fields['role'].queryset = UserRole.objects.exclude(id__in=self.instance.user_role.all())
         self.fields['phone_number'].widget.attrs.update({
             'autocomplete': 'off', 'type': 'tel',
-            'pattern': "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+            'pattern': "[\+]\d{2}\d{3}[\-]\d{3}[\-]\d{4}",
         })
 
     def save(self, commit=True):

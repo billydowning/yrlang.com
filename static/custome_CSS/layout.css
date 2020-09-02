@@ -924,14 +924,14 @@ p {
 }
 .slider_inner_form {
     background: #fff;
-    padding: 50px;
+    padding: 30px;
     border-radius: 6px;
 }
 .slider_inner_form h2
 {
-    font-size: 36px !important;
+    font-size: 26px !important;
     font-weight: 600 !important;
-    margin-bottom: 15px !important;
+    margin-bottom: 8px !important;
 }
 .slider_inner_form p
 {
@@ -940,11 +940,11 @@ p {
     margin-bottom: 16px;
 }
 .slider_inner_form .form-control {
-    height: 50px !important;
-    margin-bottom: 25px;
+    height: 38px !important;
+    margin-bottom: 15px;
 }
 .right_form_btn .btn {
-    height: 50px;
+    height: 40px;
     width: 100%;
     font-weight: 600;
     letter-spacing: 1px;
@@ -963,6 +963,18 @@ p {
     }
  .white_text{color:#fff !important;text-align:left !important;}
  h3#word{color:#fff !important}
+/* 19-08-2020*/
+.card_view .btn {
+    padding: 0;
+    background: transparent;
+    color: #6ac241 !important;
+    font-weight: 600;
+    letter-spacing: 2px !important;
+}
+.card_view .card-body .card-text
+{
+  min-height: 45px;
+}
 /*form*/
 /*responsive*/
 
