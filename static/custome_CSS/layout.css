@@ -1269,3 +1269,24 @@ display: flex;
 .padding_top_ch a {
     margin-bottom: 8px;
 }
+ul.list-unstyled.friend-list li {
+    margin-bottom: 20px;
+    padding-bottom: 20px !IMPORTANT;
+    border-bottom: 1px solid #ccc;
+}
+ul.list-unstyled.friend-list li img {
+    width: 47px !important;
+    height: 47px !important;
+}
+.chat-footer p {
+    font-size: 12px !important;
+    text-align: right;
+}
+.unread_msg
+{
+    background: #eee;
+}
+input#mysearchInp
+{
+    margin-bottom: 20px;
+}
