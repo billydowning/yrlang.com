@@ -37,7 +37,7 @@ p.turn-grey.small.footers_link {
             <div class="white z-depth-1  pb-0">
           <ul class="list-unstyled friend-list">
               {% for msg in unread_messages %}
-            <li class=" p-1">
+            <li class=" p-1 unread_msg">
               <a href="{% url 'chatroom' msg.message.room.id %}" class="d-flex justify-content-between">
                     {% if  msg.chat_partner.profile_image %}
                   <img src="{{ msg.chat_partner.profile_image.url }}" style="width:100px;height:100px;"  alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
@@ -51,7 +51,7 @@ p.turn-grey.small.footers_link {
                 <div class="chat-footer">
                   <p class="text-smaller text-muted mb-0">{{ msg.message.date_created |date:"SHORT_DATE_FORMAT"  }}</p>
                   <span class="badge badge-danger float-right"> {{ msg.message.room.created_for }} Chat</span>
-                    <span class="badge badge-danger float-right">Unread </span>
+
                 </div>
               </a>
             </li>
