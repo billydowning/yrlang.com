@@ -243,11 +243,11 @@ class SaveBookings(UserSessionAndLoginCheckMixing, View):
                 [str(booking.requestor.email)],
                 fail_silently=True,
             )
-            if booking.requestor.phone_number:
-                str_phone_number = str(booking.requestor.phone_number)
-                to = str_phone_number.replace('-', '')
-                twillo = SendSMSWithTwillo()
-                twillo.send_messsge_to_user(to, message_data)
+            # if booking.requestor.phone_number:
+            #     str_phone_number = str(booking.requestor.phone_number)
+            #     to = str_phone_number.replace('-', '')
+            #     twillo = SendSMSWithTwillo()
+            #     twillo.send_messsge_to_user(to, message_data)
 
             for obj in data:
                 BookingDates.objects.create(booking=booking, date=obj['date'], start_time=obj['start'], end_time=obj['end'])
@@ -302,11 +302,11 @@ class SaveAppointments(UserSessionAndLoginCheckMixing, View):
                     [str(instance.requestor.email)],
                     fail_silently=True,
                 )
-                if instance.requestor.phone_number:
-                    str_phone_number = str(instance.requestor.phone_number)
-                    to = str_phone_number.replace('-', '')
-                    twillo = SendSMSWithTwillo()
-                    twillo.send_messsge_to_user(to, message_data)
+                # if instance.requestor.phone_number:
+                #     str_phone_number = str(instance.requestor.phone_number)
+                #     to = str_phone_number.replace('-', '')
+                #     twillo = SendSMSWithTwillo()
+                #     twillo.send_messsge_to_user(to, message_data)
 
 
 

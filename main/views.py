@@ -18,8 +18,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 
 class HomeView(TemplateView):
     template_name = "home.html"
-    longitude = None
-    latitude = None
+
 
     def get(self, request, *args, **kwargs):
         localite_list = None
