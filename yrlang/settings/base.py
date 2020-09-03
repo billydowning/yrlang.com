@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'blogpost',
     'invoices',
     'payment',
+    'custom_admin',
     #for user rating
     'star_ratings',
 
@@ -213,8 +214,8 @@ STATIC_URL = '/static/'
 # stripe keys
 
 STRIPE_KEYS = {
-  'secret_key': 'sk_test_51HMCUgIgDyZLgq4em9NNMD203rEDVbcn9fHJQfpwT5NiyO5oFvNzi24WIqQxdcK0nbWRKUggi6YvmuQOGJNiY5sD00J5zkQVnt',
-  'publishable_key': 'pk_test_51HMCUgIgDyZLgq4eAtPEGPmQjFoi5dgDf8md5Iatm5hqf493XdDesbovZ4VpZNkSsgZz7WUMvKVgWdYxmX9ybehQ00Oqx66Bmd'
+  'secret_key': 'sk_test_51HMWy4DIIqUkmOXRbuZC2ccG26lLswr6VAMxAuE34qT88XV4hgs5b88LTrGOoJ2yE11wkBGf9MS2eF82XIa78zFx002B7oieUK',
+  'publishable_key': 'pk_test_51HMWy4DIIqUkmOXRwXEku9kYQysOYNd4xj4K2NarrZauxqRB28mdhogEbMCFBREbT90LUQTt57hjrNv0fZnrOi9h009odtx7ZI'
 }
 STATICFILES_DIRS = [
     os.path.join(PROJECT_DIR, 'static'),
