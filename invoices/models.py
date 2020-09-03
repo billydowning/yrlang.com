@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from appointments.models import Appointment, ProviderAppointment
 from users.models import CustomUser
@@ -19,3 +20,6 @@ class Invoice(models.Model):
 
 	def __str__(self):
 		return str(self.id)
+
+	def get_invoice_absolute_url(self):
+		return reverse('custom_admin:invoice', args=[self.pk])
