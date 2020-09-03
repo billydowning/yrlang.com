@@ -357,9 +357,9 @@
             <li class="opn_submenu">
             <a href="#" class="opned">Our Cities</a>
             <div class="submenu_links">
-                 <a href="#">Berlin</a>
-                  <a href="#">Milan</a>
-                  <a href="#">Paris</a>
+                 {% for city in city_list %}
+                    <a href="{% slugurl city.slug %}">{{ city.title }}</a>
+                {% endfor %}
             </div>
         </li>
             <li><a href="#">Become a Localite</a></li>
