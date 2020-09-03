@@ -7,7 +7,7 @@ def city_list_view(request):
     city_list = CityPage.objects.all().order_by("?")[:3]
     if city_list:
         parent_of_city = city_list.first().get_parent()
-        return {"city_parent": parent_of_city  ,"city_list": city_list}
+        return {"city_parent": parent_of_city, "city_list": city_list}
     return {}
 
 
