@@ -141,6 +141,11 @@ class InvoiceCharge(View):
 
                 charge = stripe.Charge.create(customer=user.stripe_id, amount=int(invoice.amount * 100), currency='usd',
                                               description=invoice.title)
+                if charge.captured:
+                    invoice.is_paid = True
+                    invoice.date_paid = datetime.today()
+                    invoice.payment_id = charge.id
+                    invoice.save()
 
                 payment_intent = stripe.PaymentIntent.create(
                     amount=int(invoice.amount * 100),
@@ -156,14 +161,9 @@ class InvoiceCharge(View):
                     transfer_group=invoice.title,
                 )
                 # add row in invoices for stripe payment id and store the stripe payment ID from response attribute
-                if charge.captured:
-                    invoice.is_paid = True
-                    invoice.date_paid = datetime.today()
-                    invoice.payment_id = charge.id
-                    invoice.save()
 
             except stripe.error.StripeError as e:
                 print(e)
-                messages.error(request, "Your request to make payment couldn't be processed!")
+                # messages.error(request, "Your request to make payment couldn't be processed!")
         messages.success(request, "Your request to make payment processed successfully!")
         return redirect("invoice", invoice_id=invoice.id)

@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'blogpost',
     'invoices',
     'payment',
+    'custom_admin',
     #for user rating
     'star_ratings',
 
