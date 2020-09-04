@@ -18,6 +18,9 @@
     </div>
   </div>
   {% endfor %}
+    {% if invoice.is_paid == True %}
+    <p><a href="{% url 'main:booking_review_and_rating' invoice.booking.id %}">Review & Rating</a> </p>
+    {% endif %}
   {% endif %}
 
   {% if invoice.appointment %}
@@ -29,6 +32,9 @@
       <p>{{ invoice.appointment.get_payment_method_display }}</p>
     </div>
   </div>
+    {% if invoice.is_paid == True %}
+      <p><a href="{% url 'main:appointment_review_and_rating' invoice.appointment.id %}">Review & Rating</a> </p>
+    {% endif %}
   {% endif %}
   </div>
   <br>
@@ -38,7 +44,7 @@
   {% csrf_token %}
   <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
           data-key="{{ key }}"
-          data-description="A Django Charge"
+          data-description="YR-lang Charge"
           data-amount="{{amount}}"
           data-locale="auto"></script>
 </form>

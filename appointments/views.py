@@ -17,7 +17,9 @@ from django.core.mail import send_mail
 from yrlang.settings.development_example import EMAIL_HOST_USER
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 from users.twillo_messages_to_user import SendSMSWithTwillo
-
+from main.models import Notification
+from users.models import UserRole
+from users.notification_and_mail import NotificationToUser
 
 class AppoitnemtRequestView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DetailView):
     model = CustomUser
@@ -29,12 +31,12 @@ class AppoitnemtRequestView(UserSessionAndLoginCheckMixing, UserPassesTestMixin,
             return True
 
 
-class AppointmentView(UserSessionAndLoginCheckMixing,UserPassesTestMixin, ListView):
+class AppointmentView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, ListView):
     template_name = "appointments.html"
     context_object_name = 'bookings'
 
     def test_func(self):
-        if self.request.user.is_client_user(self.request.session.get('user_role')) or\
+        if self.request.user.is_client_user(self.request.session.get('user_role')) or \
                 self.request.user.is_localite_user(self.request.session.get('user_role')):
             return True
 
@@ -57,7 +59,8 @@ class NewAppointmentView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, De
 
     def get_context_data(self, **kwargs):
         context = super(NewAppointmentView, self).get_context_data()
-        context['events'] = Appointment.objects.filter(status=Appointment.CONFIRMED).exclude(id=self.kwargs.get('pk', None))
+        context['events'] = Appointment.objects.filter(status=Appointment.CONFIRMED).exclude(
+            id=self.kwargs.get('pk', None))
         return context
 
 
@@ -70,7 +73,7 @@ class EditBookingRequestView(UserSessionAndLoginCheckMixing, UserPassesTestMixin
 
     def test_func(self):
         return self.request.user.is_client_user(self.request.session.get('user_role')) \
-            or self.request.user.is_localite_user(self.request.session.get('user_role'))
+               or self.request.user.is_localite_user(self.request.session.get('user_role'))
 
     def post(self, request, *args, **kwargs):
         print('post', request.POST['id'], request.POST['message'], request.POST['status'])
@@ -128,7 +131,7 @@ class ProviderAppointmentList(UserSessionAndLoginCheckMixing, UserPassesTestMixi
     context_object_name = 'appointments'
 
     def test_func(self):
-        if self.request.user.is_client_user(self.request.session.get('user_role')) or\
+        if self.request.user.is_client_user(self.request.session.get('user_role')) or \
                 self.request.user.is_provider_user(self.request.session.get('user_role')):
             return True
 
@@ -168,9 +171,9 @@ class EditProviderAppointmentView(UserSessionAndLoginCheckMixing, UserPassesTest
         context = {
             'appointment': self.appointment,
             'appointments': ProviderAppointment.objects.filter(
-                                requestee=CustomUser.get(id=self.appointment.requestee.id)
-                            ).exclude(request_date=self.appointment.request_date),
-            }
+                requestee=CustomUser.get(id=self.appointment.requestee.id)
+            ).exclude(request_date=self.appointment.request_date),
+        }
         return render(self.request, self.template_name, context)
 
     def post(self, request, *args, **kwargs2):
@@ -235,7 +238,8 @@ class SaveBookings(UserSessionAndLoginCheckMixing, View):
                 "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
             }
             send_user_notification(user=booking.requestee, payload=payload_data, ttl=100)
-            message_data = 'You have booking schedule with '+ str(booking.requestee) + ' on '+ data[0]['date']+'with start time respectivly with end time ' +  data[0]['start'] + ' '+ data[0]['end'],
+            message_data = 'You have booking schedule with ' + str(booking.requestee) + ' on ' + data[0][
+                'date'] + 'with start time respectivly with end time ' + data[0]['start'] + ' ' + data[0]['end'],
             send_mail(
                 'Booking scheduled on ' + data[0]['date'],
                 message_data,
@@ -243,6 +247,9 @@ class SaveBookings(UserSessionAndLoginCheckMixing, View):
                 [str(booking.requestor.email)],
                 fail_silently=True,
             )
+
+            notification = NotificationToUser()
+            notification.notifications_create_for_booking(booking, message_data)
             # if booking.requestor.phone_number:
             #     str_phone_number = str(booking.requestor.phone_number)
             #     to = str_phone_number.replace('-', '')
@@ -250,7 +257,8 @@ class SaveBookings(UserSessionAndLoginCheckMixing, View):
             #     twillo.send_messsge_to_user(to, message_data)
 
             for obj in data:
-                BookingDates.objects.create(booking=booking, date=obj['date'], start_time=obj['start'], end_time=obj['end'])
+                BookingDates.objects.create(booking=booking, date=obj['date'], start_time=obj['start'],
+                                            end_time=obj['end'])
 
             url = reverse('request_appointment', args=[localite])
 
@@ -276,6 +284,7 @@ class SaveBookings(UserSessionAndLoginCheckMixing, View):
 
 class SaveAppointments(UserSessionAndLoginCheckMixing, View):
 
+
     def post(self, request, *args, **kwargs2):
         provider = request.POST.get('provider', None)
         appointment_id = request.POST.get('appointment_id', None)
@@ -290,25 +299,27 @@ class SaveAppointments(UserSessionAndLoginCheckMixing, View):
                 instance.save()
                 payload_data = {
                     "head": 'Yr-lang',
-                    "body": "You have an appointment from " + instance.requestor.email ,
+                    "body": "You have an appointment from " + instance.requestor.email,
                     "icon": "https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"
                 }
                 send_user_notification(user=instance.requestee, payload=payload_data, ttl=100)
-                message_data = 'Your  appointment schedule with ' + str(instance.requestee) + ' on ' + ''+ data['request_date']
+                message_data = 'Your  appointment schedule with ' + str(instance.requestee) + ' on ' + '' + data[
+                    'request_date']
                 send_mail(
-                    'Appointment scheduled on '+ data['request_date'],
+                    'Appointment scheduled on ' + data['request_date'],
                     message_data,
                     EMAIL_HOST_USER,
                     [str(instance.requestor.email)],
                     fail_silently=True,
                 )
+                notify = NotificationToUser
+                notify.notifications_create_for_appoitment(instance, message_data)
+
                 # if instance.requestor.phone_number:
                 #     str_phone_number = str(instance.requestor.phone_number)
                 #     to = str_phone_number.replace('-', '')
                 #     twillo = SendSMSWithTwillo()
                 #     twillo.send_messsge_to_user(to, message_data)
-
-
 
         if appointment_id:
             appointment = ProviderAppointment.objects.get(id=appointment_id)
@@ -330,3 +341,8 @@ class SaveAppointments(UserSessionAndLoginCheckMixing, View):
         url = reverse_lazy('provider_appointment')
 
         return JsonResponse({'url': url})
+
+class BookingDetailView(UserSessionAndLoginCheckMixing, DetailView):
+    model = ProviderAppointment
+    template_name = 'booking_detail.html'
+    context_object_name = 'booking'

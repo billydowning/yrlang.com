@@ -26,7 +26,7 @@ class ReviewAdmin(admin.ModelAdmin):
     search_fields = ['user', 'name', ]
 
 
-admin.site.register(Review, ReviewAdmin)
+admin.site.register(Review)
 
 
 #feedback model of tellme packege  app

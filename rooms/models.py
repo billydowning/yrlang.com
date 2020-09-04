@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import CustomUser, UserRole
+from django.urls import reverse
 
 
 class Room(models.Model):
@@ -14,6 +15,9 @@ class Room(models.Model):
     @classmethod
     def create(cls, creator, partner, created_for):
         return cls.objects.create(creator=creator, partner=partner, created_for=created_for)
+
+    def room_detail_url(self):
+        return reverse('chatroom', args=[self.pk])
 
 
 class Message(models.Model):

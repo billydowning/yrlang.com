@@ -139,6 +139,19 @@ class InboxView(UserSessionAndLoginCheckMixing, TemplateView):
                     else:
                         read_message = {'chat_partner': chat_partner, "message": newest_message}
                         read_messages.append(read_message)
+        context['notifications'] = self.get_notifications_role_wise()
         context["read_messages"] = read_messages
         context["unread_messages"] = unread_messages
         return context
+
+    def get_notifications_role_wise(self):
+        query = ''
+        if self.request.user.is_staff:
+            query = None
+        elif self.request.user.is_client_user(self.request.session.get('user_role')):
+            query = self.request.user.notifications.filter(role__name=UserRole.CLIENT)
+        elif self.request.user.is_provider_user(self.request.session.get('user_role')):
+            query = self.request.user.notifications.filter(role__name=UserRole.PROVIDER)
+        elif self.request.user.is_localite_user(self.request.session.get('user_role')):
+            query = self.request.user.notifications.filter(role__name=UserRole.LOCALITE)
+        return query

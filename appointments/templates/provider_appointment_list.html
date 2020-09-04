@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load  check_role check_status %}
+{% load rating_check %}
 {% block content %}
 
 {% is_provider user_role=request.session.user_role as provider_checked %}
@@ -353,13 +354,24 @@
 
                                                     <a href="{% url 'edit_provider_appointment' appointment.id %}">
                                                         <button class="btn theme_btn" type="button">Edit</button>
+                                                    </a>{% check_appointment_rating user=request.user appointment_id=appointment.id  as in_rating %}
+                                                        {% if not in_rating %}--
+                                                     <a href="{% url 'main:appointment_review_and_rating' appointment.id %}">
+                                                        <button class="btn theme_btn" type="button">rating</button>
                                                     </a>
+                                                     {% endif %}
 
                                                     {% elif client_checked %}
 
-                                                <a href="{% url 'edit_provider_appointment' appointment.id %}">
-                                                    <button class="btn theme_btn" type="button">Detail</button>
-                                                </a>
+                                                    <a href="{% url 'edit_provider_appointment' appointment.id %}">
+                                                        <button class="btn theme_btn" type="button">Detail</button>
+                                                    </a>
+                                                    {% check_appointment_rating user=request.user appointment_id=appointment.id  as in_rating %}
+                                                        {% if not in_rating %}--
+                                                     <a href="{% url 'main:appointment_review_and_rating' appointment.id %}">
+                                                        <button class="btn theme_btn" type="button">Give Review</button>
+                                                    </a>
+                                                        {% endif %}
 
                                                 {% endif %}
                                                 </li>

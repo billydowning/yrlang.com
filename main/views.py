@@ -2,19 +2,23 @@ from datetime import datetime
 import pytz
 from django.contrib import messages
 from _collections import defaultdict
-from django.views.generic import TemplateView, View, ListView, DetailView, RedirectView
+from django.views.generic import (TemplateView, View, ListView,
+                                  DetailView, RedirectView, CreateView)
 
 from django.db.models import Q
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from .constant import *
 from users.models import CustomUser, UserRole, UserRoleRequest, State
 from blogpost.models import BlogPostPage, CityPage, BruckePage
 from appointments.models import Appointment, ProviderAppointment
-from .forms import UserSearchFrom
+from .forms import UserSearchFrom, BookingReviewForm
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.http import HttpResponseRedirect, JsonResponse
+from .models import Review
+from appointments.models import (Appointment as BookingModel,
+                                 ProviderAppointment as AppointmentModel)
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -315,3 +319,80 @@ class SetLonAndLatInSession(View):
                 return JsonResponse(data={'already_here':'data found'})
         return True
 
+
+class BookingRatingAndReview(CreateView):
+    template_name = 'booking_rating_and_review.html'
+    model = Review
+    form_class = BookingReviewForm
+
+
+    def form_valid(self, form):
+        booking_obj = self.get_object()
+        if self.request.user == booking_obj.requestor:
+            partner = booking_obj.requestee
+        else:
+            partner = booking_obj.requestor
+        review_form = form.save(commit=False)
+        review_form.reviewer = self.request.user
+        review_form.reviewee = partner
+        review_form.content_object= booking_obj
+        review_form.save()
+        messages.success(self.request, "Review submited")
+        return HttpResponseRedirect('/')
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(BookingModel, pk=self.kwargs.get('bookoing_id'))
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super(BookingRatingAndReview, self).get_context_data(**kwargs)
+        booking_obj = self.get_object()
+        context['booking'] = booking_obj
+        if self.request.user == booking_obj.requestor:
+            partner = booking_obj.requestee
+        else:
+            partner = booking_obj.requestor
+        context['partner'] = partner
+        return context
+
+
+class AppointmentRatingAndReview(CreateView):
+    template_name = 'appointment_rating_and_review.html'
+    model = Review
+    form_class = BookingReviewForm
+
+
+    def form_valid(self, form):
+        booking_obj = self.get_object()
+        if self.request.user == booking_obj.requestor:
+            partner = booking_obj.requestee
+        else:
+            partner = booking_obj.requestor
+        review_form = form.save(commit=False)
+        review_form.reviewer = self.request.user
+        review_form.reviewee = partner
+        review_form.content_object= booking_obj
+        review_form.save()
+        messages.success(self.request, "Review submited")
+        return HttpResponseRedirect('/')
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(AppointmentModel, pk=self.kwargs.get('appointment_id'))
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super(AppointmentRatingAndReview, self).get_context_data(**kwargs)
+        booking_obj = self.get_object()
+        context['booking'] = booking_obj
+        if self.request.user == booking_obj.requestor:
+            partner = booking_obj.requestee
+        else:
+            partner = booking_obj.requestor
+        context['partner'] = partner
+        return context

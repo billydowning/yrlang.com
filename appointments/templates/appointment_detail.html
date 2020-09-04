@@ -219,7 +219,7 @@
     <p>Date :- {{ appointment.requested_date_2 }}</p>
     <p>Time Slot :- {{ appointment.requested_date_2_timeslots }}</p>
 
-    {% elif provider_checked %}
+    {% elif provider_checked or client_checked %}
     <h2>Status :- {{ appointment.get_status_display }}</h2>
     <hr>
     <p>appointment From :- {{ appointment.requestor }}</p>
@@ -240,6 +240,7 @@
     <p>Date :- {{ appointment.request_date }}</p>
     <p>Comment From Client :- {{ appointment.client_comment }}</p>
     <hr>
+     {% comment %}
     {% if appointment.status|is_requested %}
     <div class="container">
         <div class="row">
@@ -268,6 +269,7 @@
     >Cancel
     </button>
     {% endif %}
+    {% endcomment %}
 
     {% endif %}
 
