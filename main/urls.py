@@ -29,8 +29,12 @@ urlpatterns = [
     path('trust-and-saftey/', views.TrustAndSaftey.as_view(), name='trust_and_saftey'),
 
     #rating the Apppoint ment and the User
-    path('rating/<int:bookoing_id>', views.BookingRatingAndReview.as_view(), name='booking_review_and_rating'),
-    path('rating_ap/<int:appointment_id>', views.AppointmentRatingAndReview.as_view(), name='appointment_review_and_rating'),
+    path('rating/<int:bookoing_id>', views.BookingRatingAndReviewView.as_view(), name='booking_review_and_rating'),
+    path('rating_ap/<int:appointment_id>', views.AppointmentRatingAndReviewView.as_view(), name='appointment_review_and_rating'),
+    #report a problem
+    path('booking-complain/<int:bookoing_id>', views.BookingComplainView.as_view(), name='booking_complain'),
+
+
 
 
 ]

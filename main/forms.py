@@ -1,6 +1,6 @@
 from django import forms
 from users.models import CustomUser
-from .models import Review
+from .models import Review, ReportAProblem
 class UserSearchFrom(forms.ModelForm):
 
 
@@ -30,3 +30,17 @@ class BookingReviewForm(forms.ModelForm):
          self.fields['review_choice_1'].required = True
          self.fields['review_choice_2'].required = True
          self.fields['review_choice_3'].required = True
+
+
+class BoookingAndAppointmentComplainForm(forms.ModelForm):
+
+    class Meta:
+        model = ReportAProblem
+        fields = ['description']
+        help_texts = {
+         'description': 'Describe your Problem the Some Words'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(BoookingAndAppointmentComplainForm, self).__init__( *args, **kwargs)
+        self.fields['description'].required =True

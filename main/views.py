@@ -11,14 +11,15 @@ from .constant import *
 from users.models import CustomUser, UserRole, UserRoleRequest, State
 from blogpost.models import BlogPostPage, CityPage, BruckePage
 from appointments.models import Appointment, ProviderAppointment
-from .forms import UserSearchFrom, BookingReviewForm
+from .forms import UserSearchFrom, BookingReviewForm, BoookingAndAppointmentComplainForm
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.http import HttpResponseRedirect, JsonResponse
-from .models import Review
+from .models import Review, ReportAProblem
 from appointments.models import (Appointment as BookingModel,
                                  ProviderAppointment as AppointmentModel)
+from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -320,7 +321,7 @@ class SetLonAndLatInSession(View):
         return True
 
 
-class BookingRatingAndReview(CreateView):
+class BookingRatingAndReviewView(UserSessionAndLoginCheckMixing, CreateView):
     template_name = 'booking_rating_and_review.html'
     model = Review
     form_class = BookingReviewForm
@@ -348,7 +349,7 @@ class BookingRatingAndReview(CreateView):
         return obj
 
     def get_context_data(self, **kwargs):
-        context = super(BookingRatingAndReview, self).get_context_data(**kwargs)
+        context = super(BookingRatingAndReviewView, self).get_context_data(**kwargs)
         booking_obj = self.get_object()
         context['booking'] = booking_obj
         if self.request.user == booking_obj.requestor:
@@ -359,7 +360,7 @@ class BookingRatingAndReview(CreateView):
         return context
 
 
-class AppointmentRatingAndReview(CreateView):
+class AppointmentRatingAndReviewView(UserSessionAndLoginCheckMixing, CreateView):
     template_name = 'appointment_rating_and_review.html'
     model = Review
     form_class = BookingReviewForm
@@ -387,7 +388,7 @@ class AppointmentRatingAndReview(CreateView):
         return obj
 
     def get_context_data(self, **kwargs):
-        context = super(AppointmentRatingAndReview, self).get_context_data(**kwargs)
+        context = super(AppointmentRatingAndReviewView, self).get_context_data(**kwargs)
         booking_obj = self.get_object()
         context['booking'] = booking_obj
         if self.request.user == booking_obj.requestor:
@@ -395,4 +396,35 @@ class AppointmentRatingAndReview(CreateView):
         else:
             partner = booking_obj.requestor
         context['partner'] = partner
+        return context
+
+class BookingComplainView(CreateView):
+    model =ReportAProblem
+    template_name = 'booking_complain.html'
+    form_class = BoookingAndAppointmentComplainForm
+
+    def form_valid(self, form):
+        booking_obj = self.get_object()
+
+        partner = booking_obj.requestor
+        report_form = form.save(commit=False)
+        report_form.reporter = self.request.user
+        report_form.reportee = partner
+        report_form.content_object = booking_obj
+        report_form.save()
+        messages.success(self.request, 'Problem Report Submited')
+        return HttpResponseRedirect('/')
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(BookingModel, pk=self.kwargs.get('bookoing_id'))
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super(BookingComplainView, self).get_context_data(**kwargs)
+        booking_obj = self.get_object()
+        context['booking'] = booking_obj
+        context['partner'] = booking_obj.requestor
         return context

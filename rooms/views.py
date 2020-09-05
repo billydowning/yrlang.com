@@ -75,7 +75,7 @@ class ChatRoomView(UserSessionAndLoginCheckMixing, FormView):
                 chat_partner = room.partner
             newest_message = Message.objects.filter(room=room).reverse().first()
             if newest_message:
-                if not newest_message.is_read:
+                if not newest_message.is_read and newest_message.reciepent.id == user.id:
                     unread_message = {'chat_partner': chat_partner,
                                       'message': newest_message}
                     unread_messages.append(unread_message)

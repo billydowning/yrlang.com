@@ -54,3 +54,25 @@ class Review(models.Model):
 
     def __str__(self):
         return self.reviewer.email + "    ----->  "+self.reviewee.email
+
+class ReportAProblem(models.Model):
+    SOLEVE, UNSOLVE = 'solve', 'unsolve'
+    PROBLEM_CHOICES = [
+        (SOLEVE, 'problem report solve'),
+        (UNSOLVE, 'problem report unsolve'),
+
+    ]
+    date_posted = models.DateTimeField(auto_now=True)
+    problem_status = models.CharField(max_length=30, choices=PROBLEM_CHOICES, default=UNSOLVE)
+    description = models.TextField(null=True, blank=True)
+    # the one who given report
+    reporter = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="reporter", null=True, blank=True)
+    #the one who victim
+    reportee = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="reportee", null=True, blank=True)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True, blank=True)
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    content_object = GenericForeignKey()
+
+
+    def __str__(self):
+        return self.reporter.email + "    ----->  " + self.reportee.email + self.problem_status

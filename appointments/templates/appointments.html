@@ -419,6 +419,7 @@
                                             <span>OR</span>
                                             <a href="{% url 'main:booking_review_and_rating' booking.id %}" class="cancel">Give a Rating</a>
                                             {% endif %}
+
                                     </li>
                                     {% elif client_checked %}
                                     {% if booking.localite_comment %}
@@ -447,6 +448,8 @@
                                             <span>OR</span>
                                             <a href="{% url 'main:booking_review_and_rating' booking.id %}" class="cancel">Give a Rating</a>
                                             {% endif %}
+                                        <span>OR</span>
+                                            <a href="{% url 'main:booking_complain' booking.id %}" class="cancel">Give report</a>
                                     </li>
 
                                     {% endif %}
