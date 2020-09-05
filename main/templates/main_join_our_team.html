@@ -1,15 +1,29 @@
 {% extends "layout.html" %}
+{% load static %}
 {% block content %}
-    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f48fb67da8d0cec"></script>
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+{#    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5f48fb67da8d0cec"></script>#}
 <div class="container">
     <div class="row">
         <div class="col-12">
             <div class="uk-card-body pl-0 pr-0">
                 <div class="">
                     <div class="profile_listing_outer mt-3">
-
                     <h1 class="page_main_header mb-3">Join Our Team.</h1>
+                        <p>Know others with second language skills that would love to work
+                        with travelers -refer them to us and we will credit your account
+                        with 10 USD (per person) for everyone that joins our team.
+                        We are looking for Service Providers  or Localites in any major city
+                            across the globe.</p>
                     </div>
+                     <div class="social_icons_left bottom_social_icons">
+                        <ul class="social_icons_listing">
+                            <li><a href="https://www.facebook.com/yrlangdotcom/"><img src="{% static 'images/facebook.png' %}"></a></li>
+                            <li><a href="https://www.instagram.com/yrlangdotcom/"><img src="{% static 'images/instagram.png' %}"></a></li>
+                            <li><a href="https://www.pinterest.com/yrlangdotcom/"><img src="{% static 'images/pinterest.png' %}"></a></li>
+                            <li><a href="https://www.youtube.com/channel/UCzNHoOOOrG3fiajJ38A3ttA"><img src="{% static 'images/youtube.png' %}"></a></li>
+                        </ul>
+                     </div>
                 </div>
             </div>
         </div>
