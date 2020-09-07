@@ -38,6 +38,9 @@ class Appointment(models.Model):
     def get_absolute_url(self):
         return reverse('appointments_detail', args=[self.pk])
 
+    def booking_detail_url(self):
+        return reverse('booking_detail', args=[self.pk])
+
 
 class BookingDates(models.Model):
     booking = models.ForeignKey(Appointment, on_delete=models.CASCADE, related_name='booking')

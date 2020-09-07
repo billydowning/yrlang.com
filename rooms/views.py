@@ -4,8 +4,8 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib import messages
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import (FormView, TemplateView, )
-
+from django.views.generic import (FormView, TemplateView, ListView)
+import datetime
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 from users.models import CustomUser, Language, UserRole
 import json
@@ -75,7 +75,7 @@ class ChatRoomView(UserSessionAndLoginCheckMixing, FormView):
                 chat_partner = room.partner
             newest_message = Message.objects.filter(room=room).reverse().first()
             if newest_message:
-                if not newest_message.is_read:
+                if not newest_message.is_read and newest_message.reciepent.id == user.id:
                     unread_message = {'chat_partner': chat_partner,
                                       'message': newest_message}
                     unread_messages.append(unread_message)
@@ -132,13 +132,44 @@ class InboxView(UserSessionAndLoginCheckMixing, TemplateView):
             newest_message = Message.objects.filter(room=room).reverse().first()
             if newest_message:
                # if newest_message.reciepent.id == user.id:
-                    if not newest_message.is_read:
+                    if not newest_message.is_read and newest_message.reciepent.id == user.id:
                         unread_message = {'chat_partner': chat_partner,
                                           'message': newest_message}
                         unread_messages.append(unread_message)
                     else:
                         read_message = {'chat_partner': chat_partner, "message": newest_message}
                         read_messages.append(read_message)
+        context['notifications'] = self.get_notifications_role_wise()
         context["read_messages"] = read_messages
         context["unread_messages"] = unread_messages
         return context
+
+    def get_notifications_role_wise(self):
+        query = ''
+        if self.request.user.is_staff:
+            query = None
+        elif self.request.user.is_client_user(self.request.session.get('user_role')):
+            query = self.request.user.notifications.filter(role__name=UserRole.CLIENT)
+        elif self.request.user.is_provider_user(self.request.session.get('user_role')):
+            query = self.request.user.notifications.filter(role__name=UserRole.PROVIDER)
+        elif self.request.user.is_localite_user(self.request.session.get('user_role')):
+            query = self.request.user.notifications.filter(role__name=UserRole.LOCALITE)
+        return query
+
+
+class ChatLogView(UserSessionAndLoginCheckMixing, ListView):
+    template_name = 'log/chat_log_for_admin.html'
+    model = Message
+    context_object_name = 'chat_messages'
+
+    def get_queryset(self):
+        date_str = self.kwargs.get('from_date')
+        date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+        from_date = date_obj - datetime.timedelta(days=30)
+        return self.model.objects.filter(room_id = self.kwargs.get('room_id'), date_created__gt = from_date)
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        context = super(ChatLogView, self).get_context_data(*args, object_list=None, **kwargs)
+        context['author_id'] = self.kwargs.get('author_id')
+        return context
+

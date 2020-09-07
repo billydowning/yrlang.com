@@ -1290,3 +1290,25 @@ input#mysearchInp
 {
     margin-bottom: 20px;
 }
+
+.log_iframe .content .messages ul li {
+    display: flex !important;
+    border: 1px solid #ccc !important;
+    border-radius: 4px !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 0 10px 0 0 !important;
+    margin-bottom: 16px !important;
+    position:relative !important;
+}
+.log_iframe .content .messages ul li p {
+    background: #ffffff !important;
+    color: #435f7a !important;
+    position: relative;
+}
+.log_iframe  .content .messages ul li p:after{display:none}
+.log_iframe .content .messages ul li span.msg_time {
+    position: absolute;
+    right: 0;
+    bottom: -22px;
+}
