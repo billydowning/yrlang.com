@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 {% load static check_role check_status %}
 {% load rating_check %}
+{% load report_check %}
 
 {% block calendar_extras %}
 
@@ -448,8 +449,11 @@
                                             <span>OR</span>
                                             <a href="{% url 'main:booking_review_and_rating' booking.id %}" class="cancel">Give a Rating</a>
                                             {% endif %}
+                                         {% check_booking_complain user=request.user booking_id=booking.id  as in_report %}
+                                        {% if not in_report %}
                                         <span>OR</span>
                                             <a href="{% url 'main:booking_complain' booking.id %}" class="cancel">Give report</a>
+                                        {% endif %}
                                     </li>
 
                                     {% endif %}

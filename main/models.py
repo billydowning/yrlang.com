@@ -5,6 +5,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation
 from star_ratings.models import Rating
+from django.urls import reverse
 
 
 class Notification(models.Model):
@@ -63,6 +64,7 @@ class ReportAProblem(models.Model):
 
     ]
     date_posted = models.DateTimeField(auto_now=True)
+    reason = models.CharField('Report Reason',max_length=40, null=True, blank=True,)
     problem_status = models.CharField(max_length=30, choices=PROBLEM_CHOICES, default=UNSOLVE)
     description = models.TextField(null=True, blank=True)
     # the one who given report
@@ -76,3 +78,6 @@ class ReportAProblem(models.Model):
 
     def __str__(self):
         return self.reporter.email + "    ----->  " + self.reportee.email + self.problem_status
+
+    def get_detail_url(self):
+        return reverse('custom_admin:complain_detail' , args=[self.pk])

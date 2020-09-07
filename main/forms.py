@@ -36,7 +36,7 @@ class BoookingAndAppointmentComplainForm(forms.ModelForm):
 
     class Meta:
         model = ReportAProblem
-        fields = ['description']
+        fields = ['description','reason']
         help_texts = {
          'description': 'Describe your Problem the Some Words'
         }
@@ -44,3 +44,4 @@ class BoookingAndAppointmentComplainForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(BoookingAndAppointmentComplainForm, self).__init__( *args, **kwargs)
         self.fields['description'].required =True
+        self.fields['reason'].required = True

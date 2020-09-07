@@ -469,6 +469,7 @@ class BecomeLocaliteView(TemplateView):
 class AboutUsView(TemplateView):
     template_name = 'about_us.html'
 
+
 class AddCityInUserFavoriteView(RedirectView):
 
     def get(self, request, *args, **kwargs):

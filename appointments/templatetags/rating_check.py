@@ -1,5 +1,4 @@
 from django import template
-from django.db.models import Q
 from appointments.models import Appointment, ProviderAppointment
 from django.contrib.contenttypes.models import ContentType
 from main.models import Review

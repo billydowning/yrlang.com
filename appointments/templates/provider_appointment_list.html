@@ -2,6 +2,7 @@
 {% load  check_role check_status %}
 {% load rating_check %}
 {% block content %}
+{% load report_check %}
 
 {% is_provider user_role=request.session.user_role as provider_checked %}
 {% is_client user_role=request.session.user_role as client_checked %}
@@ -372,6 +373,14 @@
                                                         <button class="btn theme_btn" type="button">Give Review</button>
                                                     </a>
                                                         {% endif %}
+                                                    {% check_appointment_complain user=request.user appointment_id=appointment.id  as in_report %}
+                                                    {% if not in_report %}
+                                                          --
+                                                     <a href="{% url 'main:appointment_complain' appointment.id %}">
+                                                        <button class="btn theme_btn" type="button">Give Report</button>
+                                                    </a>
+                                                    {% endif %}
+
 
                                                 {% endif %}
                                                 </li>

@@ -405,8 +405,7 @@ class BookingComplainView(CreateView):
 
     def form_valid(self, form):
         booking_obj = self.get_object()
-
-        partner = booking_obj.requestor
+        partner = booking_obj.requestee
         report_form = form.save(commit=False)
         report_form.reporter = self.request.user
         report_form.reportee = partner
@@ -426,5 +425,36 @@ class BookingComplainView(CreateView):
         context = super(BookingComplainView, self).get_context_data(**kwargs)
         booking_obj = self.get_object()
         context['booking'] = booking_obj
-        context['partner'] = booking_obj.requestor
+        context['partner'] = booking_obj.requestee
+        return context
+
+
+class AppointmentComplainView(CreateView):
+    model =ReportAProblem
+    template_name = 'booking_complain.html'
+    form_class = BoookingAndAppointmentComplainForm
+
+    def form_valid(self, form):
+        booking_obj = self.get_object()
+        partner = booking_obj.requestee
+        report_form = form.save(commit=False)
+        report_form.reporter = self.request.user
+        report_form.reportee = partner
+        report_form.content_object = booking_obj
+        report_form.save()
+        messages.success(self.request, 'Problem Report Submited')
+        return HttpResponseRedirect('/')
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(AppointmentModel, pk=self.kwargs.get('appointment_id'))
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super(AppointmentComplainView, self).get_context_data(**kwargs)
+        booking_obj = self.get_object()
+        context['booking'] = booking_obj
+        context['partner'] = booking_obj.requestee
         return context

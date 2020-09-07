@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+{% load complain_tags %}
+{% block calendar_extras %}
+<style>
+  body {
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+
+
+
+
+
+
+
+</style>
+{% endblock calendar_extras %}
+
+{% block content %}
+<!--container-->
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="amit-black bolder montserrat page_main_header my-2">Complain Detail </h1>
+            <div class="container py-5 px-5">
+                <h3 class="mt-5 mb-3 text-center"><b>Reason : </b>{{ complain.reason|default:'NO reason given' }}</h3>
+                <div class="row">
+                    <div class="col-md-6 text-center">
+                        <p><b>from : </b>{{ complain.reporter }}</p>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <p><b>Against : </b>{{ complain.reportee }} <a
+                                href="{% url 'public_profile' complain.reportee.id %}">Get Detail</a></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-center">
+                        <p><b>See Chat between them : </b> <a href="{% url 'chat_log' room_id=room.id from_date=complain.date_posted.date author_id=complain.reporter.id  %}"> <i class="fa fa-comments-o fa-2x"
+                                                                          aria-hidden="true"></i></a></p>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <p><b>Description : </b>{{ complain.description }}</p>
+                    </div>
+
+                </div>
+                <h4>See the details of Appointment OR Booking</h4>
+                <div class="row">
+                    <div class="col-md-10 text-center">
+                        <p><b>Booking OR Appointment : </b>{{ complain.content_object }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-center">
+                        <p><b>requestor : </b>{{ complain.content_object.requestor }}</p>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <p><b>requestee : </b>{{ complain.content_object.requestee }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 text-center">
+                        <p><b>Date of request : </b>{% if complain.content_object.request_date %}
+                            {{complain.content_object.request_date }}
+                            {% else %}
+                            {% for dates in complain.content_object.booking.all %} {{dates}}<br> {% endfor %}{% endif%}</p>
+                    </div>
+                    <div class="col-md-6 text-center">
+                        <p><b>Status : </b>{{ complain.content_object.status }}</p>
+                    </div>
+                </div>
+                {% if complain.problem_status|is_complain_unsolved %}
+                <a href="{% url  'custom_admin:complain_updater_solve' complain.id %}" ><button class="btn btn-theme">Make Solve</button></a>
+                {% endif %}
+            </div>
+            <!--collapse-->
+
+        </div>
+        <!--container end-->
+        {% endblock content %}

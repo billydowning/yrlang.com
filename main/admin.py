@@ -2,7 +2,7 @@ import json
 from django.contrib import messages
 
 from django.contrib import admin
-from .models import Review, Notification
+from .models import Review, Notification, ReportAProblem
 from tellme.models import Feedback
 from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from django.utils.safestring import mark_safe
@@ -27,6 +27,7 @@ class ReviewAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Review)
+admin.site.register(ReportAProblem)
 
 
 #feedback model of tellme packege  app
