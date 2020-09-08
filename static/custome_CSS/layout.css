@@ -525,7 +525,7 @@ input:focus{
 .replies .msg_time {
     position: absolute;
     left: 11px;
-    bottom: -7px;
+    bottom: -25px;
 }
 #frame .content .messages ul li.replies p{position: relative !important;}
 #frame .content .messages ul li{margin-bottom: 10px}
@@ -1311,4 +1311,18 @@ input#mysearchInp
     position: absolute;
     right: 0;
     bottom: -22px;
+}
+#frame .content .messages ul li.sent img {
+    float: right;
+    margin: 6px 8px 0 0;
+    width: 250px;
+    height: 200px;
+    border-radius: 10%;
+}
+#frame .content .messages ul li.replies img {
+    float: right;
+    margin: 6px 8px 0 0;
+    width: 250px;
+    height: 200px;
+    border-radius: 10%;
 }

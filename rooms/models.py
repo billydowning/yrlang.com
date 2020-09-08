@@ -22,14 +22,15 @@ class Room(models.Model):
 
 class Message(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    content = models.TextField()
+    content = models.TextField(null=True, blank=True)
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="author")
     reciepent = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="reciepent")
     date_created = models.DateTimeField(auto_now=True)
     is_read = models.BooleanField(default=False)
+    file = models.FileField(upload_to='chat_data/', null=True, blank=True)
 
     def __str__(self):
-        return self.content
+        return self.author.email +'---->'+self.reciepent.email
 
     def create(self, room, author, reciepent):
         self.room = room
