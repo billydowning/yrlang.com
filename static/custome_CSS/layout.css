@@ -1320,6 +1320,23 @@ input#mysearchInp
     border-radius: 10%;
 }
 #frame .content .messages ul li.replies img {
+    float: left;
+    margin: 6px 8px 0 0;
+    width: 250px;
+    height: 200px;
+    border-radius: 10%;
+}
+
+#frame .content .messages ul li.replies video {
+    float: left;
+    margin: 6px 8px 0 0;
+    width: 250px;
+    height: 200px;
+    border-radius: 10%;
+}
+
+
+#frame .content .messages ul li.sent video {
     float: right;
     margin: 6px 8px 0 0;
     width: 250px;
