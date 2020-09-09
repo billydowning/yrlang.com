@@ -89,15 +89,19 @@ class ChatRoomView(UserSessionAndLoginCheckMixing, FormView):
         return context
 
     def get(self, request, *args, **kwargs):
-        if request.is_ajax():
-            room = Room.objects.get(id=self.kwargs.get('room_id'))
-            room_chat_list = Message.objects.filter(room=room).order_by('date_created')
-            chat_lst2 = [{'author': str(chat.author.id), 'date_created': str(chat.date_created.strftime ("%m/%d/%y, %H:%M")),
-                          'content': chat.content, 'reciepent': str(chat.reciepent)} for chat in room_chat_list]
-
-            json.dumps(chat_lst2)
-            return JsonResponse(data={'room': chat_lst2})
-        return super(ChatRoomView, self).get( request, *args, **kwargs)
+        # if request.is_ajax():
+        #     room = Room.objects.get(id=self.kwargs.get('room_id'))
+        #     room_chat_list = Message.objects.filter(room=room).order_by('date_created')
+        #     chat_lst2 = [{'author': str(chat.author.id), 'date_created': str(chat.date_created.strftime ("%m/%d/%y, %H:%M")),
+        #                   'content': chat.content, 'reciepent': str(chat.reciepent)} for chat in room_chat_list]
+        #
+        #     json.dumps(chat_lst2)
+        #     return JsonResponse(data={'room': chat_lst2})
+        room = Room.objects.get(id=self.kwargs.get('room_id'))
+        room_chat_list = Message.objects.filter(room=room).order_by('date_created')
+        context_data = self.get_context_data(**kwargs)
+        context_data['room_chat_mesg'] = room_chat_list
+        return self.render_to_response(context_data)
 
     def form_valid(self, form):
         room = Room.objects.get(id=self.kwargs.get('room_id'))
