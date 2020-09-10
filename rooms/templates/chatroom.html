@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% load static %}
-
+{% load file_type %}
 {% block link_css %}
 <link rel="stylesheet" href="{% static 'custome_CSS/messages_inbox.css' %}">
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
@@ -96,8 +96,14 @@ p.turn-grey.small.footers_link {
                             <li class="sent">
                                 {% if mesg.content %}
                                 <p>{{mesg.content}}</p>
-                                {% elif mesg.file %}  <a href="{{mesg.file.url}}">
-                                <img src="{{mesg.file.url}}" height="300px" width="300px"/></a>
+                                {% elif mesg.file %}
+                                        {% if mesg.extension|is_img_type %}<a href="{{mesg.file.url}}">
+                                        <img src="{{mesg.file.url}}" height="300px" width="300px"/></a>
+                                        {% else %}
+                                         <video controls>
+                                                <source src="{{mesg.file.url}}" type="video/mp4"/>
+                                         </video>
+                                        {% endif %}
                                 {% endif %}
 
                                 <span class="msg_time">{{mesg.date_created}}</span>
@@ -106,8 +112,13 @@ p.turn-grey.small.footers_link {
                                  {% if mesg.content %}
                                 <p>{{mesg.content}}</p>
                                 {% elif mesg.file %}
-                                <a href="{{mesg.file.url}}">
-                                <img src="{{mesg.file.url}}" height="300px" width="300px"/></a>
+                                     {% if mesg.extension|is_img_type %}<a href="{{mesg.file.url}}">
+                                        <img src="{{mesg.file.url}}" height="300px" width="300px"/></a>
+                                        {% else %}
+                                            <video controls>
+                                                <source src="{{mesg.file.url}}" type="video/mp4"/>
+                                            </video>
+                                        {% endif %}
                                 {% endif %}
                                 <span class="msg_time">{{mesg.date_created}}</span>
                             </li>{% endif %}
@@ -128,7 +139,7 @@ p.turn-grey.small.footers_link {
                         <label for="filename">
                         <i class="fa fa-paperclip attachment" aria-hidden="true"> </i>
                         </label>
-                           <input type="file" id="filename" onchange="sendFile()" style=" display: none;"  accept="image/*" />
+                           <input type="file" id="filename" onchange="sendFile()" style=" display: none;"  accept=".png, .jpg, .mp4" />
                         <button id="chat-message-submit" class="submit"><i class="fa fa-paper-plane"
                                                                            aria-hidden="true"></i></button>
 
@@ -184,7 +195,7 @@ $(document).ready(function(){
 
                     createMessages(data['message'])
                 }else if (data['command'] === 'file_type_data') {
-                            console.log()
+                            console.log(data['message'])
                             createFile(data['message'])
 
                     }
@@ -258,21 +269,38 @@ $(document).ready(function(){
                 };
 
             function createFile(data){
-
+                    var file_extension_list = ['.png', '.jpg']
                     var author = data['author'];
+                    var imgType = file_extension_list.includes(data['file_extension']);
+
                     var msgListTag = document.createElement('li');
-                    var imgTag = document.createElement("IMG");
-                     var ahrefTag = document.createElement("a");
-                      ahrefTag.setAttribute("href", data.location);
+
                     var msgTimeTag = document.createElement('span');
-                     imgTag.setAttribute("src", data.location);
-                     imgTag.setAttribute("width", "150");
-                     imgTag.setAttribute("height", "150");
+
                     msgTimeTag.className = 'msg_time';
                     var localdate = new Date(data.date_created+' UTC');
                     msgTimeTag.textContent = convert(localdate);
+                    if(imgType){
+                           var imgTag = document.createElement("IMG");
+                           var ahrefTag = document.createElement("a");
+                           ahrefTag.setAttribute("href", data.location);
+                           imgTag.setAttribute("src", data.location);
+                           imgTag.setAttribute("width", "150");
+                           imgTag.setAttribute("height", "150");
+                           ahrefTag.appendChild(imgTag);
+                           msgListTag.appendChild(ahrefTag)
+                    }else{
+                            var videoTag = document.createElement("video");
+                           var  sourceTag = document.createElement("source");
+                            sourceTag.setAttribute("src", data.location);
+                             sourceTag.setAttribute("type", "video/mp4");
+                             videoTag.setAttribute("controls", "");
+                             videoTag.appendChild(sourceTag);
+                             msgListTag.appendChild(videoTag)
 
-                    ahrefTag.appendChild(imgTag);
+                    }
+
+
 
                     if (author == '{{ request.user.id }}' ){
                         msgListTag.className = 'sent';
@@ -280,7 +308,7 @@ $(document).ready(function(){
                         msgListTag.className = 'replies';
                     }
 
-                    msgListTag.appendChild(ahrefTag)
+
                     msgListTag.appendChild(msgTimeTag)
 
                     document.querySelector('#chat-log').appendChild(msgListTag);

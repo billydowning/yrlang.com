@@ -1,7 +1,7 @@
 from django.db import models
 from users.models import CustomUser, UserRole
 from django.urls import reverse
-
+import os
 
 class Room(models.Model):
     creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="creator")
@@ -41,3 +41,7 @@ class Message(models.Model):
 
     def get_time(self):
         return self.date_created.time()
+
+    def extension(self):
+        name, extension = os.path.splitext(self.file.name)
+        return extension

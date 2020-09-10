@@ -13,3 +13,4 @@ yrlang/settings/development.py
 logs/*
 
 media/videos
+media/chat_data
