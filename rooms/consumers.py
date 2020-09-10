@@ -20,6 +20,13 @@ class ChatConsumer(WebsocketConsumer):
         reciepent = data['reciepent']
         room = int(self.room_name)
         fs = FileSystemStorage()
+
+        try:
+            folder_path = os.path.join(fs.location, folder)
+            if not os.path.exists('chat_data'):
+                os.makedirs(folder_path)
+        except Exception as e:
+            print(e)
         file_location = os.path.join(fs.location, folder, data['file']['name'])
         file = base64.b64decode(data['file']['data'].split(',')[-1])
         try:
@@ -126,3 +133,4 @@ class ChatConsumer(WebsocketConsumer):
     def chat_message(self, event):
         message = event['message']
         self.send(text_data=json.dumps(message))
+
