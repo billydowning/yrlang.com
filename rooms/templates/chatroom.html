@@ -35,7 +35,7 @@ p.turn-grey.small.footers_link {
            <h6 class="font-weight-bold mb-3 text-center text-lg-left font_z20">Chat</h6>
           <input type="text" id="mysearchInp" class="form-control" placeholder="Search by name"  />
             <div class="white z-depth-1  pb-0">
-          <ul class="list-unstyled friend-list">
+          <ul class="list-unstyled friend-list" id="myTable">
               {% for msg in unread_messages %}
             <li class=" p-1 unread_msg">
               <a href="{% url 'chatroom' msg.message.room.id %}" class="d-flex justify-content-between">
@@ -51,7 +51,7 @@ p.turn-grey.small.footers_link {
                 <div class="chat-footer">
                   <p class="text-smaller text-muted mb-0">{{ msg.message.date_created |date:"SHORT_DATE_FORMAT"  }}</p>
                   <span class="badge badge-danger float-right"> {{ msg.message.room.created_for }} Chat</span>
-                    <span class="badge badge-danger float-right">Unread </span>
+
                 </div>
               </a>
             </li>
@@ -90,11 +90,33 @@ p.turn-grey.small.footers_link {
                 </div>
                 <div class="messages" id="messgaes_div">
                     <ul id="chat-log">
+                    {% if room_chat_mesg %}
+                        {% for mesg in room_chat_mesg %}
+                        {% if mesg.author.id == request.user.id  %}
+                            <li class="sent">
+                                {% if mesg.content %}
+                                <p>{{mesg.content}}</p>
+                                {% elif mesg.file %}  <a href="{{mesg.file.url}}">
+                                <img src="{{mesg.file.url}}" height="300px" width="300px"/></a>
+                                {% endif %}
 
-                <li class="sent">
-<!--                    <p>How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!</p>-->
-<!--                    <span class="msg_time">10:00 PM</span>-->
-                </li>
+                                <span class="msg_time">{{mesg.date_created}}</span>
+                            </li>{% else %}
+                            <li class="replies">
+                                 {% if mesg.content %}
+                                <p>{{mesg.content}}</p>
+                                {% elif mesg.file %}
+                                <a href="{{mesg.file.url}}">
+                                <img src="{{mesg.file.url}}" height="300px" width="300px"/></a>
+                                {% endif %}
+                                <span class="msg_time">{{mesg.date_created}}</span>
+                            </li>{% endif %}
+                        {% endfor %}
+                        {% endif %}
+<!--                    <li class="sent">-->
+    <!--                    <p>How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!</p>-->
+    <!--                    <span class="msg_time">10:00 PM</span>-->
+<!--                    </li>-->
 
                 
 
@@ -103,10 +125,17 @@ p.turn-grey.small.footers_link {
                 <div class="message-input">
                     <div class="wrap">
                         <input type="text" id="chat-message-input" placeholder="Write your message..."/>
-                        <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                        <label for="filename">
+                        <i class="fa fa-paperclip attachment" aria-hidden="true"> </i>
+                        </label>
+                           <input type="file" id="filename" onchange="sendFile()" style=" display: none;"  accept="image/*" />
                         <button id="chat-message-submit" class="submit"><i class="fa fa-paper-plane"
                                                                            aria-hidden="true"></i></button>
+
                     </div>
+<!--                    <input type="file" id="filename32"  accept="image/*" />-->
+<!--                    <input type="button" value="Upload" onclick="sendFile()" />-->
+
                 </div>
             </div>
         </div>
@@ -114,6 +143,7 @@ p.turn-grey.small.footers_link {
     </div>
 </div>
 </div>
+
 <script>
 $(document).ready(function(){
 
@@ -123,28 +153,9 @@ $(document).ready(function(){
         const roomId = {{ request.resolver_match.kwargs.room_id }};
            var a = 0;
          var roomUrl = "{% url 'chatroom_ajax' request.resolver_match.kwargs.room_id %}";
-        function fetchApi(){
-                  $.ajax({
-                    url : roomUrl,
-                    method: 'GET',
-                    dataType: 'JSON',
-                    success: function (payload) {
 
 
-                        for ( a=0 ;a<payload['room'].length; a++)
-                        {
 
-                            createMessages(payload['room'][a])
-                        }
-                    },
-
-                    error: function (payload) {
-
-
-                    }
-                })
-
-            }
         var loc = window.location, new_uri;
         if (loc.protocol === "https:") {
             new_uri = "wss:";
@@ -163,21 +174,26 @@ $(document).ready(function(){
 
 
         chatSocket.onopen = function(e){
-            fetchApi();
+            //fetchApi();
         }
 
      chatSocket.onmessage = function(e) {
                 const data = JSON.parse(e.data);
-
+                console.log(data['command'])
               if(data['command'] === 'new_message') {
 
                     createMessages(data['message'])
-                }
+                }else if (data['command'] === 'file_type_data') {
+                            console.log()
+                            createFile(data['message'])
+
+                    }
             };
 
         chatSocket.onclose = function(e) {
             console.error('Chat socket closed unexpectedly');
         };
+
 
         document.querySelector('#chat-message-input').focus();
         document.querySelector('#chat-message-input').onkeyup = function(e) {
@@ -201,15 +217,19 @@ $(document).ready(function(){
             messageInputDom.value = '';
         };
 
+        function get_url_extension( url ) {
+                return url.split(/[#?]/)[0].split('.').pop().trim();
+        }
 
-    function convert(str) {
-    var date = new Date(str),
-        mnth = ("0" + (date.getMonth()+1)).slice(-2),
-        day  = ("0" + date.getDate()).slice(-2);
-        hours  = ("0" + date.getHours()).slice(-2);
-        minutes = ("0" + date.getMinutes()).slice(-2);
-    return [ date.getFullYear(), mnth, day, hours+':' +minutes ].join("/");
-};
+
+        function convert(str) {
+            var date = new Date(str),
+                mnth = ("0" + (date.getMonth()+1)).slice(-2),
+                day  = ("0" + date.getDate()).slice(-2);
+                hours  = ("0" + date.getHours()).slice(-2);
+                minutes = ("0" + date.getMinutes()).slice(-2);
+            return [ date.getFullYear(), mnth, day, hours+':' +minutes ].join("/");
+        };
      function createMessages(data){
 
             var author = data['author'];
@@ -235,28 +255,104 @@ $(document).ready(function(){
 
             document.querySelector('#chat-log').appendChild(msgListTag);
 
-        };
+                };
+
+            function createFile(data){
+
+                    var author = data['author'];
+                    var msgListTag = document.createElement('li');
+                    var imgTag = document.createElement("IMG");
+                     var ahrefTag = document.createElement("a");
+                      ahrefTag.setAttribute("href", data.location);
+                    var msgTimeTag = document.createElement('span');
+                     imgTag.setAttribute("src", data.location);
+                     imgTag.setAttribute("width", "150");
+                     imgTag.setAttribute("height", "150");
+                    msgTimeTag.className = 'msg_time';
+                    var localdate = new Date(data.date_created+' UTC');
+                    msgTimeTag.textContent = convert(localdate);
+
+                    ahrefTag.appendChild(imgTag);
+
+                    if (author == '{{ request.user.id }}' ){
+                        msgListTag.className = 'sent';
+                    }else{
+                        msgListTag.className = 'replies';
+                    }
+
+                    msgListTag.appendChild(ahrefTag)
+                    msgListTag.appendChild(msgTimeTag)
+
+                    document.querySelector('#chat-log').appendChild(msgListTag);
+
+                };
+
+
+                    sendFile =    function () {
+
+                        var file = document.getElementById('filename').files[0];
+                         var fileSize = file.size / 1024 / 1024; // in MB
+                         console.log(fileSize)
+                                if (fileSize < 2) {
+
+                                      var reader = new FileReader();
+
+                                    var rawData = new ArrayBuffer();
+
+                                    reader.loadend = function() {
+
+                                    }
+
+                                    reader.onload = function(e) {
+
+                                        rawData = e.target.result;
+                                        chatSocket.binaryType = "blob";
+
+                                         chatSocket.send(JSON.stringify({
+                                                'file':{'name':file.name,
+                                                        'data':rawData,
+                                                        'type':file.type},
+                                                 'command':'file_type_data',
+                                                'author':'{{ request.user.id }}',
+                                                'reciepent': '{{ chatpartner.id }}',
+                                            }));
+                                        console.log('file sned')
+                                        document.getElementById('filename').value= null;
+
+                                    }
+
+                                    reader.readAsDataURL(file);
+
+
+                                } else {
+                                  alert('File size exceeds 2 MB');
+                                  window.location.reload()
+
+                                }
+
+                    }
+
+                     sendFileUpP =    function () {
+                     console.log('file test uploding')
+                     }
+
+
 });
 
 </script>
 
 <script>
-    $('#mysearchInp').keyup(function(){
+$(document).ready(function(){
+  $("#mysearchInp").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
 
-    var that = this;
-    var all_list = $('ul > li');
-
-    var matching_list = all_list.filter(function(i, li){
-        var list_item_text = $(li).text().toUpperCase();
-        var search_text = that.value.toUpperCase();
-        return ~list_item_text.indexOf(search_text);
+    $("#myTable li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
     });
-
-    all_list.hide();
-    matching_list.show();
-
+  });
 });
 </script>
+
 
 
 {% endblock content %}
