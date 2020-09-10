@@ -53,14 +53,14 @@
                                             <h5><a href="{% url 'add_loc_or_pro_in_favorite' localite.id %}"><span>Add to Favorite</span></a></h5>
                                             {% endif %}
                                             <a href="{% url 'request_appointment' localite.id %}">
-                                                <button class="btn theme_btn" type="button">Book Visit!</button>
+                                                <button class="btn theme_btn" type="button">Book Visit</button>
                                             </a>
                                             &nbsp; <a href="{% url 'contact' localite.id %}">
                                             <button class="btn theme_btn" type="button">Contact</button>
                                         </a>
                                             {% else %}
                                             <h5><a href="{% url 'main:add_anon_favorite' 'localite' localite.id %}"><span>Add to Favorite</span></a></h5><a href="{% url 'account_login' %}">
-                                            <button class="btn theme_btn" type="button">Book Visit!</button>
+                                            <button class="btn theme_btn" type="button">Book Visit</button>
                                         </a>
                                             &nbsp; <a href="{% url 'account_login'  %}">
                                             <button class="btn theme_btn" type="button">Contact</button>
