@@ -23,7 +23,7 @@ class ChatConsumer(WebsocketConsumer):
 
         try:
             folder_path = os.path.join(fs.location, folder)
-            if not os.path.exists('chat_data'):
+            if not default_storage.exists('chat_data'):
                 os.makedirs(folder_path)
         except Exception as e:
             print(e)
