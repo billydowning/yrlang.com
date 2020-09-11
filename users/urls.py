@@ -21,6 +21,7 @@ urlpatterns = [
     path("become-provider", views.BecomeProviderView.as_view(), name='become_provider_temp'),
     path("become-localite", views.BecomeLocaliteView.as_view(), name='become_localite_temp'),
     path('about-us', views.AboutUsView.as_view(), name='about_us'),
+    path('monthly-subscription/<int:pk>/', views.ProviderSubscriptionView.as_view(), name='subscription'),
 
 
     # favorites links for add

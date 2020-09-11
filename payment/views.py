@@ -9,7 +9,7 @@ from django.shortcuts import render, reverse
 from django.urls import reverse_lazy
 
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
-from .models import PaymentAccount
+from .models import PaymentAccount, StripeKeys
 from .forms import PaymentAccountForm
 
 from paypal.standard.forms import PayPalPaymentsForm
@@ -79,7 +79,8 @@ class PaymentAccountView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, Cr
             return False
 
     def form_valid(self, form):
-        stripe.api_key = settings.STRIPE_KEYS['secret_key']
+        # stripe.api_key = settings.STRIPE_KEYS['secret_key']
+        stripe.api_key = StripeKeys.objects.get(is_active=True).secret_key
         post = form.save(commit=False)
         country = form.cleaned_data['country']
         currency = form.cleaned_data['currency']
