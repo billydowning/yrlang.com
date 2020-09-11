@@ -165,6 +165,26 @@ class ProviderCategories(models.Model):
         return '{} - {}'.format(self.category, self.provider.username)
 
 
+class ProviderSubscription(models.Model):
+    provider = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='subscription')
+    subscription_counts = models.PositiveIntegerField(default=00)
+    last_subscription = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return '{} {}'.format(self.provider, self.subscription_counts)
+
+
+class ProviderSubscriptionPurchase(models.Model):
+    provider = models.ForeignKey(ProviderSubscription, on_delete=models.CASCADE, related_name='subscription_purchase')
+    purchase_date = models.DateTimeField(auto_now_add=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    currency = models.CharField(max_length=10, default='USD')
+    subscription_counts = models.PositiveIntegerField(default=00)
+
+    def __str__(self):
+        return '{} {}'.format(self.provider.provider, self.purchase_date)
+
+
 class CategoriesIndex(Page):
     name = models.CharField(max_length=30, null=True, blank=True)
 
@@ -220,6 +240,7 @@ class UserVideos(models.Model):
 
     def __str__(self):
         return '{} Video,for {}'.format(self.content_object.user.username, self.language)
+
 
 class UserFavorite(models.Model):
     user = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.CASCADE, related_name='user_favorite')

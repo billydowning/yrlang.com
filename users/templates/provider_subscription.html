@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block calendar_extras %}
+<script>
+    function data() {
+      return '{{ commission }}'
+    }
+
+</script>
+<script src="{% static 'js/provider_subscription.js' %}"></script>
+
+{% endblock calendar_extras %}
+
+{% block content %}
+<div class="container">
+    <div class="">
+        <h1 class="button secondaryAction page_main_header mb-5 my-5">Monthly Subscription</h1>
+    </div>
+
+    <div class="container my-5 mx-5 py-5 px-5 border border-light rounded">
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Provider :- <small class="mx-2">{{ customuser }}</small></h3>
+            </div>
+            <div class="col-md-6">
+                <h3>
+                    Remaining Subscriptions :-
+                    <small class="mx-2">
+                        {{ customuser.subscription.subscription_counts }}
+                    </small>
+                </h3>
+            </div>
+        </div>
+        <h3 class="text-center" id="info1"></h3>
+        <h3 class="text-center" id="info2"></h3>
+        <h3 class="text-center" id="info3"></h3>
+        <hr>
+        <div id="form">
+            <form>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="number" class="form-control" id="subscription"
+                                   aria-describedby="subscriptionHelp"
+                                   placeholder="Enter subscription">
+                            <small id="subscriptionHelp" class="form-text text-muted">
+                                Enter how many Subscription You Want To Bay
+                            </small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <button type="button" id="checkout" class="btn btn-primary">Checkout</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="container" id="stripe">
+            <form action="{% url 'subscription' 5 %}" method="post">
+                {% csrf_token %}
+                <input type="number" id="data-subscription" name="subscription-data" value="" hidden>
+                <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                        data-key="{{ key }}"
+                        data-description="A Django Charge"
+                        data-amount=""
+                        data-locale="auto">
+                </script>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

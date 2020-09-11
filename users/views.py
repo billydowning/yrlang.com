@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from _collections import defaultdict
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404, reverse
@@ -7,8 +8,11 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse_lazy
 from django.conf import settings
-from django.views.generic import (DetailView, UpdateView, TemplateView,
-                                  FormView, View, ListView, CreateView, RedirectView)
+from django.views.generic import (
+    DetailView, UpdateView, TemplateView,
+    FormView, View, ListView, CreateView,
+    RedirectView
+)
 from yrlang.settings import development_example
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
@@ -33,10 +37,14 @@ from .forms import (
     ClientToAdminRequestFormSet
 
 )
-from .models import CustomUser, UserRole, UserRoleRequest, UserVideos, UserFavorite
-from payment.models import PaymentAccount
-
+from .models import (
+    CustomUser, UserRole, UserRoleRequest, UserVideos,
+    UserFavorite, ProviderSubscription, ProviderSubscriptionPurchase
+)
+from payment.models import PaymentAccount, Commission, StripeKeys
 from blogpost.models.city_page import CityPage
+
+
 class ProfileView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, UpdateView):
     success_url = '/'
 
@@ -98,7 +106,7 @@ class AccountView(UserSessionAndLoginCheckMixing, UpdateView):
 
         for account in accounts:
             if account.account_status == "False":
-                stripe.api_key = settings.STRIPE_KEYS['secret_key']
+                stripe.api_key = StripeKeys.objects.get(is_active=True).secret_key
                 retrieve_acc = stripe.Account.retrieve(account.account_id)
                 account.account_status = retrieve_acc['details_submitted']
                 account.save()
@@ -168,6 +176,11 @@ class AccountView(UserSessionAndLoginCheckMixing, UpdateView):
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
+
+    def get_context_data(self, **kwargs):
+        context = super(AccountView, self).get_context_data()
+        context['user_obj'] = self.get_object()
+        return context
 
 
 class UserDetailView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DetailView):
@@ -491,7 +504,7 @@ class UserFavoriteListView(TemplateView):
         context = super(UserFavoriteListView, self).get_context_data( **kwargs)
         content_type_city = ContentType.objects.get_for_model(CityPage)
         content_type_user = ContentType.objects.get_for_model(CustomUser)
-        user_list = UserFavorite.objects.filter( content_type=content_type_user, user=self.request.user)
+        user_list = UserFavorite.objects.filter(content_type=content_type_user, user=self.request.user)
         city_list = UserFavorite.objects.filter(content_type=content_type_city, user=self.request.user)
 
         context['citys'] = [ i.content_object for i in city_list ]
@@ -505,3 +518,64 @@ class UserFavoriteListView(TemplateView):
         context['providers'] = self.provider_list
         context['localites'] = self.localite_list
         return context
+
+
+class ProviderSubscriptionView(DetailView):
+    model = CustomUser
+    template_name = 'provider_subscription.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ProviderSubscriptionView, self).get_context_data()
+        context['commission'] = Commission.objects.get(
+            Professional=Commission.PROVIDER,
+            is_active=True
+        ).percentage
+        # context['key'] = settings.STRIPE_KEYS['publishable_key']
+        context['key'] = StripeKeys.objects.get(is_active=True).secret_key
+        return context
+
+    def post(self, request, *args, **kwargs):
+        # stripe.api_key = settings.STRIPE_KEYS.get("secret_key")
+        stripe.api_key = StripeKeys.objects.get(is_active=True).secret_key
+        subscription_count = int(request.POST.get('subscription-data', None))
+        commission = Commission.objects.get(
+            Professional=Commission.PROVIDER,
+            is_active=True
+        ).percentage
+        user = self.get_object()
+        amount = int(subscription_count*commission)
+        subscription, _ = ProviderSubscription.objects.get_or_create(provider=user)
+        if subscription and amount:
+            model_count = subscription.subscription_counts
+            if user.stripe_id is None:
+                customer = stripe.Customer.create(email=user.email,
+                                                  description="My First Test Customer (created for API docs)", )
+                ba_acc = stripe.Customer.create_source(
+                    customer.id,
+                    source=request.POST.get('stripeToken', None),
+                )
+                user.stripe_id = customer.id
+                user.save()
+            charge = stripe.Charge.create(
+                customer=user.stripe_id,
+                amount=int(amount * 100),
+                currency='usd',
+                description='subscription bay {} {} {}'.format(
+                    subscription_count,
+                    commission,
+                    amount
+                )
+            )
+            if charge.captured:
+                purchase = ProviderSubscriptionPurchase.objects.create(
+                    provider=subscription,
+                    amount=round(Decimal(amount), 2),
+                    subscription_counts=subscription_count
+                )
+                subscription.subscription_counts = model_count + subscription_count
+                subscription.save()
+
+        return HttpResponseRedirect(reverse_lazy('account'))
+
+
+

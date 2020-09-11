@@ -13,3 +13,4 @@ yrlang/settings/development.py
 logs/*
 
 media/videos
+*temp/
