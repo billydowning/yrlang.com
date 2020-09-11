@@ -432,6 +432,12 @@ class PublicProfile(DetailView):
     template_name = 'users/public_profile.html'
     context_object_name = 'user'
 
+    def get_context_data(self, **kwargs):
+        context = super(PublicProfile, self).get_context_data(**kwargs)
+        data_r = self.get_object()
+        context['reviews'] = data_r.reviewee.all().order_by('date_posted')[:3]
+        return context
+
 
 class CreateRequestForLanguageVerifier(UserSessionAndLoginCheckMixing, UserPassesTestMixin, FormView):
     form_class = ClientToAdminRequestFormSet
@@ -475,6 +481,7 @@ class BecomeLocaliteView(TemplateView):
 
 class AboutUsView(TemplateView):
     template_name = 'about_us.html'
+
 
 class AddCityInUserFavoriteView(RedirectView):
 

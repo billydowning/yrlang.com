@@ -15,4 +15,5 @@ urlpatterns = [
     path('cancle-appointment/<int:pk>', views.CancelAppointmnetView.as_view(), name='cancel_appointment'),
     path('save-bookings/', views.SaveBookings.as_view(), name='save_bookings'),
     path('save-appointment/', views.SaveAppointments.as_view(), name='save_appointment'),
+    path('booking-detail/<int:pk>', views.BookingDetailView.as_view(), name='booking_detail'),
 ]

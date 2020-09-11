@@ -135,28 +135,32 @@
     <nav class="uk-navbar-container ">
         <div class="container uk-navbar">
             <div class="uk-navbar-left">
-
+                {% if  request.path == '/home' and request.user.is_authenticated %}
 
                 <ul class="uk-navbar-nav">
                     <li class="uk-active">
                         <span style="font-size:30px;cursor:pointer" onmouseover="openNav()" onclick="openNav()">&#9776;</span>
                     </li>
                 </ul>
+
+                {% endif  %}
+
                 <ul class="uk-navbar-nav logo_container">
                     <li class="uk-active"><a href="/" class="logo_font"><img
                             src="https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"></a>
                     </li>
-                    <li class="lang_drop_down"><span>Language</span><div class="dropdown show">
+
+                    <li class="lang_drop_down"><div class="dropdown show">
                       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">English</button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                        <a class="dropdown-item" href="#">Arabic</a>
                         <a class="dropdown-item" href="#">French</a>
-                        <a class="dropdown-item" href="#">Spanish</a>
+                        <a class="dropdown-item" href="#">German</a>
                         <a class="dropdown-item" href="#">Italian</a>
+                        <a class="dropdown-item" href="#">Spanish</a>
                       </div>
                     </div></li>
                 </ul>
-
-
             </div>
 
             <div class="uk-navbar-right">
@@ -218,6 +222,7 @@
 
                             <a href="/cms">CMS</a>
                             <a href="{% url 'custom_admin:invoices' %}">Invoices</a>
+                            <a href="{% url 'custom_admin:complins_list' %}">Complains</a>
                             <a href="{% url 'account_logout' %}">Logout</a>
 
                         </div>
@@ -364,14 +369,13 @@
             <li class="opn_submenu">
             <a href="#" class="opned">Our Cities</a>
             <div class="submenu_links">
-                 <a href="#">Berlin</a>
-                  <a href="#">Milan</a>
-                  <a href="#">Paris</a>
+                 {% for city in city_list %}
+                    <a href="{% slugurl city.slug %}">{{ city.title }}</a>
+                {% endfor %}
             </div>
         </li>
             <li><a href="#">Become a Localite</a></li>
             <li><a href="#">Become a Provider</a></li>
-            {% if request.user.is_authenticated %}
                 <li class="opn_submenu">
             <a href="#" class="opned">My Dashboard</a>
             <div class="submenu_links">
@@ -380,7 +384,6 @@
                   <a href="#">Messages</a>
             </div>
         </li>
-            {% endif %}
          <li><a href="#">The Brucke</a></li>
        </ul>
 

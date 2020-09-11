@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+{% load socialaccount static %}
+{% load i18n %}
+{% load ratings %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 col-md-6 m-auto">
+
+            <h1>{% trans "Review And Rating" %}</h1>
+
+            <p><b>{% blocktrans %} Give a Rating to the {{partner}}
+                {% endblocktrans %}</b>
+            </p>
+
+             {% ratings partner %}
+            <p><b>{% blocktrans %} Tell us experiance about you day about booking
+                {% endblocktrans %}</b>
+            </p>
+            <br><br>
+            <form class="signup" id="rating_form" method="POST" >
+                {% csrf_token %}
+
+                <div class="form-group">
+                    {{ form.review_choice_1.label }}
+                    <div class="dd">
+                        {% for error in form.review_choice_1.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {{ form.review_choice_1 }}
+                </div>
+                <div class="form-group">
+                    {{ form.review_choice_2.label }}
+                    <div class="dd">
+                        {% for error in form.review_choice_2.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {{ form.review_choice_2 }}
+                </div>
+                <div class="form-group">
+                    {{ form.review_choice_3.label }}
+                    <div class="dd">
+                        {% for error in form.review_choice_3.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {{ form.review_choice_3 }}
+                </div>
+                <div class="form-group">
+                    {{ form.description.label }}
+                    <div class="dd">
+                        {% for error in form.description.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {{ form.description }}
+                </div>
+
+
+                <button type="submit">{% trans "Submit" %} &raquo;</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

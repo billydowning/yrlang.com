@@ -5,7 +5,6 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericRelation
 import os
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
@@ -93,11 +92,11 @@ class CustomUser(AbstractUser):
     state = models.ForeignKey(State, null=True, blank=True, on_delete=models.CASCADE)
     country = models.ForeignKey(Country, null=True, blank=True, on_delete=models.CASCADE)
     is_client = models.BooleanField(default=True)
-    language = models.ManyToManyField(Language, null=True, blank=True)
-    profession = models.ManyToManyField(Profession, null=True, blank=True)
+    language = models.ManyToManyField(Language,  blank=True)
+    profession = models.ManyToManyField(Profession, blank=True)
     stripe_id = models.CharField(max_length=200, null=True, blank=True)
     profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
-    user_role = models.ManyToManyField(UserRole, null=True, blank=True)
+    user_role = models.ManyToManyField(UserRole,  blank=True)
     is_private = models.BooleanField('private', default=False)
     multi_day = models.BooleanField(default=False)
     last_location = gis_model.PointField(null=True, blank=True)

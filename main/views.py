@@ -2,24 +2,28 @@ from datetime import datetime
 import pytz
 from django.contrib import messages
 from _collections import defaultdict
-from django.views.generic import TemplateView, View, ListView, DetailView, RedirectView
+from django.views.generic import (TemplateView, View, ListView,
+                                  DetailView, RedirectView, CreateView)
 
 from django.db.models import Q
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from .constant import *
 from users.models import CustomUser, UserRole, UserRoleRequest, State
 from blogpost.models import BlogPostPage, CityPage, BruckePage
 from appointments.models import Appointment, ProviderAppointment
-from .forms import UserSearchFrom
+from .forms import UserSearchFrom, BookingReviewForm, BoookingAndAppointmentComplainForm
 from django.contrib.gis.geos import fromstr
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.geos import Point
 from django.http import HttpResponseRedirect, JsonResponse
+from .models import Review, ReportAProblem
+from appointments.models import (Appointment as BookingModel,
+                                 ProviderAppointment as AppointmentModel)
+from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 
 class HomeView(TemplateView):
     template_name = "home.html"
-    longitude = None
-    latitude = None
+
 
     def get(self, request, *args, **kwargs):
         localite_list = None
@@ -316,3 +320,141 @@ class SetLonAndLatInSession(View):
                 return JsonResponse(data={'already_here':'data found'})
         return True
 
+
+class BookingRatingAndReviewView(UserSessionAndLoginCheckMixing, CreateView):
+    template_name = 'booking_rating_and_review.html'
+    model = Review
+    form_class = BookingReviewForm
+
+
+    def form_valid(self, form):
+        booking_obj = self.get_object()
+        if self.request.user == booking_obj.requestor:
+            partner = booking_obj.requestee
+        else:
+            partner = booking_obj.requestor
+        review_form = form.save(commit=False)
+        review_form.reviewer = self.request.user
+        review_form.reviewee = partner
+        review_form.content_object= booking_obj
+        review_form.save()
+        messages.success(self.request, "Review submited")
+        return HttpResponseRedirect('/')
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(BookingModel, pk=self.kwargs.get('bookoing_id'))
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super(BookingRatingAndReviewView, self).get_context_data(**kwargs)
+        booking_obj = self.get_object()
+        context['booking'] = booking_obj
+        if self.request.user == booking_obj.requestor:
+            partner = booking_obj.requestee
+        else:
+            partner = booking_obj.requestor
+        context['partner'] = partner
+        return context
+
+
+class AppointmentRatingAndReviewView(UserSessionAndLoginCheckMixing, CreateView):
+    template_name = 'appointment_rating_and_review.html'
+    model = Review
+    form_class = BookingReviewForm
+
+
+    def form_valid(self, form):
+        booking_obj = self.get_object()
+        if self.request.user == booking_obj.requestor:
+            partner = booking_obj.requestee
+        else:
+            partner = booking_obj.requestor
+        review_form = form.save(commit=False)
+        review_form.reviewer = self.request.user
+        review_form.reviewee = partner
+        review_form.content_object= booking_obj
+        review_form.save()
+        messages.success(self.request, "Review submited")
+        return HttpResponseRedirect('/')
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(AppointmentModel, pk=self.kwargs.get('appointment_id'))
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super(AppointmentRatingAndReviewView, self).get_context_data(**kwargs)
+        booking_obj = self.get_object()
+        context['booking'] = booking_obj
+        if self.request.user == booking_obj.requestor:
+            partner = booking_obj.requestee
+        else:
+            partner = booking_obj.requestor
+        context['partner'] = partner
+        return context
+
+class BookingComplainView(CreateView):
+    model =ReportAProblem
+    template_name = 'booking_complain.html'
+    form_class = BoookingAndAppointmentComplainForm
+
+    def form_valid(self, form):
+        booking_obj = self.get_object()
+        partner = booking_obj.requestee
+        report_form = form.save(commit=False)
+        report_form.reporter = self.request.user
+        report_form.reportee = partner
+        report_form.content_object = booking_obj
+        report_form.save()
+        messages.success(self.request, 'Problem Report Submited')
+        return HttpResponseRedirect('/')
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(BookingModel, pk=self.kwargs.get('bookoing_id'))
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super(BookingComplainView, self).get_context_data(**kwargs)
+        booking_obj = self.get_object()
+        context['booking'] = booking_obj
+        context['partner'] = booking_obj.requestee
+        return context
+
+
+class AppointmentComplainView(CreateView):
+    model =ReportAProblem
+    template_name = 'booking_complain.html'
+    form_class = BoookingAndAppointmentComplainForm
+
+    def form_valid(self, form):
+        booking_obj = self.get_object()
+        partner = booking_obj.requestee
+        report_form = form.save(commit=False)
+        report_form.reporter = self.request.user
+        report_form.reportee = partner
+        report_form.content_object = booking_obj
+        report_form.save()
+        messages.success(self.request, 'Problem Report Submited')
+        return HttpResponseRedirect('/')
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_object(self, queryset=None):
+        obj = get_object_or_404(AppointmentModel, pk=self.kwargs.get('appointment_id'))
+        return obj
+
+    def get_context_data(self, **kwargs):
+        context = super(AppointmentComplainView, self).get_context_data(**kwargs)
+        booking_obj = self.get_object()
+        context['booking'] = booking_obj
+        context['partner'] = booking_obj.requestee
+        return context

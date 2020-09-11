@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block link_css %}
+<link rel="stylesheet" href="{% static 'custome_CSS/messages_inbox.css' %}">
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
+<link rel='stylesheet prefetch'
+      href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/af.min.js"></script>-->
+<style type="text/css">
+    footer
+{
+    bottom: 0;
+    left: 0;
+    background: #000;
+    padding: 20px 0 10px;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    border-top: 4px solid #3dbb3d;
+}
+p.turn-grey.small.footers_link {
+    margin-top: 24px;
+}
+
+.footers_link a{        padding-bottom: 10px;}
+</style>
+{% endblock link_css %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+    <div class="col-12 col-md-10 m-auto">
+        ￼￼￼￼
+        <div id="frame">
+            <div class="content chat_room_width" >
+                <div class="contact-profile">
+                    <h1>Chat Log Beetween Users</h1>
+                </div>
+                <div class="messages" id="messgaes_div">
+                    <ul id="chat-log">
+                    {% if chat_messages %}
+                        {% for mesg in chat_messages %}
+                        {% if mesg.author.id == author_id %}
+                            <li class="sent">
+                                <p>{{mesg.content}}</p>
+                                <span class="msg_time">{{date_created}}</span>
+                                <span class="float-left">from {{mesg.author}}  -- ></span>
+                            </li>{% else %}
+                            <li class="replies">
+                                <p>{{mesg.content}}</p>
+                                <span class="msg_time">{{date_created}}</span>
+                                <span class="float-right" > < --from from {{mesg.reciepent}}</span>
+                            </li>{% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+{% endblock content %}
