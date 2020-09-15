@@ -46,32 +46,39 @@
 																<div class="row">
 																	<div class="col-12">
 																		<div class="form-group">
-																			<input type="text" class="form-control" placeholder="Enter City" name="">
+                                                                            <select class="form-control custom_select">
+                                                                            <option value="" disabled selected hidden>Select City</option>
+                                                                                {% for city in city_list %}
+																				<option>{{ city }}</option>
+                                                                                {% endfor %}
+																			</select>
+{#																			<input type="text" class="form-control" placeholder="Enter City" name="">#}
 																		</div>
 																	</div>
 																</div>
 																<div class="row">
-																	<div class="col-12 col-md-5">
+																	<div class="col-12">
 																		<div class="form-group">
 																			<select class="form-control custom_select">
-																				<option>Enter Place</option>
-																				<option> Place</option>
+                                                                                <option value="" disabled selected hidden>Select Role</option>
+																				<option> Localite</option>
+																				<option> Provider</option>
 																			</select>
 																		</div>
 																	</div>
-																	<div class="col-12 col-md-6">
-																		<div class="form-group">
-																			<select class="form-control custom_select">
-																				<option>4 August</option>
-																				<option> Place</option>
-																			</select>
-																		</div>
-																	</div>
+{#																	<div class="col-12 col-md-6">#}
+{#																		<div class="form-group">#}
+{#																			<select class="form-control custom_select">#}
+{#																				<option>4 August</option>#}
+{#																				<option> Place</option>#}
+{#																			</select>#}
+{#																		</div>#}
+{#																	</div>#}
 																</div>
 																<div class="row">
 																	<div class="col-12 col-md-12">
 																		<div class="right_form_btn">
-                                                                            <button class="btn theme_btn" type="button">Get Started</button>
+                                                                            <a href="{% url 'main:home' %}"><button class="btn theme_btn" type="button">Get Started</button></a>
 																		</div>
 																	</div>
 																</div>
