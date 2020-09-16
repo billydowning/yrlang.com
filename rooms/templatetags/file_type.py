@@ -8,11 +8,8 @@ register = template.Library()
 
 @register.filter(name='is_img_type')
 def check_is_img_type(img_type):
-    print(img_type)
     img_type_list = ['.jpg','.png']
     if img_type in img_type_list:
-        print('here')
         return True
     else:
-        print('false')
         return False
