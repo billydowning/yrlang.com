@@ -121,8 +121,6 @@ class PaymentAccountView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, Cr
         post.account_link = account_link['url']
         post.account_status = retrieve_acc['details_submitted']
         post.save()
-        print(retrieve_acc)
-        print(account_link['url'])
         messages.success(self.request, "Your Payment Account is Added!")
         return HttpResponseRedirect(self.get_success_url())
 

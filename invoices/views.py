@@ -225,8 +225,6 @@ class CreateCheckoutSession(View):
         except exceptions.ObjectDoesNotExist as e:
             print("StripeKeys secret_key Not Exist\n", e)
 
-        print('invoice_idPOST :- ', invoice_id)
-
         try:
             invoice = Invoice.objects.get(id=invoice_id)
         except exceptions.ObjectDoesNotExist as e:
@@ -255,8 +253,8 @@ class CreateCheckoutSession(View):
                 metadata={
                     'invoice_id': str(invoice_id),
                 },
-                success_url='http://127.0.0.1:8000/checkout-capture/?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url='http://127.0.0.1:8000/checkout-capture/',
+                success_url='http://yrlang.com/checkout-capture/?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url='http://yrlang.com/checkout-capture/',
             )
         else:
             session = stripe.checkout.Session.create(
