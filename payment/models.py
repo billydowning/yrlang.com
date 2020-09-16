@@ -1,5 +1,7 @@
 from django.db import models
 
+from wagtail.snippets.models import register_snippet
+
 from users.models import CustomUser
 
 # Create your models here.
@@ -59,6 +61,7 @@ class Commission(models.Model):
         return '{} {}'.format(self.Professional, self.is_active)
 
 
+@register_snippet
 class StripeKeys(models.Model):
     publishable_key = models.CharField(max_length=255)
     secret_key = models.CharField(max_length=255)
