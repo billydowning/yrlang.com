@@ -1,5 +1,7 @@
 from django.db import models
 
+from wagtail.snippets.models import register_snippet
+
 from users.models import CustomUser
 
 # Create your models here.
@@ -38,6 +40,29 @@ class PaymentAccount(models.Model):
     account_link = models.CharField(max_length=255, null=True, blank=True)
     account_status = models.CharField(max_length=255, null=True, blank=True)
 
-
     def __str__(self):
         return '{} - {}'.format(self.bank_name, self.currency)
+
+
+class Commission(models.Model):
+    LOCALITE = 'localite'
+    PROVIDER = 'provider'
+
+    USER_CHOICE = (
+        (LOCALITE, "For Localite"),
+        (PROVIDER, "For Provider"),
+    )
+
+    Professional = models.CharField(max_length=10, choices=USER_CHOICE)
+    percentage = models.PositiveIntegerField(default=000)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return '{} {}'.format(self.Professional, self.is_active)
+
+
+@register_snippet
+class StripeKeys(models.Model):
+    publishable_key = models.CharField(max_length=255)
+    secret_key = models.CharField(max_length=255)
+    is_active = models.BooleanField(default=True)
