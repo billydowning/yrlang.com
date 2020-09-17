@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% load static %}
  {% block link_css %}
-<link href="{% static 'custome_CSS/become_provider_CSS/style.css' %}" rel="stylesheet">
+<link href="{% static 'custome_CSS/become_provider_CSS/style.css' %}" rel="stylesheet"
+      xmlns="http://www.w3.org/1999/html">
 {% endblock link_css %}
 
 	 {% block content %}
@@ -25,7 +26,7 @@
 					 		<div class="row">
 					 			<div class="col-12">
 					 				<div class="video_header">
-					 					<h1>About Us</h1>
+                                        <h1>About Us  <a href="#"><button style="float: right; font-size: 20px; border-radius: 9px; background-color: #6ac241; color: #fff;">Newsletter/ Blog</button></a></h1>
 					 				</div>
 					 				<div class="video_inner_section">
 					 					<div class="social_icons_left">
