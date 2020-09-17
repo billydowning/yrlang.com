@@ -6,6 +6,7 @@ from django.shortcuts import redirect, get_object_or_404, reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponseRedirect, JsonResponse
 from django.contrib.contenttypes.models import ContentType
+from django.conf.urls import i18n
 from django.urls import reverse_lazy
 from django.conf import settings
 from django.views.generic import (
@@ -429,7 +430,7 @@ class VerifyClientRequestView(UserSessionAndLoginCheckMixing, UserPassesTestMixi
 
 class PublicProfile(DetailView):
     model = CustomUser
-    template_name = 'users/public_profile.html'
+    template_name = 'users/public_profile_sample.html'
     context_object_name = 'user'
 
     def get_context_data(self, **kwargs):

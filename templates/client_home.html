@@ -37,8 +37,9 @@
                                             </div>
                                             <div class="name_rate">
                                                 <a href="{% url 'public_profile' localite.id %}"><h5>{{ localite.username|title }}</h5></a>
-                                                <p> {% ratings localite %}
-
+                                                {% with rate_temp='rating_star/widget.html' %}
+                                                <p> {% ratings localite read_only=True template_name=rate_temp %}
+                                                    {% endwith %}
                                                 </p>
                                             </div>
                                         </div>
@@ -104,8 +105,9 @@
                                             </div>
                                             <div class="name_rate">
                                                 <a href="{% url 'public_profile' professional.id %}"><h5>{{ professional.username|title }}</h5></a>
-                                                <p> {% ratings professional %}
-
+                                                {% with rate_temp='rating_star/widget.html' %}
+                                                <p> {% ratings professional read_only=True template_name=rate_temp %}
+                                                    {% endwith %}
                                                 </p>
                                             </div>
                                         </div>
