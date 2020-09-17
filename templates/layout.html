@@ -1,5 +1,6 @@
 {% load static wagtailcore_tags check_role %}
 {% load webpush_notifications %}
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -153,7 +154,11 @@
                     <li class="lang_drop_down"><div class="dropdown show">
                       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">English</button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
-                        <a class="dropdown-item" href="#">Arabic</a>
+                           {% get_language_info_list for LANGUAGES as languages %}
+                          {% for language in languages %}
+                          <a class="dropdown-item" href="#">{{language}}</a>
+                          {% endfor  %}
+
                         <a class="dropdown-item" href="#">French</a>
                         <a class="dropdown-item" href="#">German</a>
                         <a class="dropdown-item" href="#">Italian</a>

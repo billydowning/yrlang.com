@@ -253,3 +253,16 @@ TELLME_FEEDBACK_EMAIL = 'admin@tellme.com'
 STAR_RATINGS_ANONYMOUS = False
 STAR_RATINGS_STAR_HEIGHT = 15
 STAR_RATINGS_STAR_WIDTH = 15
+
+LANGUAGES = [
+    ('en-us', 'English'),
+    ('fi', 'Finnish'),
+]
+
+# If you set this to False, Django will make some optimizations so as not
+# to load the internationalization machinery.
+USE_I18N = True
+
+# If you set this to False, Django will not format dates, numbers and
+# calendars according to the current locale
+USE_L10N = True

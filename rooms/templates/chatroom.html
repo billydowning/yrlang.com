@@ -46,7 +46,7 @@ p.turn-grey.small.footers_link {
                   {% endif %}
                 <div class="text-small">
                   <strong>{% if msg.chat_partner.is_staff %} Yr-Admin{% else %}{{ msg.chat_partner.username|truncatechars:7 }}{% endif %}</strong>
-                  <p class="last-message text-muted">{{ msg.message.content|truncatechars:7 }}</p>
+                  <p class="last-message text-muted">{{ msg.message.content|truncatechars:7|default:'file or image' }}</p>
                 </div>
                 <div class="chat-footer">
                   <p class="text-smaller text-muted mb-0">{{ msg.message.date_created |date:"SHORT_DATE_FORMAT"  }}</p>
@@ -60,13 +60,13 @@ p.turn-grey.small.footers_link {
             <li class=" p-1">
               <a href="{% url 'chatroom' msg.message.room.id %}" class="d-flex justify-content-between">
                     {% if  msg.chat_partner.profile_image %}
-                  <img src="{{ msg.chat_partner.profile_image.url }}" style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                     <img src="{{ msg.chat_partner.profile_image.url }}" style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
                   {% else %}
-                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-8.jpg"  style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                    <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-8.jpg"  style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
                   {% endif %}
                 <div class="text-small">
                   <strong>{% if msg.chat_partner.is_staff %} Yr-Admin{% else %}{{ msg.chat_partner.username|truncatechars:7 }}{% endif %}</strong>
-                  <p class="last-message text-muted">{{ msg.message.content|truncatechars:7 }}</p>
+                  <p class="last-message text-muted">{{ msg.message.content|truncatechars:7|default:'file' }}</p>
                 </div>
                 <div class="chat-footer">
                   <p class="text-smaller text-muted mb-0">{{ msg.message.date_created|date:"SHORT_DATE_FORMAT"  }}</p>
@@ -291,7 +291,7 @@ $(document).ready(function(){
                            msgListTag.appendChild(ahrefTag)
                     }else{
                             var videoTag = document.createElement("video");
-                           var  sourceTag = document.createElement("source");
+                            var  sourceTag = document.createElement("source");
                             sourceTag.setAttribute("src", data.location);
                              sourceTag.setAttribute("type", "video/mp4");
                              videoTag.setAttribute("controls", "");
@@ -320,7 +320,7 @@ $(document).ready(function(){
 
                         var file = document.getElementById('filename').files[0];
                          var fileSize = file.size / 1024 / 1024; // in MB
-                         console.log(fileSize)
+
                                 if (fileSize < 2) {
 
                                       var reader = new FileReader();
@@ -360,9 +360,7 @@ $(document).ready(function(){
 
                     }
 
-                     sendFileUpP =    function () {
-                     console.log('file test uploding')
-                     }
+
 
 
 });
