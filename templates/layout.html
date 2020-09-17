@@ -148,7 +148,7 @@
 
                 <ul class="uk-navbar-nav logo_container">
                     <li class="uk-active"><a href="/" class="logo_font"><img
-                            src="https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"></a>
+                            src="https://uploads-ssl.webflow.com/5d2f9334e480cd760d273d52/5d4f2ab6326ec12d13448204_yr_lang_bubble_1_256x256.png"></a>
                     </li>
 
                     <li class="lang_drop_down"><div class="dropdown show">
@@ -193,7 +193,7 @@
 {#                            {% endif %}#}
 {#                        </div>#}
 {#                    </li>#}
-                        <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+                        <li><a href="{% url 'main:home' %}">    <span>Explore</span></a></li>
                         <li class="dropdown">
                         <a href="">Join Our Platform</a>
                         <div class="dropdown-content">
@@ -291,7 +291,7 @@
                     {% endif %}
 
                     {% else %}
-                        <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+                        <li><a href="{% url 'main:home' %}">    <span>Explore</span></a></li>
                         <li class="dropdown">
                         <a href="">Join Our Platform</a>
                         <div class="dropdown-content">
@@ -478,7 +478,7 @@
                         <hr class="divider-grey">
                         <div class="row">
 
-                            <div class="col-12 col-md-6 col-lg-3">
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <p class="bolder">Languages</p>
                                 <p class="turn-grey small footers_link">
                                     <a href="">English</a>
@@ -487,7 +487,7 @@
                                     <a href="">Italian</a>
                                 </p>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-3">
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <p class="bolder">Location</p>
                                 <p class="turn-grey small footers_link">
                                     <a href="">Berlin</a>
@@ -495,15 +495,15 @@
                                     <a href="">Munich</a>
                                 </p>
                             </div>
-                             <div class="col-12 col-md-6 col-lg-3">
-                                <p class="bolder">The Bruck</p>
-                                <p class="turn-grey small footers_link">
-                                    {% for blog in blog_list %}
-                                    <a href="{% slugurl blog.slug %}">{{blog.title}}</a>
-                                        {% endfor %}
-                                </p>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-3">
+{#                             <div class="col-12 col-md-6 col-lg-3">#}
+{#                                <p class="bolder">The Bruck</p>#}
+{#                                <p class="turn-grey small footers_link">#}
+{#                                    {% for blog in blog_list %}#}
+{#                                    <a href="{% slugurl blog.slug %}">{{blog.title}}</a>#}
+{#                                        {% endfor %}#}
+{#                                </p>#}
+{#                            </div>#}
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <p class="bolder">Company</p>
                                 <p class="turn-grey small footers_link">
                                     <a href="{%  url 'about_us' %}">Abuot Us</a>
