@@ -1,6 +1,7 @@
 {% load static wagtailcore_tags check_role %}
 {% load webpush_notifications %}
 {% load i18n %}
+{% load google_translate %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -128,6 +129,11 @@
     top: 50%;
     z-index: 100;
 }
+.goog-te-gadget img {
+    vertical-align: middle;
+    border: none;
+    display: none;
+}
 </style>
 </head>
 <body>
@@ -152,18 +158,8 @@
                     </li>
 
                     <li class="lang_drop_down"><div class="dropdown show">
-                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">English</button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
-                           {% get_language_info_list for LANGUAGES as languages %}
-                          {% for language in languages %}
-                          <a class="dropdown-item" href="#">{{language}}</a>
-                          {% endfor  %}
+                        {% google_translate %}
 
-                        <a class="dropdown-item" href="#">French</a>
-                        <a class="dropdown-item" href="#">German</a>
-                        <a class="dropdown-item" href="#">Italian</a>
-                        <a class="dropdown-item" href="#">Spanish</a>
-                      </div>
                     </div></li>
                 </ul>
             </div>

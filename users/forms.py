@@ -133,7 +133,7 @@ class UpdateProfessionalAccountForm(ModelForm):
         fields = ['username', 'email', 'bio', 'phone_number', 'state',
                   'country', 'language', 'profession', 'profile_image', 'is_private', 'multi_day']
         help_texts = {
-            'phone_number': 'Use Formate Like This 999-999-9999 ',
+            'phone_number': 'Use Formate Like This +91999-999-9999 ',
             'multi_day': 'Allow Customer Multi-Day Booking '
         }
 
@@ -143,7 +143,7 @@ class UpdateProfessionalAccountForm(ModelForm):
         self.fields['role'].queryset = UserRole.objects.exclude(id__in=self.instance.user_role.all())
         self.fields['phone_number'].widget.attrs.update({
             'autocomplete': 'off', 'type': 'tel',
-            'pattern': "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+            'pattern': "[\+]\d{2}\d{3}[\-]\d{3}[\-]\d{4}",
 
         })
 
@@ -163,7 +163,7 @@ class UpdateProfessionalAccountForm(ModelForm):
 
         if profile_image:
             instance.profile_image = profile_image
-            instance.save()
+        instance.save()
         return instance
 
 
@@ -331,7 +331,7 @@ class UpdateProviderAccountForm(ModelForm):
 
         if profile_image:
             instance.profile_image = profile_image
-            instance.save()
+        instance.save()
         return instance
 
 

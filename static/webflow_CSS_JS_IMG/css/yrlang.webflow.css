@@ -1903,6 +1903,7 @@ figure {
 .star.profile {
   left: 196px;
   top: 6px;
+  margin-top: auto;
 }
 
 .text-block-19 {
@@ -2472,6 +2473,7 @@ figure {
   margin-top: 11px;
   margin-right: 208px;
   margin-left: 50px;
+  min-height: 51px;
 }
 
 .text-block-27 {
@@ -8505,3 +8507,8 @@ figure {
   }
 }
 
+.reviews_ch{
+    margin-top: 0;
+    margin-bottom: 10px;
+    margin-left: 59px;
+}

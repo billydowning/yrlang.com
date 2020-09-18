@@ -37,23 +37,20 @@
                 <div class="div-block-31"><a href="#" class="provider-page-link">About</a>
                         <a href="#" class="provider-page-link">Reviews</a></div>
                 <div class="div-block-32"></div>
-                <div class="div-block-34"><img src="https://uploads-ssl.webflow.com/5d51bddc28fbf0dad06964cc/5d5332ae64234c484fd4915f_Brenda-J-headshot-circle-crop.png" alt="" class="image-35">
-                    <h3 class="heading-17">ramesh </h3>
-                    <div class="job">Doctor</div>
-                    <img src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="star profile"><img
-                            src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="star profile"><img
-                            src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="star profile"><img
-                            src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="star profile"><img
-                            src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="star profile">
+                <div class="div-block-34">
+                    {% if user.profile_image %}
+                        <img src="{{ user.profile_image.url }}" alt="User Imgae" class="image-35">
+                    {% else %}
+                        <img src="{% static 'images/avtar1.png' %}" alt="image not found" class="image-35">
+                    {% endif %}
+                    <h3 class="heading-17">{{ user.email }} </h3>
+                    <div class="job"></div>
+                    <div class="star profile">
+                    {% ratings user %}
+                        </div>
                     <div class="text-block-21">56 reviews</div>
                     <h4 class="heading-19">About me: </h4>
-                    <p class="paragraph-12">Fear, anxiety, depression, loss of connection, loneliness, grief, lack of
-                        balance - chances are you have struggled with one of these emotions in some aspect of your life.
-                        Although these unpleasant emotions are part of life, there is hope of returning to feeling joy
-                        and happiness. My professional experience has helped many individuals, couples and families
-                        navigate and learn to master their emotions and find peace and balance. I studied at Columbia
-                        University in New York City and I have been living and working in Berlin, Germany since 2011. I
-                        am a native English speaker but I am also fluent in German and Spanish.</p>
+                    <p class="paragraph-12">{{ user.bio|default:'No About Found' }}</p>
                     <div class="reservation-div-2">
                         <h3 class="heading-25">€100/session</h3>
                         <div class="text-block-28">estimated cost</div>
@@ -66,13 +63,32 @@
                       {% endif  %}
                         </div>
 
-
-                        <a data-w-id="a7d75a6a-8b70-6f10-0052-21285f1708f2" href="#" class="res-button w-button">Book an
+                        {% if pro and request.user.is_authenticated %}
+                        <a data-w-id="a7d75a6a-8b70-6f10-0052-21285f1708f2" href="{% url 'create_provider_appointments' user.id %}" class="res-button w-button">Book an
                             Appointment</a>
-                      <a data-w-id="a7d75a6a-8b70-6f10-0052-21285f1708f2" href="#" class="res-button w-button">Book an
-                            Booking</a>
+                        {% endif %}
+                         {% if loc and request.user.is_authenticated %}
+                      <a data-w-id="a7d75a6a-8b70-6f10-0052-21285f1708f2" href="{% url 'request_appointment' user.id %}" class="res-button w-button">Book Visit</a>
+                        {% endif %}
                     </div>
                     <div class="w-layout-grid grid">
+                         <div>
+                            <h3 class="overview-heading">Persolan Info:</h3>
+                            <ul role="list" class="w-list-unstyled">
+                                <li class="overview-item">
+                                    <div class="overview-points">City : {{ user.state }}, {{ user.country }}</div>
+                                </li>
+                                <li class="overview-item">
+                                    <div class="overview-points">Name : {% firstof user.first_name "No name" %} {{ user.last_name }}</div>
+                                </li>
+                                <li class="overview-item">
+                                    <div class="overview-points">Email: {{ user.email }}</div>
+                                </li>
+                                <li class="overview-item">
+                                    <div class="overview-points">Phone: {{ user.phone_number }}</div>
+                                </li>
+                            </ul>
+                        </div>
                         <div class="div-block-40">
                             <h3 class="overview-heading">Overview</h3>
                             <ul role="list" class="list-2 w-list-unstyled">
@@ -115,39 +131,59 @@
                         <div>
                             <h3 class="overview-heading">Languages</h3>
                             <ul role="list" class="w-list-unstyled">
+                                {% for lang in user.language.all %}
                                 <li class="overview-item"><img src="{{webflow_url}}/images/icons8-tick-box-24.png" alt="">
-                                    <div class="overview-points">English: Native</div>
+                                    <div class="overview-points">{{lang}}</div>
                                 </li>
-                                <li class="overview-item"><img src="{{webflow_url}}/images/icons8-tick-box-24.png" alt="">
-                                    <div class="overview-points">Spanish: Fluent</div>
-                                </li>
-                                <li class="overview-item"><img src="{{webflow_url}}/images/icons8-tick-box-24.png" alt="">
-                                    <div class="overview-points">German: Fluent</div>
-                                </li>
+                                {% endfor %}
+
                             </ul>
                         </div>
                         <div class="div-block-33">
                             <h3 class="overview-heading">Payment methods</h3>
                             <ul role="list" class="w-list-unstyled">
+
                                 <li class="overview-item"><img src="{{webflow_url}}/images/icons8-tick-box-24.png" alt="">
                                     <div class="overview-points">Cash</div>
                                 </li>
+
                                 <li class="overview-item"><img src="{{webflow_url}}/images/icons8-tick-box-24.png" alt="">
                                     <div class="overview-points">Credit/Debit</div>
                                 </li>
-                                <li class="overview-item"><img src="{{webflow_url}}/images/icons8-tick-box-24.png" alt="">
-                                    <div class="overview-points">PayPal</div>
-                                </li>
-                                <li class="overview-item"><img src="{{webflow_url}}/images/icons8-tick-box-24.png" alt="">
-                                    <div class="overview-points">Venmo</div>
-                                </li>
-                                <li class="overview-item"><img src="{{webflow_url}}/images/icons8-tick-box-24.png" alt="">
-                                    <div class="overview-points">IBAN transfer</div>
-                                </li>
+
                             </ul>
                         </div>
+                         {% if loc %}
+                        <div class="div-block-33">
+                            <h3 class="overview-heading">Profession</h3>
+                            <ul role="list" class="w-list-unstyled">
+                                        {% for obj in user.profession.all %}
+                                <li class="overview-item"><img src="{{webflow_url}}/images/icons8-tick-box-24.png" alt="">
+                                    <div class="overview-points">{{ obj }}</div>
+                                </li>
+                                {% empty %}
+                                        No data
+                                        {% endfor %}
+
+                            </ul>
+                        </div>
+                        {% endif %}
+                         {% if pro %}
+                        <div class="div-block-33">
+                            <h3 class="overview-heading">Services</h3>
+                            <ul role="list" class="w-list-unstyled">
+                                {% for obj in user.providercategories_set.all %}
+                                <li class="overview-item"><img src="{{webflow_url}}/images/icons8-tick-box-24.png" alt="">
+                                    <div class="overview-points">{{ obj.category }}</div>
+                                </li>
+                                {% empty %}
+                                No data
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
                     </div>
-                    <div><a href="#" class="profile-button w-button">Send a message</a><img
+                    <div><a href="{% url 'contact' user.id %}" class="profile-button w-button">Send a message</a><img
                             src="{{webflow_url}}/images/icons8-chat-100.png" alt="" class="image-36"><a href="#"
                                                                                         class="profile-button w-button">Check
                         availability</a><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-37"><a href="#"
@@ -183,11 +219,11 @@
                     <div class="rating-meter"></div>
                     <div class="rating-meter"></div>
                     <img src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star "><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star "><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star "><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star "><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star ">
+                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star four"><img
+                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star four six"><img
+                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star five"><img
+                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star six"><img
+                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star five seven">
                     <div class="meter-percent">100%</div>
                     <div class="meter-percent">0%</div>
                     <div class="meter-percent">0%</div>
@@ -209,35 +245,32 @@
                     </div>
                 </div>
                 <div class="line-seperator"></div>
+                 {% for review in reviews %}
+                    {% with review.content_object|classname as object_type %}
                 <div class="review-div">
-                    <h4 class="heading-24">Michael K.</h4><img src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt=""
-                                                               class="small-review-star"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="small-review-star"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="small-review-star"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="small-review-star"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="small-review-star">
-                    <p class="paragraph-14">Dr. Pringle really helped me through some tough times when I first moved to
-                        Berlin for my job. It gets very dark here during the winter and I don’t speak German that well,
-                        so I was really glad to find a native English speaking therapist that was able to help me with
-                        some problems I was having. Thanks Dr. Pringle!</p>
-                    <div class="text-block-27">22.07.2018</div>
-                    <div class="line-seperator"></div>
+                    <h4 class="heading-24">{{review.reviewer}} for {% if object_type == 'Appointment' %} Booking{% else %} {{ object_type }} {% endif %}</h4>
+                    <div class="small-review-star">
+                        {% with rate_temp='rating_star/widget.html' %}
+                            {% ratings review.reviewer read_only=True template_name=rate_temp  %}
+                        {% endwith %}
+                        </div>
+                    <p class="paragraph-14">{{ review.description }}</p>
+                    <p class="reviews_ch">
+                        <small>{{review.review_choice_1 }}</small><br>
+                            <small>{{review.review_choice_2 }}</small><br>
+                            <small>{{review.review_choice_3 }}</small>
+                    </p>
+                    <div class="text-block-27">{{ review.date_posted }}</div>
+
+                    <div class="line-seperator">
+
+                    </div>
                 </div>
-                <div class="review-div">
-                    <h4 class="heading-24">Sarah L.</h4><img src="images/iconfinder_Star-Gold_12868.png" alt=""
-                                                             class="small-review-star"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="small-review-star"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="small-review-star"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="small-review-star"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="small-review-star">
-                    <p class="paragraph-14">I was able to get an appointment with Dr. Pringle the next day. It’s common
-                        in Germany to wait a long time for an appointment and I really needed to see someone sooner than
-                        later.</p>
-                    <div class="text-block-27">30.12.2018</div>
-                    <div class="line-seperator"></div>
-                    <a href="#" class="button-2 w-button">See more reviews</a>
-                    <div class="line-seperator"></div>
-                </div>
+                  {% endwith %}
+                        {% empty %}
+                        <p> No one given rating yet !</p>
+                {% endfor %}
+
             </div>
         </div>
     </div>
@@ -257,5 +290,8 @@
     {% endif %}
 
 </script>
+
+    <script src="{{webflow_url}}/js/webflow.js" type="text/javascript"></script>
+
 
 {% endblock %}
