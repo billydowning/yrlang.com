@@ -1,6 +1,7 @@
 {% load static wagtailcore_tags check_role %}
 {% load webpush_notifications %}
 {% load i18n %}
+{% load google_translate %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -130,6 +131,36 @@
     top: 50%;
     z-index: 100;
 }
+.goog-te-gadget img {
+    vertical-align: middle;
+    border: none;
+    display: none;
+}
+.goog-te-gadget-simple {
+    background-color: #fff;
+     border-left: 0px;
+     border-top: 0px ;
+     border-bottom: 0px ;
+      border-right: 0px ;
+    font-size: 10pt;
+    display: inline-block;
+    padding-top: 1px;
+    padding-bottom: 2px;
+    cursor: pointer;
+    zoom: 1;
+    display: inline;
+}
+.lang_drop_down span {
+    padding-right: 5px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    display: none;
+}
+.goog-te-gadget .goog-te-combo {
+    margin: 4px 0;
+    background: white;
+}
+
 </style>
 
 </head>
@@ -155,18 +186,8 @@
                     </li>
 
                     <li class="lang_drop_down"><div class="dropdown show">
-                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">English</button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
-                           {% get_language_info_list for LANGUAGES as languages %}
-                          {% for language in languages %}
-                          <a class="dropdown-item" href="#">{{language}}</a>
-                          {% endfor  %}
+                        {% google_translate type='vertical' %}
 
-                        <a class="dropdown-item" href="#">French</a>
-                        <a class="dropdown-item" href="#">German</a>
-                        <a class="dropdown-item" href="#">Italian</a>
-                        <a class="dropdown-item" href="#">Spanish</a>
-                      </div>
                     </div></li>
                 </ul>
             </div>
@@ -539,6 +560,21 @@ $(".content").css("padding-bottom", $("footer").outerHeight()+'px');
 
    $('.opn_submenu > a.opned').hover(function() {
     $(this).next('.submenu_links').slideToggle();
+});
+</script>
+<script>
+$( document ).ready(function() {
+        selectedElement = $("#google_").contents();
+
+            textNodes = selectedElement.filter(function ()
+            {
+                return this.nodeType === Node.TEXT_NODE;
+            });
+console.log(textNodes)
+            $('.skiptranslate goog-te-gadget').contents().filter(function() {
+                  return this.nodeType === Node.TEXT_NODE;
+                }).remove();
+        $('.goog-te-gadget').contents().filter((_, el) => el.nodeType === Node.TEXT_NODE).remove();
 });
 </script>
 </html>

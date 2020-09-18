@@ -103,6 +103,7 @@ INSTALLED_APPS = [
     # paypal
     'paypal.standard.ipn',
     'webpush',
+    'google_translate',
 
 
 ]

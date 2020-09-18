@@ -52,7 +52,7 @@
   <div>
 
   {% if invoice.appointment %}
-  <div class="card col-3 my-2 mx-2">
+  <div class="row">
     <h5 class="card-header">{{ invoice.appointment.requestor.username }}</h5>
     <div class="card-body">
       <p class="card-text"><b>Date :- </b>{{ invoice.appointment.request_date|date:'Y-M-d  D' }}</p>

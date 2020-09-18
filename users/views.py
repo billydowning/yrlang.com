@@ -19,8 +19,8 @@ from django.urls import reverse_lazy
 from django.core.mail import send_mail
 # for notification
 from webpush import send_user_notification
-from django.forms import formset_factory
 
+from yrlang.settings.development_example import EMAIL_HOST_USER
 from allauth.account.views import SignupView
 import stripe
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
@@ -35,7 +35,8 @@ from .forms import (
     ProviderAccountForm,
     UpdateProviderAccountForm,
     RequestVerificationForm,
-    ClientToAdminRequestFormSet
+    ClientToAdminRequestFormSet,
+    RequestForCallForm,
 
 )
 from .models import (
@@ -436,7 +437,17 @@ class PublicProfile(DetailView):
     def get_context_data(self, **kwargs):
         context = super(PublicProfile, self).get_context_data(**kwargs)
         data_r = self.get_object()
-        context['reviews'] = data_r.reviewee.all().order_by('date_posted')[:3]
+        for i in data_r.ratings.all():
+            print(i.average)
+        from_mail = None
+        if self.request.user.is_authenticated:
+            from_mail = str(self.request.user.email)
+        reviews = data_r.reviewee.all().order_by('date_posted')
+        context['reviews'] = reviews[:3]
+        context['reviews_total'] = reviews.count()
+        context['form'] = RequestForCallForm(initial={'to':data_r.email,
+                                                      'req_from':from_mail
+                                                      })
         return context
 
 
@@ -587,3 +598,30 @@ class ProviderSubscriptionView(DetailView):
 
 
 
+class RequestForCallWithMailView(View):
+    form_class = RequestForCallForm
+
+    def post(self, request,  *args,**kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            send_mail(
+                'Request For Call',
+                form.cleaned_data['reason'] + ' requested by '+ form.cleaned_data['req_from']
+                + ' on date ' + str(datetime.datetime.today()),
+                EMAIL_HOST_USER,
+                [form.cleaned_data['to']],
+                fail_silently=True,
+            )
+        messages.success(self.request, "Your Request For Call Successful !")
+        return HttpResponseRedirect('/')
+
+class UserReviewListView(ListView):
+    user = None
+    template_name = "users/reviews/user_review_list.html"
+    context_object_name = 'reviews'
+    def dispatch(self, request, *args, **kwargs):
+        self.user = get_object_or_404(CustomUser, pk=kwargs.get('user_id'))
+        return super(UserReviewListView, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.user.reviewee.all().order_by('date_posted')

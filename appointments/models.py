@@ -88,7 +88,7 @@ class ProviderAppointment(models.Model):
     request_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return '{} - {}'.format(self.requestor.username, self.requestee.username)
+        return '{} - {} - {}'.format(self.requestor.username, self.requestee.username, self.created_date.date())
 
     def get_absolute_url(self):
         return reverse('provider_appointments_detail', args=[self.pk])
