@@ -222,7 +222,9 @@
                     </p>
                     <div class="text-block-27">{{ review.date_posted }}</div>
 
-                    <div class="line-seperator">
+
+                        <div class="line-seperator">
+
 
                     </div>
                 </div>
@@ -230,7 +232,10 @@
                         {% empty %}
                         <p> No one given rating yet !</p>
                 {% endfor %}
-
+                {% if reviews  %}
+                <a href="{% url 'user_review_list' user.id  %}" class="button-2 w-button">See more reviews</a>
+                      <div class="line-seperator"></div>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -614,3 +614,14 @@ class RequestForCallWithMailView(View):
             )
         messages.success(self.request, "Your Request For Call Successful !")
         return HttpResponseRedirect('/')
+
+class UserReviewListView(ListView):
+    user = None
+    template_name = "users/reviews/user_review_list.html"
+    context_object_name = 'reviews'
+    def dispatch(self, request, *args, **kwargs):
+        self.user = get_object_or_404(CustomUser, pk=kwargs.get('user_id'))
+        return super(UserReviewListView, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return self.user.reviewee.all().order_by('date_posted')
