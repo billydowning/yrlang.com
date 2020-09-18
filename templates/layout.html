@@ -96,6 +96,8 @@
 
     <link rel="stylesheet" href="{% static 'css/sideNev.css' %}">
     <script src="{% static 'js/sideNev.js' %}"></script>
+    {% block extra_js %}
+    {% endblock %}
     {% block link_css %}
     {% endblock link_css %}
 
@@ -129,6 +131,7 @@
     z-index: 100;
 }
 </style>
+
 </head>
 <body>
 <div class="wrapper">
