@@ -97,6 +97,8 @@
 
     <link rel="stylesheet" href="{% static 'css/sideNev.css' %}">
     <script src="{% static 'js/sideNev.js' %}"></script>
+    {% block extra_js %}
+    {% endblock %}
     {% block link_css %}
     {% endblock link_css %}
 
@@ -122,6 +124,7 @@
     padding-left: 15px;
 }
 </style>
+
 </head>
 <body>
 <div class="wrapper">
