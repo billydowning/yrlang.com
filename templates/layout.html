@@ -154,6 +154,10 @@
     letter-spacing: 1px;
     display: none;
 }
+.goog-te-gadget .goog-te-combo {
+    margin: 4px 0;
+    background: white;
+}
 
 </style>
 </head>
@@ -557,9 +561,17 @@ $(".content").css("padding-bottom", $("footer").outerHeight()+'px');
 </script>
 <script>
 $( document ).ready(function() {
-    $('.skiptranslate goog-te-gadget').contents().filter(function() {
-      return this.nodeType === Node.TEXT_NODE;
-    }).remove();
+        selectedElement = $("#google_").contents();
+
+            textNodes = selectedElement.filter(function ()
+            {
+                return this.nodeType === Node.TEXT_NODE;
+            });
+console.log(textNodes)
+            $('.skiptranslate goog-te-gadget').contents().filter(function() {
+                  return this.nodeType === Node.TEXT_NODE;
+                }).remove();
+        $('.goog-te-gadget').contents().filter((_, el) => el.nodeType === Node.TEXT_NODE).remove();
 });
 </script>
 </html>

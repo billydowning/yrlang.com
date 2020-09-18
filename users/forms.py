@@ -390,3 +390,7 @@ class RequestVerificationForm(forms.ModelForm):
             if difference.days == -1 or  difference.days == 0:
                 self.fields.pop('meeting_on')
 
+class RequestForCallForm(forms.Form):
+    to = forms.EmailField(widget=forms.HiddenInput(), required=True)
+    reason = forms.CharField(required=True, widget=forms.Textarea())
+    req_from = forms.EmailField(required=True, label='email')

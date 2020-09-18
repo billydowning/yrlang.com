@@ -48,7 +48,7 @@
                     <div class="star profile">
                     {% ratings user %}
                         </div>
-                    <div class="text-block-21">56 reviews</div>
+                    <div class="text-block-21">{{reviews_total}}  reviews</div>
                     <h4 class="heading-19">About me: </h4>
                     <p class="paragraph-12">{{ user.bio|default:'No About Found' }}</p>
                     <div class="reservation-div-2">
@@ -87,6 +87,7 @@
                                 <li class="overview-item">
                                     <div class="overview-points">Phone: {{ user.phone_number }}</div>
                                 </li>
+
                             </ul>
                         </div>
                         <div class="div-block-40">
@@ -184,66 +185,25 @@
                         {% endif %}
                     </div>
                     <div><a href="{% url 'contact' user.id %}" class="profile-button w-button">Send a message</a><img
-                            src="{{webflow_url}}/images/icons8-chat-100.png" alt="" class="image-36"><a href="#"
-                                                                                        class="profile-button w-button">Check
-                        availability</a><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-37"><a href="#"
-                                                                                                           class="profile-button third w-button">Request
+                            src="{{webflow_url}}/images/icons8-chat-100.png" alt="" class="image-36">
+                        <a data-toggle="modal" data-target="#exampleModalLong" class="profile-button third w-button">Request
                         a call</a><img src="{{webflow_url}}/images/icons8-phone-50.png" alt="" class="image-38"></div>
                 </div>
             </div>
         </div>
 
-        <div>
-            <div class="">
+        <div class="w-container">
+            <div >
                 <h3 class="heading-22">Reviews</h3>
                 <div class="text-block-23">This service pro is highly rated for response time, friendliness, and
                     punctuality.
                 </div>
-                <img src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="review-star"><img
-                    src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="review-star"><img
-                    src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="review-star"><img
-                    src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="review-star"><img
-                    src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="review-star">
-                <h3 class="heading-23">5.0</h3>
-                <div class="text-block-24">23 reviews</div>
-                <div class="div-block-36"></div>
-                <div>
-                    <div class="review-number">5</div>
-                    <div class="review-number">4</div>
-                    <div class="review-number">3</div>
-                    <div class="review-number">2</div>
-                    <div class="review-number">1</div>
-                    <div class="rating-meter active"></div>
-                    <div class="rating-meter"></div>
-                    <div class="rating-meter"></div>
-                    <div class="rating-meter"></div>
-                    <div class="rating-meter"></div>
-                    <img src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star four"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star four six"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star five"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star six"><img
-                        src="{{webflow_url}}/images/iconfinder_Star-Gold_12868.png" alt="" class="meter-star five seven">
-                    <div class="meter-percent">100%</div>
-                    <div class="meter-percent">0%</div>
-                    <div class="meter-percent">0%</div>
-                    <div class="meter-percent">0%</div>
-                    <div class="meter-percent">0%</div>
-                    <div class="div-block-37">
-                        <div class="text-block-25">Search reviews</div>
-                        <img src="{{webflow_url}}/images/icons8-search-52.png" alt="" class="image-42"></div>
-                    <div data-delay="0" class="w-dropdown">
-                        <div class="dropdown-toggle-4 w-dropdown-toggle">
-                            <div class="w-icon-dropdown-toggle"></div>
-                            <div class="text-block-26">Sort by</div>
-                        </div>
-                        <nav class="w-dropdown-list"><a href="#" class="w-dropdown-link">Link 1</a><a href="#"
-                                                                                                      class="w-dropdown-link">Link
-                            2</a><a href="#" class="w-dropdown-link">Link 3</a>
-                            <div class="line-seperator"></div>
-                        </nav>
-                    </div>
+                <div class="review-star">
+                    {% ratings user %}
                 </div>
+                <div class="text-block-24">{{reviews_total}} reviews</div>
+
+
                 <div class="line-seperator"></div>
                  {% for review in reviews %}
                     {% with review.content_object|classname as object_type %}
@@ -275,6 +235,27 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Request for call</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <form method="post" action="{% url 'request_for_call' %}">
+              {% csrf_token %}
+            {{form.as_p}}
+              <input type="submit" value="send" class="btn btn-theme">
+              </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 
 <script type="text/javascript">
 {% if user.last_location %}
