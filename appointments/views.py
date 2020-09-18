@@ -20,7 +20,7 @@ from users.twillo_messages_to_user import SendSMSWithTwillo
 from main.models import Notification
 from users.models import UserRole
 from users.notification_and_mail import NotificationToUser
-import google_translate
+
 class AppoitnemtRequestView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, DetailView):
     model = CustomUser
     template_name = 'request_appointment.html'

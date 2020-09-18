@@ -134,6 +134,27 @@
     border: none;
     display: none;
 }
+.goog-te-gadget-simple {
+    background-color: #fff;
+     border-left: 0px;
+     border-top: 0px ;
+     border-bottom: 0px ;
+      border-right: 0px ;
+    font-size: 10pt;
+    display: inline-block;
+    padding-top: 1px;
+    padding-bottom: 2px;
+    cursor: pointer;
+    zoom: 1;
+    display: inline;
+}
+.lang_drop_down span {
+    padding-right: 5px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    display: none;
+}
+
 </style>
 </head>
 <body>
@@ -158,7 +179,7 @@
                     </li>
 
                     <li class="lang_drop_down"><div class="dropdown show">
-                        {% google_translate %}
+                        {% google_translate type='vertical' %}
 
                     </div></li>
                 </ul>
@@ -532,6 +553,13 @@ $(".content").css("padding-bottom", $("footer").outerHeight()+'px');
 
    $('.opn_submenu > a.opned').hover(function() {
     $(this).next('.submenu_links').slideToggle();
+});
+</script>
+<script>
+$( document ).ready(function() {
+    $('.skiptranslate goog-te-gadget').contents().filter(function() {
+      return this.nodeType === Node.TEXT_NODE;
+    }).remove();
 });
 </script>
 </html>
