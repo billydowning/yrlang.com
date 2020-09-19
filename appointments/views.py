@@ -260,7 +260,8 @@ class SaveBookings(UserSessionAndLoginCheckMixing, View):
                 BookingDates.objects.create(booking=booking, date=obj['date'], start_time=obj['start'],
                                             end_time=obj['end'])
 
-            url = reverse('request_appointment', args=[localite])
+            # url = reverse('request_appointment', args=[localite])
+            url = reverse_lazy('appointments')
 
         if booking_id:
             flag = request.POST.get('flag', None)

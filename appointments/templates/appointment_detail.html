@@ -103,8 +103,6 @@
 
       $('#cancelBtn').click(function(){
         if ($('#cancelNote').val() != ''){
-            $('#cancelForm').modal('hide')
-            on();
             var obj = {
                 provider_comment: $('#cancelNote').val(),
             };
@@ -218,6 +216,7 @@
     <p>Time Slot :- {{ appointment.requested_date_2_timeslots }}</p>
 
     {% elif provider_checked or client_checked %}
+    {% comment %}
     <h2>Status :- {{ appointment.get_status_display }}</h2>
     <hr>
     <p>appointment From :- {{ appointment.requestor }}</p>
@@ -231,13 +230,16 @@
     {% endif %}
     <p>Notes :- {{ appointment.provider_comment }}</p>
     <hr>
+
     {% endif %}
+
 
     <h2>created date :- {{ appointment.created_date.date}}</h2>
     <h3>Requested Time</h3>
     <p>Date :- {{ appointment.request_date }}</p>
     <p>Comment From Client :- {{ appointment.client_comment }}</p>
     <hr>
+    {% endcomment %}
     {% if appointment.status|is_requested %}
     <div class="container">
         <div class="row">

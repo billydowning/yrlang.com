@@ -1,5 +1,7 @@
 {% load static wagtailcore_tags check_role %}
 {% load webpush_notifications %}
+{% load i18n %}
+{% load google_translate %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,6 +97,8 @@
 
     <link rel="stylesheet" href="{% static 'css/sideNev.css' %}">
     <script src="{% static 'js/sideNev.js' %}"></script>
+    {% block extra_js %}
+    {% endblock %}
     {% block link_css %}
     {% endblock link_css %}
 
@@ -127,7 +131,38 @@
     top: 50%;
     z-index: 100;
 }
+.goog-te-gadget img {
+    vertical-align: middle;
+    border: none;
+    display: none;
+}
+.goog-te-gadget-simple {
+    background-color: #fff;
+     border-left: 0px;
+     border-top: 0px ;
+     border-bottom: 0px ;
+      border-right: 0px ;
+    font-size: 10pt;
+    display: inline-block;
+    padding-top: 1px;
+    padding-bottom: 2px;
+    cursor: pointer;
+    zoom: 1;
+    display: inline;
+}
+.lang_drop_down span {
+    padding-right: 5px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    display: none;
+}
+.goog-te-gadget .goog-te-combo {
+    margin: 4px 0;
+    background: white;
+}
+
 </style>
+
 </head>
 <body>
 <div class="wrapper">
@@ -147,18 +182,12 @@
 
                 <ul class="uk-navbar-nav logo_container">
                     <li class="uk-active"><a href="/" class="logo_font"><img
-                            src="https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"></a>
+                            src="https://uploads-ssl.webflow.com/5d2f9334e480cd760d273d52/5d4f2ab6326ec12d13448204_yr_lang_bubble_1_256x256.png"></a>
                     </li>
 
                     <li class="lang_drop_down"><div class="dropdown show">
-                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">English</button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
-                        <a class="dropdown-item" href="#">Arabic</a>
-                        <a class="dropdown-item" href="#">French</a>
-                        <a class="dropdown-item" href="#">German</a>
-                        <a class="dropdown-item" href="#">Italian</a>
-                        <a class="dropdown-item" href="#">Spanish</a>
-                      </div>
+                        {% google_translate type='vertical' %}
+
                     </div></li>
                 </ul>
             </div>
@@ -188,7 +217,7 @@
 {#                            {% endif %}#}
 {#                        </div>#}
 {#                    </li>#}
-                        <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+                        <li><a href="{% url 'main:home' %}">    <span>Explore</span></a></li>
                         <li class="dropdown">
                         <a href="">Join Our Platform</a>
                         <div class="dropdown-content">
@@ -196,7 +225,7 @@
                             <a href="{% url 'become_provider_temp' %}">Become a Provider</a>
                         </div>
                     </li>
-                        <li><a href="{% url 'main:blog-post' %}"> The Brucke</a></li>
+                        <li><a href="{% url 'main:blog-post' %}"> The Brücke</a></li>
                         <li><a href="{% url 'about_us' %}"> About Us</a></li>
                     <li><a href="{% url 'inbox' %}"><i class="fa fa-envelope "
                                                            aria-hidden="true"></i>Messages</a></li>
@@ -290,7 +319,7 @@
                     {% endif %}
 
                     {% else %}
-                        <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+                        <li><a href="{% url 'main:home' %}">    <span>Explore</span></a></li>
                         <li class="dropdown">
                         <a href="">Join Our Platform</a>
                         <div class="dropdown-content">
@@ -298,7 +327,7 @@
                             <a href="{% url 'become_provider_temp' %}">Become a Provider</a>
                         </div>
                     </li>
-                        <li><a href="{% url 'main:blog-post' %}"> The Brucke</a></li>
+                        <li><a href="{% url 'main:blog-post' %}"> The Brücke</a></li>
                         <li><a href="{% url 'about_us' %}"> About Us</a></li>
 
 
@@ -388,7 +417,7 @@
                   <a href="#">Messages</a>
             </div>
         </li>
-         <li><a href="#">The Brucke</a></li>
+         <li><a href="#">The Brücke</a></li>
        </ul>
 
 {#        {% if request.session.user_role %}#}
@@ -477,7 +506,7 @@
                         <hr class="divider-grey">
                         <div class="row">
 
-                            <div class="col-12 col-md-6 col-lg-3">
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <p class="bolder">Languages</p>
                                 <p class="turn-grey small footers_link">
                                     <a href="">English</a>
@@ -486,7 +515,7 @@
                                     <a href="">Italian</a>
                                 </p>
                             </div>
-                            <div class="col-12 col-md-6 col-lg-3">
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <p class="bolder">Location</p>
                                 <p class="turn-grey small footers_link">
                                     <a href="">Berlin</a>
@@ -494,15 +523,15 @@
                                     <a href="">Munich</a>
                                 </p>
                             </div>
-                             <div class="col-12 col-md-6 col-lg-3">
-                                <p class="bolder">The Bruck</p>
-                                <p class="turn-grey small footers_link">
-                                    {% for blog in blog_list %}
-                                    <a href="{% slugurl blog.slug %}">{{blog.title}}</a>
-                                        {% endfor %}
-                                </p>
-                            </div>
-                            <div class="col-12 col-md-6 col-lg-3">
+{#                             <div class="col-12 col-md-6 col-lg-3">#}
+{#                                <p class="bolder">The Bruck</p>#}
+{#                                <p class="turn-grey small footers_link">#}
+{#                                    {% for blog in blog_list %}#}
+{#                                    <a href="{% slugurl blog.slug %}">{{blog.title}}</a>#}
+{#                                        {% endfor %}#}
+{#                                </p>#}
+{#                            </div>#}
+                            <div class="col-12 col-md-6 col-lg-4">
                                 <p class="bolder">Company</p>
                                 <p class="turn-grey small footers_link">
                                     <a href="{%  url 'about_us' %}">Abuot Us</a>
@@ -535,6 +564,21 @@ $(".content").css("padding-bottom", $("footer").outerHeight()+'px');
 
    $('.opn_submenu > a.opned').hover(function() {
     $(this).next('.submenu_links').slideToggle();
+});
+</script>
+<script>
+$( document ).ready(function() {
+        selectedElement = $("#google_").contents();
+
+            textNodes = selectedElement.filter(function ()
+            {
+                return this.nodeType === Node.TEXT_NODE;
+            });
+console.log(textNodes)
+            $('.skiptranslate goog-te-gadget').contents().filter(function() {
+                  return this.nodeType === Node.TEXT_NODE;
+                }).remove();
+        $('.goog-te-gadget').contents().filter((_, el) => el.nodeType === Node.TEXT_NODE).remove();
 });
 </script>
 </html>

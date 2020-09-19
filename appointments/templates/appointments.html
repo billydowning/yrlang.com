@@ -211,7 +211,7 @@
 
 {% is_localite user_role=request.session.user_role as localite_checked %}
 {% is_client user_role=request.session.user_role as client_checked %}
-
+{% comment %}
 <!--calendar-->
 {% if localite_checked %}
 <div class="container">
@@ -230,6 +230,7 @@
     </div>
 </div>
 {% endif %}
+{% endcomment %}
 <!-- calendar end-->
 
 <!--container-->

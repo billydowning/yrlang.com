@@ -1,9 +1,15 @@
 {% extends "layout.html" %}
 {% load static %}
  {% block link_css %}
-<link href="{% static 'custome_CSS/become_provider_CSS/style.css' %}" rel="stylesheet">
+<link href="{% static 'custome_CSS/become_provider_CSS/style.css' %}" rel="stylesheet"
+      xmlns="http://www.w3.org/1999/html">
 {% endblock link_css %}
-
+{% block extra_js %}
+    <script id="mcjs">!function(c,h,i,m,p)
+        {m=c.createElement(h),p=c.getElementsByTagName(h)[0],m.async=1,m.src=i,p.parentNode.insertBefore(m,p)}
+        (document,"script","https://chimpstatic.com/mcjs-connected/js/users/34b89417e452649a2a3847aa6/98dfe8f63974ee263391878b3.js");
+    </script>
+{% endblock %}
 	 {% block content %}
 
 {#				<section class="earn_section about_us_page">#}
@@ -25,8 +31,10 @@
 					 		<div class="row">
 					 			<div class="col-12">
 					 				<div class="video_header">
-					 					<h1>About Us</h1>
-					 				</div>
+                                        <h1>About Us
+{#                                            <a href="#"><button style="float: right; font-size: 20px; border-radius: 9px; background-color: #6ac241; color: #fff;">Newsletter/ Blog</button></a></h1>#}
+                                        </h1>
+                                    </div>
 					 				<div class="video_inner_section">
 					 					<div class="social_icons_left">
 					 						<ul class="social_icons_listing">
@@ -75,7 +83,7 @@
 									
 									</ul>
 									<div class="btn_sec mt-5">
-										<button class="btn theme_btn" type="button">Get Started</button>
+                                        <a href="{% url 'main:home' %}"><button class="btn theme_btn" type="button">Get Started</button></a>
 									</div>
 								</div>
 							</div>

@@ -426,7 +426,7 @@ input:focus{
     font-size: 24px !important;
     margin-bottom: 16px;
 }
-.logo_font img{width: 40px;}
+.logo_font img{width: 70px;}
 
 .user_img {
     width: 40px;
@@ -1342,4 +1342,10 @@ input#mysearchInp
     width: 250px;
     height: 200px;
     border-radius: 10%;
+}
+.content {
+    width: 100%;
+    height: 100%;
+    float: left;
+    display: block;
 }

@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% load static check_role %}
+{% load rating_check %}
+
+{% load ratings  %}
+
+
+
+{% block content %}
+<div class="content-section container mt-5">
+
+    <div class="row">
+          <div class="col-12">
+                        {% for review in reviews %}
+                            {% with review.content_object|classname as object_type %}
+                        <div class="list-group-item list-group-item-action flex-column align-items-start" >
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{review.reviewer}} for {% if object_type == 'Appointment' %} Booking{% else %} {{ object_type }} {% endif %}</h5>
+                                <small>{{ review.date_posted }} </small>
+                            </div>
+                            <p>
+                                {% with rate_temp='rating_star/widget.html' %}
+                                {% ratings review.reviewer read_only=True template_name=rate_temp  %}
+                            {% endwith %}
+                            </p>
+                            <p class="mb-1">{{ review.description }}</p>
+                            <small>{{review.review_choice_1 }}</small><br>
+                            <small>{{review.review_choice_2 }}</small><br>
+                            <small>{{review.review_choice_3 }}</small>
+                        </div>
+                        {% endwith %}
+                        {% empty %}
+                        <p> No one given rating yet !</p>
+                        {% endfor %}
+
+                    </div>
+
+
+    </div></div>
+{% endblock %}
