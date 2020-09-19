@@ -303,7 +303,7 @@
                             {% endif %}
                             {% if request.user.user_role.count > 1 %}
 
-                            <a href="{% url 'user-role-select' %}">Swich Role</a>
+                            <a href="{% url 'user-role-select' %}"><i class="fa fa-refresh" aria-hidden="true"></i><span> Swich Role</span></a>
 
                             {% endif %}
                             <a href="{% url 'account_logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Logout</span></a>
