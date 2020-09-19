@@ -4,10 +4,13 @@ from _collections import defaultdict
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404, reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse_lazy
 from django.conf import settings
+from django.core.files.storage import FileSystemStorage
+from django.template.loader import render_to_string
+from weasyprint import HTML
 from django.views.generic import (
     DetailView, UpdateView, TemplateView,
     FormView, View, ListView, CreateView,
@@ -39,10 +42,11 @@ from .forms import (
 )
 from .models import (
     CustomUser, UserRole, UserRoleRequest, UserVideos,
-    UserFavorite, ProviderSubscription, ProviderSubscriptionPurchase
+    UserFavorite,
 )
 from payment.models import PaymentAccount, Commission, StripeKeys
 from blogpost.models.city_page import CityPage
+from invoices.models import MonthlySubscriptionInvoice
 
 
 class ProfileView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, UpdateView):
@@ -527,62 +531,53 @@ class UserFavoriteListView(TemplateView):
         return context
 
 
-class ProviderSubscriptionView(DetailView):
-    model = CustomUser
+class ProviderSubscriptionView(TemplateView):
     template_name = 'provider_subscription.html'
 
     def get_context_data(self, **kwargs):
         context = super(ProviderSubscriptionView, self).get_context_data()
-        context['commission'] = Commission.objects.get(
-            Professional=Commission.PROVIDER,
-            is_active=True
-        ).percentage
-        # context['key'] = settings.STRIPE_KEYS['publishable_key']
-        context['key'] = StripeKeys.objects.get(is_active=True).secret_key
+        user = self.request.user
+        context['provider_invoice'] = MonthlySubscriptionInvoice.objects.filter(
+            provider=user
+        ).order_by('-date_created')
         return context
 
-    def post(self, request, *args, **kwargs):
-        # stripe.api_key = settings.STRIPE_KEYS.get("secret_key")
-        stripe.api_key = StripeKeys.objects.get(is_active=True).secret_key
-        subscription_count = int(request.POST.get('subscription-data', None))
-        commission = Commission.objects.get(
+from django.shortcuts import render
+class Pdf(View):
+
+    def get(self, request, id):
+        try:
+            invoice = MonthlySubscriptionInvoice.objects.get(id=id)
+        except Exception as e:
+            print(e)
+        base_fees = Commission.objects.get(
+            is_active=True,
+            Professional=Commission.PROVIDER_MONTHLY,
+        )
+        appointment_fees = Commission.objects.get(
+            is_active=True,
             Professional=Commission.PROVIDER,
-            is_active=True
-        ).percentage
-        user = self.get_object()
-        amount = int(subscription_count*commission)
-        subscription, _ = ProviderSubscription.objects.get_or_create(provider=user)
-        if subscription and amount:
-            model_count = subscription.subscription_counts
-            if user.stripe_id is None:
-                customer = stripe.Customer.create(email=user.email,
-                                                  description="My First Test Customer (created for API docs)", )
-                ba_acc = stripe.Customer.create_source(
-                    customer.id,
-                    source=request.POST.get('stripeToken', None),
-                )
-                user.stripe_id = customer.id
-                user.save()
-            charge = stripe.Charge.create(
-                customer=user.stripe_id,
-                amount=int(amount * 100),
-                currency='usd',
-                description='subscription bay {} {} {}'.format(
-                    subscription_count,
-                    commission,
-                    amount
-                )
-            )
-            if charge.captured:
-                purchase = ProviderSubscriptionPurchase.objects.create(
-                    provider=subscription,
-                    amount=round(Decimal(amount), 2),
-                    subscription_counts=subscription_count
-                )
-                subscription.subscription_counts = model_count + subscription_count
-                subscription.save()
+        )
+        # return render(request, 'pdf_template.html', {
+        #     'invoice': invoice, 'base_fees': base_fees,
+        #     'appointment_fees': appointment_fees
+        # })
 
-        return HttpResponseRedirect(reverse_lazy('account'))
+        try:
+            html_string = render_to_string('pdf_template.html', {
+            'invoice': invoice, 'base_fees': base_fees,
+            'appointment_fees': appointment_fees
+        })
+        except Exception as e:
+            print(e)
 
+        html = HTML(string=html_string)
+        html.write_pdf(target='static/temp/mypdf.pdf');
 
+        fs = FileSystemStorage('static/temp')
+        with fs.open('mypdf.pdf') as pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+            return response
 
+        return response

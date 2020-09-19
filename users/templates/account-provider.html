@@ -19,11 +19,6 @@
             <a class="button secondaryAction page_main_header mb-5" href="{% url 'payment_account' %}">Add Payment
                 Account</a>
         </div>
-        <div class="col-12  col-md-6 col-lg-4">
-            <a class="button secondaryAction page_main_header mb-5"
-               href="{% url 'subscription' user_obj.id %}">
-                Subscription</a>
-        </div>
     </div>
     <div class="media">{% if request.user.profile_image %}
         <div class="profile_d row">
@@ -38,10 +33,9 @@
                     <div class="row">
                         <div class="col-6"><h2>{{ user_obj.username }}</h2></div>
                         <div class="col-6">
-                            <a href="{% url 'subscription' user_obj.id %}">
+                            <a href="#">
                             <h2 class="bg-light py-1 px-2 text-center rounded">
-                                {{ user_obj.subscription.subscription_counts }}
-                                <small>Your Subscriptions</small>
+                                <small>Your Appointment Counts</small>
                             </h2></a>
                         </div>
                     </div>

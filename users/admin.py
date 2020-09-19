@@ -2,16 +2,12 @@ from django.contrib import admin
 from .models import (
     CustomUser, State, Language, Country, Profession,
     UserRole, Categories, ProviderCategories, UserRoleRequest,
-    UserVideos, UserFavorite, ProviderSubscription, ProviderSubscriptionPurchase
+    UserVideos, UserFavorite
 )
 from invoices.models import Invoice
 from appointments.models import Appointment
 from blogpost.models.modelpost import BlogPostPage
 from django.contrib.gis.admin import OSMGeoAdmin
-
-
-admin.site.register(ProviderSubscription)
-admin.site.register(ProviderSubscriptionPurchase)
 
 
 class BlogPostInline(admin.TabularInline):

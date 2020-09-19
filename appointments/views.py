@@ -312,8 +312,15 @@ class SaveAppointments(UserSessionAndLoginCheckMixing, View):
                     [str(instance.requestor.email)],
                     fail_silently=True,
                 )
-                notify = NotificationToUser
-                notify.notifications_create_for_appoitment(instance, message_data)
+
+                try:
+                    notify = NotificationToUser
+                except Exception as e:
+                    print('Exception1 :- ', e)
+                try:
+                    notify.notifications_create_for_appoitment(self, instance=instance, message_data=message_data)
+                except Exception as e:
+                    print('Exception2 :- ', e)
 
                 # if instance.requestor.phone_number:
                 #     str_phone_number = str(instance.requestor.phone_number)

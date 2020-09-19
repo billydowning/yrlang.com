@@ -266,6 +266,10 @@
                                                              aria-hidden="true"> </i><span>Account</span></a>
                             <a href="{% url 'invoices' %}"><i class="fa fa-files-o" aria-hidden="true"> </i><span>Invoices</span></a>
                             {% if provider_checked %}
+                            <a href="{%  url 'subscription' %}">
+                                <i class="fa fa-archive" aria-hidden="true"></i>
+                                <span>Subscription</span>
+                            </a>
                             <a href="{% url 'provider_create_invoice' %}"><span>Create New Invoice</span></a>
                             {% endif %}
 

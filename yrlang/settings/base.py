@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    # 'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.facebook',
 
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -238,6 +238,7 @@ PAYPAL_TEST = True
 #cron-tabs schedule
 CRONJOBS = [
     ('*/5 * * * *', 'cron_tabs.task_reminder.appointment_reminder_before_24H'),
+    ('@monthly', 'cron_tabs.monthly_subscription.provider_monthly_subscription'),
     ]
 
 WEBPUSH_SETTINGS = {

@@ -49,23 +49,6 @@
         </div>
         {% endfor %}
         {% endif %}
-  <div>
-
-  {% if invoice.appointment %}
-  <div class="card col-3 my-2 mx-2">
-    <h5 class="card-header">{{ invoice.appointment.requestor.username }}</h5>
-    <div class="card-body">
-      <p class="card-text"><b>Date :- </b>{{ invoice.appointment.request_date|date:'Y-M-d  D' }}</p>
-      <p><b>Amount :- </b>{{ invoice.amount }}</p>
-      <p>{{ invoice.appointment.get_payment_method_display }}</p>
-    </div>
-  </div>
-    {% if invoice.is_paid == True %}
-      <p><a href="{% url 'main:appointment_review_and_rating' invoice.appointment.id %}">Review & Rating</a> </p>
-    {% endif %}
-  {% endif %}
-  </div>
-  <br>
 
         {% if invoice.appointment %}
         <div class="card col-3 my-2 mx-2 text-center">
@@ -80,7 +63,7 @@
     </div>
     <br>
     {% if request.user.id == invoice.payor.id and invoice.is_paid == False %}
-    <button id="checkout-button">Stripe Payment</button>
+    <button id="checkout-button">Stripe Payments</button>
     <h4>Pay with PayPal</h4>
     {{ form.render }}
     {% endif %}
