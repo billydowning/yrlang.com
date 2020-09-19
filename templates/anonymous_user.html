@@ -33,100 +33,115 @@
 
 		<div id="content">
 			<!-- slider section -->
-								<section class="home_slider">
-									<div class="slider_section" style="background: url({% static 'images/brooke-cagle-tLG2hcpITZE-unsplash.jpg' %});">
-										<div class="slider_right_form">
-											<div class="container">
-												<div class="row">
-													<div class="col-12 col-lg-5 ml-auto">
-														<div class="slider_inner_form">
-															<h2>Find someone that speaks your language today.</h2>
-															<p>Tell us a little about your place</p>
-															<form>
-																<div class="row">
-																	<div class="col-12">
-																		<div class="form-group">
-                                                                            <select class="form-control custom_select">
-                                                                            <option value="" disabled selected hidden>Select City</option>
-                                                                                {% for city in city_list %}
-																				<option>{{ city }}</option>
-                                                                                {% endfor %}
-																			</select>
-{#																			<input type="text" class="form-control" placeholder="Enter City" name="">#}
-																		</div>
-																	</div>
-																</div>
-																<div class="row">
-																	<div class="col-12">
-																		<div class="form-group">
-																			<select class="form-control custom_select">
-                                                                                <option value="" disabled selected hidden>Select Role</option>
-																				<option> Localite</option>
-																				<option> Provider</option>
-																			</select>
-																		</div>
-																	</div>
-{#																	<div class="col-12 col-md-6">#}
-{#																		<div class="form-group">#}
-{#																			<select class="form-control custom_select">#}
-{#																				<option>4 August</option>#}
-{#																				<option> Place</option>#}
-{#																			</select>#}
-{#																		</div>#}
-{#																	</div>#}
-																</div>
-																<div class="row">
-																	<div class="col-12 col-md-12">
-																		<div class="right_form_btn">
-                                                                            <a href="{% url 'main:home' %}"><button class="btn theme_btn" type="button">Get Started</button></a>
-																		</div>
-																	</div>
-																</div>
-															</form>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
+        <section class="home_slider">
+            <div class="slider_section" style="background: url({% static 'images/brooke-cagle-tLG2hcpITZE-unsplash.jpg' %});">
+                <div class="slider_right_form">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-12 col-lg-5 ml-auto">
+                                <div class="slider_inner_form">
+                                    <h2>Find someone that speaks your language today.</h2>
+                                    <form>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <select class="form-control custom_select">
+                                                        <option value="" disabled selected hidden>What are you looking for?</option>
+                                                        <option> Localite</option>
+                                                        <option> Provider</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <select class="form-control custom_select">
+                                                    <option value="" disabled selected hidden>Location</option>
+                                                        {% for city in city_list %}
+                                                        <option>{{ city }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <select class="form-control custom_select">
+                                                    <option value="" disabled selected hidden>Language</option>
+{#                                                                                {% for lan in language %}`#}
+                                                        <option>English</option>
+                                                        <option>German</option>
+                                                        <option>Spanish</option>
+{#                                                                                {% endfor %}#}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-12 col-md-12">
+                                                <div class="right_form_btn">
+                                                    <a href="{% url 'main:home' %}"><button class="btn theme_btn" type="button">Get Started</button></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 									<div class="slider_section" style="background: url({% static 'images/city_banner.jpg' %});">
 										<div class="slider_right_form">
 											<div class="container">
 												<div class="row">
 													<div class="col-12 col-lg-5 ml-auto">
 														<div class="slider_inner_form">
-															<h2>Earn Money as an Yrlang Host</h2>
-															<p>Tell us a little about your place</p>
+															<h2>Find someone that speaks your language today.</h2>
 															<form>
 																<div class="row">
+																	<div class="col-12 col-md-12">
+																		<div class="form-group">
+																			<select class="form-control custom_select">
+																				<option value="" disabled selected hidden>What are you looking for?</option>
+																				<option> Localite</option>
+																				<option> Provider</option>
+																			</select>
+																		</div>
+																	</div>
+                                                                </div>
+                                                                <div class="row">
 																	<div class="col-12">
 																		<div class="form-group">
-																			<input type="text" class="form-control" placeholder="Enter City" name="">
-																		</div>
-																	</div>
-																</div>
-																<div class="row">
-																	<div class="col-12 col-md-6">
-																		<div class="form-group">
 																			<select class="form-control custom_select">
-																				<option>Enter Place</option>
-																				<option> Place</option>
-																			</select>
-																		</div>
-																	</div>
-																	<div class="col-12 col-md-6">
-																		<div class="form-group">
-																			<select class="form-control custom_select">
-																				<option>4 August</option>
-																				<option> Place</option>
+																				 <option value="" disabled selected hidden>Location</option>
+                                                                                {% for city in city_list %}
+																				<option>{{ city }}</option>
+                                                                                {% endfor %}
 																			</select>
 																		</div>
 																	</div>
 																</div>
+                                                            <div class="row">
+                                                                <div class="col-12">
+                                                                    <div class="form-group">
+                                                                        <select class="form-control custom_select">
+                                                                        <option value="" disabled selected hidden>Language</option>
+{#                                                                                {% for lan in language %}`#}
+                                                                        <option>English</option>
+                                                                        <option>German</option>
+                                                                        <option>Spanish</option>
+{#                                                                                {% endfor %}#}
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 																<div class="row">
 																	<div class="col-12 col-md-12">
 																		<div class="right_form_btn">
-																			<button class="btn theme_btn" type="button">Get Started</button>
+                                                                            <a href="{% url 'main:home' %}"><button class="btn theme_btn" type="button">Get Started</button></a>
 																		</div>
 																	</div>
 																</div>
@@ -143,41 +158,51 @@
 												<div class="row">
 													<div class="col-12 col-lg-5 ml-auto">
 														<div class="slider_inner_form">
-															<h2>Earn Money as an Yrlang Host</h2>
-															<p>Tell us a little about your place</p>
+															<h2>Find someone that speaks your language today.</h2>
 															<form>
 																<div class="row">
 																	<div class="col-12">
 																		<div class="form-group">
-																			<input type="text" class="form-control" placeholder="Enter City" name="">
+																			<select class="form-control custom_select">
+                                                                                <option value="" disabled selected hidden>What are you looking for?</option>
+                                                                                <option> Localite</option>
+                                                                                <option> Provider</option>
+                                                                            </select>
 																		</div>
 																	</div>
 																</div>
 																<div class="row">
-																	<div class="col-12 col-md-6">
+																	<div class="col-12">
 																		<div class="form-group">
 																			<select class="form-control custom_select">
-																				<option>Enter Place</option>
-																				<option> Place</option>
+																				<option value="" disabled selected hidden>Location</option>
+                                                                                {% for city in city_list %}
+                                                                                <option>{{ city }}</option>
+                                                                                {% endfor %}
 																			</select>
 																		</div>
 																	</div>
-																	<div class="col-12 col-md-6">
-																		<div class="form-group">
-																			<select class="form-control custom_select">
-																				<option>4 August</option>
-																				<option> Place</option>
-																			</select>
-																		</div>
-																	</div>
-																</div>
-																<div class="row">
-																	<div class="col-12 col-md-12">
-																		<div class="right_form_btn">
-																			<button class="btn theme_btn" type="button">Get Started</button>
-																		</div>
-																	</div>
-																</div>
+                                                                </div>
+                                                            <div class="row">
+                                                                <div class="col-12">
+                                                                    <div class="form-group">
+                                                                        <select class="form-control custom_select">
+                                                                           <option value="" disabled selected hidden>Language</option>
+{#                                                                                {% for lan in language %}`#}
+                                                                            <option>English</option>
+                                                                            <option>German</option>
+                                                                            <option>Spanish</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-12 col-md-12">
+                                                                    <div class="right_form_btn">
+                                                                        <a href="{% url 'main:home' %}"><button class="btn theme_btn" type="button">Get Started</button></a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 															</form>
 														</div>
 													</div>

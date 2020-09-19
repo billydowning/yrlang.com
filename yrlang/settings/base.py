@@ -136,7 +136,8 @@ TEMPLATES = [
 
                 #custome context processor
                 'custome_context_processor.home_page_listing.city_list_view',
-                'custome_context_processor.home_page_listing.post_list_view'
+                'custome_context_processor.home_page_listing.post_list_view',
+                # 'custome_context_processor.home_page_listing.language_list',
             ],
         },
     },
