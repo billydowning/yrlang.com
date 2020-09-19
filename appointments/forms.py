@@ -1,6 +1,10 @@
+from datetime import datetime
+
 from django.forms import ModelForm, Form
 from django import forms
+
 from .models import Appointment, ProviderAppointment
+from invoices.models import MonthlySubscriptionInvoice, MonthlyProviderAppointmentCount
 
 
 # class AppointmentForm(ModelForm):
@@ -74,7 +78,33 @@ class ApproveProviderAppointmentForm(ModelForm):
         status = self.cleaned_data['status']
         if status:
             instance.status = ProviderAppointment.APPROVED
+            invoice = self.get_invoice(instance.requestee)
+            if invoice:
+                if not MonthlyProviderAppointmentCount.objects.filter(
+                    provider=instance.requestee,
+                    appointment=instance,
+                    invoice=invoice
+                ).exists():
+                    try:
+                        MonthlyProviderAppointmentCount.objects.create(
+                            provider=instance.requestee,
+                            appointment=instance,
+                            invoice=invoice
+                        )
+                    except Exception as e:
+                        print(e)
         elif not status:
             instance.status = ProviderAppointment.CANCELED
         instance.save()
         return instance
+
+    def get_invoice(self, provider):
+        try:
+            obj, _ = MonthlySubscriptionInvoice.objects.get_or_create(
+                provider=provider,
+                date_created__month=datetime.now().month,
+                date_created__year=datetime.now().year
+            )
+        except Exception as e:
+            print(e)
+        return obj

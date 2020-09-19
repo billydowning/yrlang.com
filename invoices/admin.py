@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Invoice
+from .models import Invoice, MonthlySubscriptionInvoice, MonthlyProviderAppointmentCount
 
 
 class InvoiceAdmin(admin.ModelAdmin):
@@ -10,3 +10,19 @@ class InvoiceAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Invoice, InvoiceAdmin)
+
+
+class MonthlyProviderAppointmentCountInline(admin.TabularInline):
+    model = MonthlyProviderAppointmentCount
+    can_delete = True
+    extra = 0
+    classes = ['collapse', ]
+    verbose_name = 'Count'
+    verbose_name_plural = 'Counts'
+
+
+class MonthlySubscriptionInvoiceAdmin(admin.ModelAdmin):
+    inlines = [MonthlyProviderAppointmentCountInline,]
+
+
+admin.site.register(MonthlySubscriptionInvoice, MonthlySubscriptionInvoiceAdmin)
