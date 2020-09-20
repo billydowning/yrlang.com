@@ -5,14 +5,7 @@
 {% block calendar_extras %}
 
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-      crossorigin="anonymous">
-
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
-      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
-      crossorigin="anonymous">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
 
 <link href="{% static 'calender_assets/fullcalendar.min.css' %}" rel='stylesheet'/>
 <link href="{% static 'calender_assets/fullcalendar.print.min.css' %}" rel='stylesheet' media='print'/>
@@ -20,9 +13,11 @@
 <script src="{% static 'calender_assets/jquery.min.js' %}"></script>
 
 <!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+<script src="{% static 'js/loader.js' %}"></script>
+<link href="{% static 'css/loader.css' %}" rel='stylesheet'>
 
 <script src="{% static 'calender_assets/fullcalendar.min.js' %}"></script>
 
@@ -105,6 +100,8 @@
 
       $('#cancelBtn').click(function(){
         if ($('#cancelNote').val() != ''){
+            $('#cancelForm').modal('hide')
+            on();
             $.ajax({
                 url:'{% url 'save_bookings' %}',
                 type: 'POST',
@@ -124,6 +121,8 @@
       });
 
     $('#confirmBtn').click(function(){
+        $('#confirmForm').modal('hide')
+        on();
         $.ajax({
             url:'{% url 'save_bookings' %}',
             type: 'POST',
@@ -176,6 +175,17 @@
         <div class="req_appontment_form">
         <div class="alert alert-danger my-3" id="alert" role="alert" hidden>
         </div>
+            <div class="row mb-5 text-center">
+                <div class="col-4">
+                    <p class="border rounded" style="background: #fcf8e3;">Today Date</p>
+                </div>
+                <div class="col-4">
+                    <p class="border rounded" style="background: #ddd;">Other Bookings</p>
+                </div>
+                <div class="col-4">
+                    <p class="border rounded" style="background: #f2eda2;">Requested</p>
+                </div>
+            </div>
         <div id='calendar'></div>
         </div>
     </div>
@@ -244,6 +254,14 @@
       </div>
     </div>
   </div>
+</div>
+
+<div id="overlay">
+    <div id="loader-text">
+        <div class="spinner-border" style="width: 8rem; height: 8rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
 </div>
 
 {% endblock content %}

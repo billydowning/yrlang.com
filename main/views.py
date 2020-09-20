@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 from django.contrib import messages
 from _collections import defaultdict
@@ -29,8 +29,6 @@ class HomeView(TemplateView):
         localite_list = None
         provider_list = None
         search_form = UserSearchFrom(self.request.GET)
-
-
 
         if search_form.is_valid():
             if search_form.cleaned_data.get('country'):
@@ -189,6 +187,71 @@ class LocaliteListsView(ListView):
 class IndexView(TemplateView):
     template_name = 'explore.html'
 
+    def get_template_names(self):
+        if self.request.user.is_authenticated:
+            if self.request.user.is_staff:
+                self.template_name = 'users/dashboard/admin.html'
+            elif self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
+                self.template_name = 'users/dashboard/language_verifier.html'
+            elif self.request.user.is_localite_user(self.request.session.get('user_role')):
+                self.template_name = 'users/dashboard/localite.html'
+            elif self.request.user.is_provider_user(self.request.session.get('user_role')):
+                self.template_name = 'users/dashboard/provider.html'
+            elif self.request.user.is_client_user(self.request.session.get('user_role')):
+                self.template_name = 'users/dashboard/customer.html'
+            else:
+                return redirect('user-role-select')
+
+        else:
+            self.template_name = 'explore.html'
+        return self.template_name
+    
+
+    def get(self, request, *args, **kwargs):
+        context = None
+        if self.request.user.is_authenticated and self.request.user.is_client_user(self.request.session.get('user_role')):
+            return self.get_customer_context()
+        elif self.request.user.is_authenticated and self.request.user.is_localite_user(self.request.session.get('user_role')):
+            return self.get_localite_context()
+        return super(IndexView, self).get( request, *args, **kwargs)
+
+    def get_customer_context(self):
+        context = self.get_context_data()
+        appointments = self.request.user.client
+        bookings = self.request.user.requestor
+        some_day_next_week = datetime.now().date() + timedelta(days=7)
+        context['appointments_total'] = appointments.all().count()
+        context['booking_total'] = bookings.all().count()
+        context['upcoming_Task_total'] = appointments.filter(status=ProviderAppointment.REQUESTED,
+                                                             request_date__gt=datetime.now().date()).count() \
+                                         + bookings.filter(status__in=[Appointment.CREATED,
+                                                                       Appointment.RESCHEDULE_REQUESTED],
+                                                           booking__date__gt=datetime.now().date()).count()
+        context['upcoming_appointments'] = appointments.filter(status=ProviderAppointment.REQUESTED,
+                                                               request_date__gt=datetime.now().date(),
+                                                               request_date__lt= some_day_next_week)
+        context['upcoming_booking'] = bookings.filter(status__in=[Appointment.CREATED,
+                                                                Appointment.RESCHEDULE_REQUESTED],
+                                                    booking__date__gt=datetime.now().date(),
+                                                    booking__date__lt = some_day_next_week)
+        return self.render_to_response(context=context)
+
+    def get_localite_context(self):
+        context = self.get_context_data()
+        bookings = self.request.user.requestee
+        some_day_next_week = datetime.now().date() + timedelta(days=7)
+        context['booking_total'] = bookings.all().count()
+        context['pending_bookings_total'] = bookings.filter(status=Appointment.CREATED).count()
+        context['reschedule_bookings_total'] = bookings.filter(status=Appointment.CREATED).count()
+        context['canceled_bookings_total'] = bookings.filter(status=Appointment.CANCELED).count()
+        context['upcoming_Task_total'] = bookings.filter(status__in=[Appointment.CREATED,
+                                                                       Appointment.RESCHEDULE_REQUESTED],
+                                                           booking__date__gt=datetime.now().date()).count()
+        context['upcoming_booking'] = bookings.filter(status__in=[Appointment.CREATED,
+                                                                  Appointment.RESCHEDULE_REQUESTED],
+                                                      booking__date__gt=datetime.now().date(),
+                                                      booking__date__lt=some_day_next_week)
+        return self.render_to_response(context=context)
 
 class BlogPostView(TemplateView):
     template_name = 'blogpost/brucke_page_home.html'

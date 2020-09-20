@@ -43,22 +43,27 @@ class PaymentAccount(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.bank_name, self.currency)
 
-
+@register_snippet
 class Commission(models.Model):
     LOCALITE = 'localite'
     PROVIDER = 'provider'
+    PROVIDER_MONTHLY = 'provider_monthly'
 
     USER_CHOICE = (
         (LOCALITE, "For Localite"),
         (PROVIDER, "For Provider"),
+        (PROVIDER_MONTHLY, "For Provider Monthly Subscription"),
     )
 
-    Professional = models.CharField(max_length=10, choices=USER_CHOICE)
+    Professional = models.CharField(max_length=20, choices=USER_CHOICE)
     percentage = models.PositiveIntegerField(default=000)
     is_active = models.BooleanField(default=True)
 
+    class Meta:
+        unique_together = ['Professional', 'is_active']
+
     def __str__(self):
-        return '{} {}'.format(self.Professional, self.is_active)
+        return '{} {}'.format(self.get_Professional_display(), self.is_active)
 
 
 @register_snippet
