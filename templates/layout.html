@@ -132,7 +132,7 @@
     <nav class="uk-navbar-container ">
         <div class="container uk-navbar">
             <div class="uk-navbar-left">
-                {% if  request.path == '/home' and request.user.is_authenticated %}
+                {% if  request.path == '/' and request.user.is_authenticated %}
                 <ul class="uk-navbar-nav">
                     <li class="uk-active">
                         <span style="font-size:30px;cursor:pointer" onmouseover="openNav()" onclick="openNav()">&#9776;</span>
@@ -182,15 +182,15 @@
 {#                        </div>#}
 {#                    </li>#}
                         <li><a href="{% url 'main:home' %}">    <span>Explore</span></a></li>
-                        <li class="dropdown">
-                        <a href="">Join Our Platform</a>
-                        <div class="dropdown-content">
-                            <a href="{% url 'become_localite_temp' %}">Become a Localite</a>
-                            <a href="{% url 'become_provider_temp' %}">Become a Provider</a>
-                        </div>
-                    </li>
+{#                        <li class="dropdown">#}
+{#                        <a href="">Join Our Platform</a>#}
+{#                        <div class="dropdown-content">#}
+{#                            <a href="{% url 'become_localite_temp' %}">Become a Localite</a>#}
+{#                            <a href="{% url 'become_provider_temp' %}">Become a Provider</a>#}
+{#                        </div>#}
+{#                    </li>#}
                         <li><a href="{% url 'main:blog-post' %}"> The Brücke</a></li>
-                        <li><a href="{% url 'about_us' %}"> About Us</a></li>
+{#                        <li><a href="{% url 'about_us' %}"> About Us</a></li>#}
 
                     {% if request.user.is_staff == True %}
 
@@ -370,12 +370,12 @@
             <li><a href="#">Become a Localite</a></li>
             <li><a href="#">Become a Provider</a></li>
                 <li class="opn_submenu">
-            <a href="#" class="opned">My Dashboard</a>
-            <div class="submenu_links">
-                 <a href="#">Calender</a>
-                  <a href="#">Settings</a>
-                  <a href="#">Messages</a>
-            </div>
+            <a href="{% url 'main:home' %}" class="opned">My Dashboard</a>
+{#            <div class="submenu_links">#}
+{#                 <a href="#">Calender</a>#}
+{#                  <a href="#">Settings</a>#}
+{#                  <a href="#">Messages</a>#}
+{#            </div>#}
         </li>
          <li><a href="#">The Brücke</a></li>
        </ul>
@@ -495,7 +495,7 @@
                                 <p class="bolder">Company</p>
                                 <p class="turn-grey small footers_link">
                                     <a href="{%  url 'about_us' %}">Abuot Us</a>
-                                    <a href="{% url 'main:join_our_team' %}">Joim Our Team</a>
+                                    <a href="{% url 'main:join_our_team' %}">Join Our Team</a>
                                     <a href="{% url 'main:faqs' %}">Localite/Provider FAQs</a>
                                     <a href="{% url 'main:terms-condition' %}">Term & Condition</a>
                                     <a href="{% url 'main:trust_and_saftey' %}">Trust & Safety</a>
