@@ -77,22 +77,22 @@
       <div class="w-col w-col-6">
         <div class="dash-div">
           <div class="w-layout-grid grid-6">
-            <h1 class="dash-heading">{{upcoming_Task_total|default:'0'}}</h1>
-            <h1 class="dash-heading">{{booking_total|default:'0'}}</h1>
-            <h1 class="dash-heading">{{pending_bookings_total|default:'0'}}</h1>
-            <div class="dash-text">Upcoming Booking</div>
-            <div class="dash-text">Total Booking</div>
-            <div class="dash-text">Pendin Booking</div>
+            <h1 class="dash-heading">{{upcoming_appointments_total|default:'0'}}</h1>
+            <h1 class="dash-heading">{{appointment_total|default:'0'}}</h1>
+            <h1 class="dash-heading">{{pending_appointment_total|default:'0'}}</h1>
+            <div class="dash-text">Upcoming Appointment</div>
+            <div class="dash-text">Total Appointment</div>
+            <div class="dash-text">Pendin Appointment</div>
           </div>
         </div>
       </div>
       <div class="w-col w-col-3">
         <div class="dash-div">
             <div class="w-layout-grid grid-3">
-            <h1 class="dash-heading">{{reschedule_bookings_total|default:'0'}}</h1>
-            <h1 class="dash-heading">{{canceled_bookings_total|default:'0'}}</h1>
-            <div class="dash-text">Reschedule Booking</div>
-            <div class="dash-text">Canceled Booking</div>
+            <h1 class="dash-heading">{{complated_appointment_total|default:'0'}}</h1>
+            <h1 class="dash-heading">{{canceled_appointment_total|default:'0'}}</h1>
+            <div class="dash-text">Complated Appointment</div>
+            <div class="dash-text">Canceled Appointment</div>
           </div>
         </div>
       </div>
@@ -102,15 +102,15 @@
     <h3 class="heading-65">Upcoming Booking</h3>
     <div class="dash-line"></div>
     <div class="w-row">
-      {% for booking in upcoming_booking %}
+      {% for appointment in upcoming_appointments %}
 
       <div class="w-col w-col-6">
         <div class="dash-div">
           <div class="w-row">
-            <a href="{% url 'public_profile' booking.requestor.id %}">
+            <a href="{% url 'public_profile' appointment.requestor.id %}">
             <div class="w-col w-col-3">
-               {% if booking.requestor.profile_image %}
-                  <img src="{{ booking.requestor.profile_image.url }}" alt="User Imgae" class="image-75">
+               {% if appointment.requestor.profile_image %}
+                  <img src="{{ appointment.requestor.profile_image.url }}" alt="User Imgae" class="image-75">
                {% else %}
                   <img src="{% static 'images/avtar1.png' %}" alt="image not found" class="image-75">
                {% endif %}
@@ -118,20 +118,20 @@
             <div class="column-9 w-col w-col-7">
               <ul role="list" class="list-5 w-list-unstyled">
                 <li>
-                  <h4 class="heading-66">{{booking.requestor.username}}</h4>
+                  <h4 class="heading-66">{{appointment.requestor.username}}</h4>
                 </li>
                 <li>
-                  <h5 class="heading-68">{% for profession in booking.requestee.profession.all %}{{ profession }},{%endfor%}</h5>
+                  <h5 class="heading-68">{% for profession in appointment.requestee.profession.all %}{{ profession }},{%endfor%}</h5>
                 </li>
                 <li>
-                  <div>Verified languages: {% for language in  booking.requestee.language.all  %}{{language}}, {% endfor %}</div>
+                  <div>Verified languages: {% for language in  appointment.requestee.language.all  %}{{language}}, {% endfor %}</div>
                 </li>
                  <li>
-                  <div>Requested Date : {% for dates in  booking.booking.all  %}{{dates.date}},<br> {% endfor %}</div>
+                  <div>Requested Date :  {{appointment.request_date.date}}</div>
                 </li>
               </ul>
             </div>
-            <a href="{% url 'new_appointment' booking.id %}">
+            <a href="{{ appointment.get_absolute_url }}">
             <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-73"></div>
             </a>
           </div>

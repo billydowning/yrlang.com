@@ -261,11 +261,3 @@ LANGUAGES = [
     ('en-us', 'English'),
     ('fi', 'Finnish'),
 ]
-
-# If you set this to False, Django will make some optimizations so as not
-# to load the internationalization machinery.
-USE_I18N = True
-
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale
-USE_L10N = True
