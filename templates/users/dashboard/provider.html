@@ -29,12 +29,11 @@
     font-size: 10px;
     font-family: Orbitron;
     letter-spacing: 7px;
-
+      margin-top: 10px;
 
 
 }
 </style>
-
 {% leaflet_css %}
 {% leaflet_js %}
 {% endblock link_css %}
@@ -54,14 +53,21 @@
       <div class="w-col w-col-3">
         <div class="dash-div">
           <div class="w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Blythe-M-headshot-circle-crop.png" alt="" class="image-71"></div>
+            <div class="w-col w-col-3">
+            {% if request.user.profile_image %}
+                        <img src="{{ request.user.profile_image.url }}" alt="User Imgae" class="image-71">
+                    {% else %}
+                        <img src="{% static 'images/avtar1.png' %}" alt="image not found" class="image-71">
+                    {% endif %}
+            </div>
             <div class="w-col w-col-9">
               <ul role="list" class="w-list-unstyled">
                 <li>
                   <h4 class="heading-62">{{ request.user.username|title }}</h4>
                 </li>
+
                 <li>
-                 <h6 class="heading-64 clock" id="MyClockDisplay"> </h6>
+                  <h6 class="heading-64 clock" id="MyClockDisplay"> </h6>
                 </li>
               </ul>
             </div>
@@ -71,152 +77,77 @@
       <div class="w-col w-col-6">
         <div class="dash-div">
           <div class="w-layout-grid grid-6">
-            <h1 class="dash-heading">1</h1>
-            <h1 class="dash-heading">0</h1>
-            <h1 class="dash-heading">0</h1>
-            <div class="dash-text">Upcoming Appts</div>
-            <div class="dash-text">Action Required</div>
-            <div class="dash-text">Active Packages</div>
+            <h1 class="dash-heading">{{upcoming_appointments_total|default:'0'}}</h1>
+            <h1 class="dash-heading">{{appointment_total|default:'0'}}</h1>
+            <h1 class="dash-heading">{{pending_appointment_total|default:'0'}}</h1>
+            <div class="dash-text">Upcoming Appointment</div>
+            <div class="dash-text">Total Appointment</div>
+            <div class="dash-text">Pendin Appointment</div>
           </div>
         </div>
       </div>
       <div class="w-col w-col-3">
-        <div class="dash-div"></div>
+        <div class="dash-div">
+            <div class="w-layout-grid grid-3">
+            <h1 class="dash-heading">{{complated_appointment_total|default:'0'}}</h1>
+            <h1 class="dash-heading">{{canceled_appointment_total|default:'0'}}</h1>
+            <div class="dash-text">Complated Appointment</div>
+            <div class="dash-text">Canceled Appointment</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   <div class="w-container">
-    <h3 class="heading-65">My upcoming appointments</h3>
+    <h3 class="heading-65">Upcoming Booking</h3>
     <div class="dash-line"></div>
     <div class="w-row">
+      {% for appointment in upcoming_appointments %}
+
       <div class="w-col w-col-6">
         <div class="dash-div">
           <div class="w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Bernard-P-headshot-circle-crop.png" alt="" class="image-72 dash-pic"></div>
+            <a href="{% url 'public_profile' appointment.requestor.id %}">
+            <div class="w-col w-col-3">
+               {% if appointment.requestor.profile_image %}
+                  <img src="{{ appointment.requestor.profile_image.url }}" alt="User Imgae" class="image-75">
+               {% else %}
+                  <img src="{% static 'images/avtar1.png' %}" alt="image not found" class="image-75">
+               {% endif %}
+            </div></a>
             <div class="column-9 w-col w-col-7">
               <ul role="list" class="list-5 w-list-unstyled">
                 <li>
-                  <h4 class="heading-66">Dr. Ian Pringle</h4>
+                  <h4 class="heading-66">{{appointment.requestor.username}}</h4>
                 </li>
                 <li>
-                  <h5 class="heading-68">Psychotherapist</h5>
+                  <h5 class="heading-68">{% for profession in appointment.requestee.profession.all %}{{ profession }},{%endfor%}</h5>
                 </li>
                 <li>
-                  <div>Verified languages: English, German,<br>Spanish</div>
+                  <div>Verified languages: {% for language in  appointment.requestee.language.all  %}{{language}}, {% endfor %}</div>
+                </li>
+                 <li>
+                  <div>Requested Date :  {{appointment.request_date.date}}</div>
                 </li>
               </ul>
             </div>
+            <a href="{{ appointment.get_absolute_url }}">
             <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-73"></div>
+            </a>
           </div>
         </div>
       </div>
-      <div class="w-col w-col-6">
-        <div class="dash-div">
-          <ul role="list" class="list-4 w-list-unstyled">
-            <li>
-              <div class="text-block-73">Date: July 30, 2019</div>
-            </li>
-            <li>
-              <div>Time: 14:00 - 15:00 </div>
-            </li>
-            <li>
-              <div>Location: Remote chat via Skype</div>
-            </li>
-            <li>Status: Confirmed</li>
-          </ul>
-        </div>
-      </div>
+      {% empty %}
+      <h3 class="no-data-found-dash">No Upcomig Booking in Next 7 Days</h3>
+      {% endfor %}
+
     </div>
   </div>
-  <div>
-    <div class="w-container">
-      <h3 class="heading-69">My service professionals</h3>
-      <div class="dash-line"></div>
-      <div class="w-layout-grid grid-7">
-        <div class="dash-div">
-          <div class="dash-columns w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>
-            <div class="w-col w-col-7">
-              <ul role="list" class="w-list-unstyled">
-                <li>
-                  <h4 class="heading-72">Dr. Blythe McKay</h4>
-                </li>
-                <li>
-                  <h5 class="heading-74">Psychotherapist</h5>
-                </li>
-                <li>
-                  <div>Verified languages: English, German,<br>Spanish, Italian</div>
-                </li>
-              </ul>
-            </div>
-            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>
-          </div>
-        </div>
-        <div class="dash-div">
-          <div class="dash-columns w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>
-            <div class="w-col w-col-7">
-              <ul role="list" class="w-list-unstyled">
-                <li>
-                  <h4 class="heading-72">Dr. Blythe McKay</h4>
-                </li>
-                <li>
-                  <h5 class="heading-74">Psychotherapist</h5>
-                </li>
-                <li>
-                  <div>Verified languages: English, German,<br>Spanish, Italian</div>
-                </li>
-              </ul>
-            </div>
-            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>
-          </div>
-        </div>
-        <div class="dash-div">
-          <div class="dash-columns w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>
-            <div class="w-col w-col-7">
-              <ul role="list" class="w-list-unstyled">
-                <li>
-                  <h4 class="heading-72">Dr. Blythe McKay</h4>
-                </li>
-                <li>
-                  <h5 class="heading-74">Psychotherapist</h5>
-                </li>
-                <li>
-                  <div>Verified languages: English, German,<br>Spanish, Italian</div>
-                </li>
-              </ul>
-            </div>
-            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>
-          </div>
-        </div>
-        <div class="dash-div">
-          <div class="dash-columns w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>
-            <div class="w-col w-col-7">
-              <ul role="list" class="w-list-unstyled">
-                <li>
-                  <h4 class="heading-72">Dr. Blythe McKay</h4>
-                </li>
-                <li>
-                  <h5 class="heading-74">Psychotherapist</h5>
-                </li>
-                <li>
-                  <div>Verified languages: English, German,<br>Spanish, Italian</div>
-                </li>
-              </ul>
-            </div>
-            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+
 
     </div>
 </div>
 {% endblock %}
-
 {% block bottom_js %}
 <script>
 function showTime(){

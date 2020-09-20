@@ -209,10 +209,17 @@ class IndexView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = None
-        if self.request.user.is_authenticated and self.request.user.is_client_user(self.request.session.get('user_role')):
+        if self.request.user.is_authenticated and \
+            self.request.user.is_client_user(self.request.session.get('user_role')):
             return self.get_customer_context()
-        elif self.request.user.is_authenticated and self.request.user.is_localite_user(self.request.session.get('user_role')):
+        elif self.request.user.is_authenticated and \
+            self.request.user.is_localite_user(self.request.session.get('user_role')):
             return self.get_localite_context()
+        elif self.request.user.is_authenticated and \
+                self.request.user.is_provider_user(self.request.session.get('user_role')):
+            return self.get_provider_context()
+        elif self.request.user.is_authenticated:
+            return self.get_language_verifier_context()
         return super(IndexView, self).get( request, *args, **kwargs)
 
     def get_customer_context(self):
@@ -242,7 +249,7 @@ class IndexView(TemplateView):
         some_day_next_week = datetime.now().date() + timedelta(days=7)
         context['booking_total'] = bookings.all().count()
         context['pending_bookings_total'] = bookings.filter(status=Appointment.CREATED).count()
-        context['reschedule_bookings_total'] = bookings.filter(status=Appointment.CREATED).count()
+        context['reschedule_bookings_total'] = bookings.filter(status=Appointment.RESCHEDULE_REQUESTED).count()
         context['canceled_bookings_total'] = bookings.filter(status=Appointment.CANCELED).count()
         context['upcoming_Task_total'] = bookings.filter(status__in=[Appointment.CREATED,
                                                                        Appointment.RESCHEDULE_REQUESTED],
@@ -251,6 +258,48 @@ class IndexView(TemplateView):
                                                                   Appointment.RESCHEDULE_REQUESTED],
                                                       booking__date__gt=datetime.now().date(),
                                                       booking__date__lt=some_day_next_week)
+        return self.render_to_response(context=context)
+
+    def get_provider_context(self):
+        context = self.get_context_data()
+        some_day_next_week = datetime.now().date() + timedelta(days=7)
+        appointments = self.request.user.provider
+        context['appointment_total'] = appointments.all().count()
+        context['upcoming_appointments_total'] = appointments.filter(status=ProviderAppointment.REQUESTED,
+                                                               request_date__gt=datetime.now().date(),
+                                                               ).count()
+        context['pending_appointment_total'] = appointments.filter(status=ProviderAppointment.REQUESTED,
+                                                               ).count()
+        context['complated_appointment_total'] = appointments.filter(status=ProviderAppointment.COMPLETED,
+                                                                   ).count()
+        context['canceled_appointment_total'] = appointments.filter(status=ProviderAppointment.CANCELED,
+                                                                     ).count()
+
+        context['upcoming_appointments'] = appointments.filter(status=ProviderAppointment.REQUESTED,
+                                                      request_date__gt=datetime.now().date(),
+                                                      request_date__lt=some_day_next_week)
+
+        return self.render_to_response(context=context)
+
+    def get_language_verifier_context(self):
+        context = self.get_context_data()
+        role_requests = UserRoleRequest.objects.order_by('requested_on').exclude(user=self.request.user)
+        context['total_request'] = role_requests.filter(
+                    requested_for__name__in=[UserRole.PROVIDER,
+                                             UserRole.LOCALITE]).count()
+        context['pending_request_total'] = role_requests.filter(status = UserRoleRequest.REQUESTED,
+                                            requested_for__name__in=[UserRole.PROVIDER, UserRole.LOCALITE]).count()
+        context['canceled_request_total'] = role_requests.filter(status=UserRoleRequest.CANCELED,
+                            requested_for__name__in=[UserRole.PROVIDER, UserRole.LOCALITE]).count()
+        context['verified_request_total'] = role_requests.filter(status=UserRoleRequest.VERIFIED,
+                            requested_for__name__in=[UserRole.PROVIDER, UserRole.LOCALITE]).count()
+        context['approved_request_total'] = role_requests.filter(status=UserRoleRequest.APPROVED,
+                            requested_for__name__in=[UserRole.PROVIDER, UserRole.LOCALITE]).count()
+        context['provider_requests'] = role_requests.filter(status=UserRoleRequest.REQUESTED,
+                            requested_for__name=UserRole.PROVIDER)[:4]
+        context['localite_requests'] = role_requests.filter(status=UserRoleRequest.REQUESTED,
+                                                            requested_for__name=UserRole.LOCALITE)[:4]
+
         return self.render_to_response(context=context)
 
 class BlogPostView(TemplateView):

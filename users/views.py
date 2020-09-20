@@ -1,14 +1,10 @@
 import datetime
-from decimal import Decimal
 from _collections import defaultdict
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404, reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.contrib.contenttypes.models import ContentType
-from django.conf.urls import i18n
-from django.urls import reverse_lazy
-from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.template.loader import render_to_string
 from weasyprint import HTML

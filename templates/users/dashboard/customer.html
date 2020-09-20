@@ -29,6 +29,7 @@
     font-size: 10px;
     font-family: Orbitron;
     letter-spacing: 7px;
+        margin-top: 10px;
 
 
 
@@ -99,6 +100,7 @@
       <div class="w-col w-col-6">
         <div class="dash-div">
           <div class="w-row">
+            <a href="{% url 'public_profile' booking.requestee.id %}">
             <div class="w-col w-col-3">
                {% if booking.requestee.profile_image %}
                   <img src="{{ booking.requestee.profile_image.url }}" alt="User Imgae" class="image-75">
@@ -106,6 +108,7 @@
                   <img src="{% static 'images/avtar1.png' %}" alt="image not found" class="image-75">
                {% endif %}
             </div>
+            </a>
             <div class="column-9 w-col w-col-7">
               <ul role="list" class="list-5 w-list-unstyled">
                 <li>
@@ -138,6 +141,7 @@
       <div class="w-layout-grid grid-7">
         <div class="dash-div">
           <div class="dash-columns w-row">
+             <a href="{% url 'public_profile' appointment.requestee.id %}">
             <div class="w-col w-col-3">
               {% if appointment.requestee.profile_image %}
                   <img src="{{ appointment.requestee.profile_image.url }}" alt="User Imgae" class="image-75">
@@ -145,6 +149,7 @@
                   <img src="{% static 'images/avtar1.png' %}" alt="image not found" class="image-75">
                {% endif %}
             </div>
+             </a>
             <div class="w-col w-col-7">
               <ul role="list" class="w-list-unstyled">
                 <li>
