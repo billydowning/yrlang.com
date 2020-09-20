@@ -209,10 +209,15 @@ class IndexView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = None
-        if self.request.user.is_authenticated and self.request.user.is_client_user(self.request.session.get('user_role')):
+        if self.request.user.is_authenticated and \
+            self.request.user.is_client_user(self.request.session.get('user_role')):
             return self.get_customer_context()
-        elif self.request.user.is_authenticated and self.request.user.is_localite_user(self.request.session.get('user_role')):
+        elif self.request.user.is_authenticated and \
+            self.request.user.is_localite_user(self.request.session.get('user_role')):
             return self.get_localite_context()
+        elif self.request.user.is_authenticated and \
+                self.request.user.is_provider_user(self.request.session.get('user_role')):
+            return self.get_provider_context()
         return super(IndexView, self).get( request, *args, **kwargs)
 
     def get_customer_context(self):
@@ -251,6 +256,13 @@ class IndexView(TemplateView):
                                                                   Appointment.RESCHEDULE_REQUESTED],
                                                       booking__date__gt=datetime.now().date(),
                                                       booking__date__lt=some_day_next_week)
+        return self.render_to_response(context=context)
+
+    def get_provider_context(self):
+        context = self.get_context_data()
+        appointments = self.request.user.provider
+        context[''] = appointments
+
         return self.render_to_response(context=context)
 
 class BlogPostView(TemplateView):
