@@ -170,7 +170,7 @@
     <nav class="uk-navbar-container ">
         <div class="container uk-navbar">
             <div class="uk-navbar-left">
-                {% if  request.path == '/home' and request.user.is_authenticated %}
+                {% if  request.path == '/' and request.user.is_authenticated %}
 
                 <ul class="uk-navbar-nav">
                     <li class="uk-active">
@@ -407,17 +407,17 @@
                 {% endfor %}
             </div>
         </li>
-            <li><a href="#">Become a Localite</a></li>
-            <li><a href="#">Become a Provider</a></li>
+            <li><a href="{% url 'become_localite_temp' %}">Become a Localite</a></li>
+            <li><a href="{% url 'become_provider_temp' %}">Become a Provider</a></li>
                 <li class="opn_submenu">
-            <a href="#" class="opned">My Dashboard</a>
-            <div class="submenu_links">
-                 <a href="#">Calender</a>
-                  <a href="#">Settings</a>
-                  <a href="#">Messages</a>
-            </div>
+            <a href="{% url 'main:index' %}" class="opned">My Dashboard</a>
+{#            <div class="submenu_links">#}
+{#                 <a href="#">Calender</a>#}
+{#                  <a href="#">Settings</a>#}
+{#                  <a href="#">Messages</a>#}
+{#            </div>#}
         </li>
-         <li><a href="#">The Brücke</a></li>
+         <li><a href="{% url 'main:blog-post' %}">The Brücke</a></li>
        </ul>
 
 {#        {% if request.session.user_role %}#}
