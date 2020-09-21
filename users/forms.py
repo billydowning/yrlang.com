@@ -91,7 +91,7 @@ class ProfessionalAccountForm(ModelForm):
         self.fields['phone_number'].required = True
         self.fields['phone_number'].widget.attrs.update({
             'autocomplete': 'off', 'type': 'tel',
-            'pattern': "[0-9]{3}-[0-9]{3}-[0-9]{4}",
+            'pattern': "[\+]\d{2}\d{3}[\-]\d{3}[\-]\d{4}",
 
         })
 
@@ -100,7 +100,7 @@ class ProfessionalAccountForm(ModelForm):
         fields = ['bio', 'phone_number', 'state', 'country', 'language',
                   'profession', 'profile_image', 'is_private', 'multi_day']
         help_texts = {
-            'phone_number': 'Use Formate Like This 999-999-9999 ',
+            'phone_number': 'Use Formate Like This +91999-999-9999 ',
             'multi_day': 'Allow Customer Multi-Day Booking '
         }
 
@@ -239,6 +239,7 @@ class ProviderAccountForm(ModelForm):
     categories = forms.ModelChoiceField(
         queryset=Categories.objects.all(),
         required=True,
+        label="Profession"
     )
 
     class Meta:
@@ -247,6 +248,7 @@ class ProviderAccountForm(ModelForm):
         help_texts = {
             'phone_number': 'Use Formate Like This +91999-999-9999 '
         }
+
 
     def __init__(self, request=None, *args, **kwargs):
         self.request = request
@@ -340,6 +342,10 @@ class ClientToAdminRequestForm(forms.ModelForm):
     class Meta:
         model = UserVideos
         fields = ['language', 'files']
+        labels = {
+            "files":"Upload Video",
+            "language": "Select a Language That You Speak"
+        }
 
 
 class BaseAdminRequestFormset(BaseModelFormSet):
@@ -359,7 +365,7 @@ class BaseAdminRequestFormset(BaseModelFormSet):
             lang = form.cleaned_data.get('language')
             file = form.cleaned_data.get('files')
             if file is None:
-                form.add_error('files', "Please Provide File!")
+                form.add_error('files', "Please Upload a Video File!")
             if lang  in lst or lang is None:
                 form.add_error('language', "Please Chose Proper Language !")
             else:

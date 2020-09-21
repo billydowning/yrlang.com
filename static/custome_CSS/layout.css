@@ -1349,3 +1349,13 @@ input#mysearchInp
     float: left;
     display: block;
 }
+.upload-button {
+  font-size: 1.2em;
+      position: absolute;
+    margin-top: 14px;
+}
+
+.upload-button:hover {
+  transition: all .3s cubic-bezier(.175, .885, .32, 1.275);
+  color: #999;
+}

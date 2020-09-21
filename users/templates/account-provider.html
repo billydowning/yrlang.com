@@ -23,8 +23,14 @@
     <div class="media">{% if request.user.profile_image %}
         <div class="profile_d row">
             <div class="col-12 col-md-3 col-lg-2">
+                <label for="id_profile_image">
+                <i class="fa fa-camera upload-button"></i>
+                 </label>
                 <img class="uk-border-circle" width="40" height="40" src="{{ request.user.profile_image.url }}">
                 {% else %}
+                <label for="id_profile_image">
+                <i class="fa fa-camera upload-button"></i>
+                 </label>
                 <img class="uk-border-circle" width="40" height="40" src="{{ avtar }}">
                 {% endif %}
             </div>
@@ -35,36 +41,33 @@
                         <div class="col-6">
                             <a href="#">
                             <h2 class="bg-light py-1 px-2 text-center rounded">
-                                <small>Your Appointment Counts</small>
+                                <small></small>
                             </h2></a>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Profession: {% for profession in current_user.profession.all %}
-                                {{ profession }}
-                                {% endfor %}</p>
+                            <p></p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Bio: {{ current_user.bio }}</p>
+                            <p></p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>email: {{ current_user.email }}</p>
+                            <p></p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Phone: {{ current_user.profile_image }}</p>
+                            <p></p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Location: {{ current_user.state }} - {{ current_user.country }}</p>
+                            <p></p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Speaks:
-                                {% for lang in current_user.language.all %}
-                                {{ lang }}</p>
+                            <p>
+                                </p>
                         </div>
                     </div>
 
-                    {% endfor %}
+
                 </div>
             </div>
         </div>
@@ -115,8 +118,10 @@
                                 <span>{{ error }}</span>
                                 {% endfor %}
                             </div>
+                            {{ form.phone_number.help_text }}
                             {% else %}
                             {{ form.phone_number }}
+                            {{ form.phone_number.help_text }}
                             {% endif %}
                         </div>
                     </div>
@@ -200,8 +205,8 @@
 
                 <div class="row">
                     <div class="col-12 col-md-6">
-                        <div class="form-group">
-                            {{ form.profile_image.label }}
+                        <div class="form-group" style="display:none;">
+
                             {% if form.profile_image.errors %}
                             <div class="invalid-feedback">
                                 {% for error in form.profile_image.errors %}

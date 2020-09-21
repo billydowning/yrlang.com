@@ -103,16 +103,16 @@ class ProfileView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, UpdateVie
 class AccountView(UserSessionAndLoginCheckMixing, UpdateView):
     success_url = '/'
 
-    def dispatch(self, request, *args, **kwargs):
-        accounts = PaymentAccount.objects.filter(user=request.user)
-
-        for account in accounts:
-            if account.account_status == "False":
-                stripe.api_key = StripeKeys.objects.get(is_active=True).secret_key
-                retrieve_acc = stripe.Account.retrieve(account.account_id)
-                account.account_status = retrieve_acc['details_submitted']
-                account.save()
-        return super(AccountView, self).dispatch(request, *args, **kwargs)
+    # def dispatch(self, request, *args, **kwargs):
+    #     accounts = PaymentAccount.objects.filter(user=request.user)
+    #
+    #     for account in accounts:
+    #         if account.account_status == "False":
+    #             stripe.api_key = StripeKeys.objects.get(is_active=True).secret_key
+    #             retrieve_acc = stripe.Account.retrieve(account.account_id)
+    #             account.account_status = retrieve_acc['details_submitted']
+    #             account.save()
+    #     return super(AccountView, self).dispatch(request, *args, **kwargs)
 
     def get_template_names(self):
         current_user = CustomUser.get(self.request.user.id)
@@ -209,7 +209,8 @@ class UserMultipleRoleView(TemplateView):
         if self.request.POST.get("role") == UserRole.PROVIDER:
             if self.request.user.phone_number is None \
                     or self.request.user.country is None \
-                    or self.request.user.state is None:
+                    or self.request.user.state is None\
+                    or not self.request.user.providercategories_set.exists():
                 self.request.session['user_role'] = UserRole.PROVIDER
                 url = reverse_lazy('profile')
             else:
@@ -218,7 +219,8 @@ class UserMultipleRoleView(TemplateView):
         elif self.request.POST.get("role") == UserRole.LOCALITE:
             if self.request.user.phone_number is None \
                     or self.request.user.country is None \
-                    or self.request.user.state is None:
+                    or self.request.user.state is None \
+                    or not self.request.user.language.exists():
                 self.request.session['user_role'] = UserRole.LOCALITE
                 url = reverse_lazy('profile')
             else:
@@ -589,6 +591,8 @@ class Pdf(View):
             return response
 
         return response
+
+
 class RequestForCallWithMailView(View):
     form_class = RequestForCallForm
 
@@ -610,6 +614,7 @@ class UserReviewListView(ListView):
     user = None
     template_name = "users/reviews/user_review_list.html"
     context_object_name = 'reviews'
+
     def dispatch(self, request, *args, **kwargs):
         self.user = get_object_or_404(CustomUser, pk=kwargs.get('user_id'))
         return super(UserReviewListView, self).dispatch(request, *args, **kwargs)
