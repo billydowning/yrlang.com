@@ -103,16 +103,16 @@ class ProfileView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, UpdateVie
 class AccountView(UserSessionAndLoginCheckMixing, UpdateView):
     success_url = '/'
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     accounts = PaymentAccount.objects.filter(user=request.user)
-    #
-    #     for account in accounts:
-    #         if account.account_status == "False":
-    #             stripe.api_key = StripeKeys.objects.get(is_active=True).secret_key
-    #             retrieve_acc = stripe.Account.retrieve(account.account_id)
-    #             account.account_status = retrieve_acc['details_submitted']
-    #             account.save()
-    #     return super(AccountView, self).dispatch(request, *args, **kwargs)
+    def dispatch(self, request, *args, **kwargs):
+        accounts = PaymentAccount.objects.filter(user=request.user)
+
+        for account in accounts:
+            if account.account_status == "False":
+                stripe.api_key = StripeKeys.objects.get(is_active=True).secret_key
+                retrieve_acc = stripe.Account.retrieve(account.account_id)
+                account.account_status = retrieve_acc['details_submitted']
+                account.save()
+        return super(AccountView, self).dispatch(request, *args, **kwargs)
 
     def get_template_names(self):
         current_user = CustomUser.get(self.request.user.id)
