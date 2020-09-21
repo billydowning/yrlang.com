@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+     <h2>Invoice</h2>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td>Title</td>
+                        <td>{{invoice.title}}</td>
+                    </tr>
+                    <tr>
+                        <td>Date</td>
+                        <td>{{invoice.date_created}}</td>
+                    </tr>
+                    <tr>
+                        <td>Payee</td>
+                        <td>{{invoice.payee}}</td>
+                    </tr>
+                    <tr>
+                        <td>Payer</td>
+                        <td>{{invoice.payor}}</td>
+                    </tr>
+                    <tr>
+                        <td>Amount</td>
+                        <td>{{invoice.amount}}</td>
+                    </tr><tr>
+                        <td>Currency</td>
+                        <td>{{invoice.currency}}</td>
+                    </tr><tr>
+                        <td>Paid</td>
+                        <td>{{invoice.is_paid}}</td>
+                    </tr><tr>
+                        <td>Date of payment</td>
+                        <td>{{invoice.date_paid}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+    </div>
+</body>
+</html>
