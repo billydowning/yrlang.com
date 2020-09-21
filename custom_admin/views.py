@@ -1,6 +1,6 @@
 from django.views import generic
 from invoices.models import Invoice
-from rooms.models import Room
+from rooms.models import Room, Message
 from main.models import ReportAProblem
 from users.models import UserRole
 from django.shortcuts import HttpResponseRedirect, redirect, reverse, get_object_or_404
@@ -24,10 +24,20 @@ class InvoiceDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(InvoiceDetailView, self).get_context_data()
-        context['rooms'] = Room.objects.filter(
-            creator=self.get_object().payor,
-            partner=self.get_object().payee
-        ).order_by('date_created')
+        try:
+            room = Room.objects.get(
+                creator=self.get_object().payor,
+                partner=self.get_object().payee
+            )
+        except Exception as e:
+            room = None
+            print(e)
+        if room:
+            try:
+                context['message'] = Message.objects.filter(room=room).order_by('date_created')
+            except Exception as e:
+                context['message'] = None
+                print(e)
         return context
 
 

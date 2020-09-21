@@ -593,6 +593,8 @@ class Pdf(View):
             return response
 
         return response
+
+
 class RequestForCallWithMailView(View):
     form_class = RequestForCallForm
 
