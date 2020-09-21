@@ -224,7 +224,7 @@
 {#                        </div>#}
 {#                    </li>#}
                         <li><a href="{% url 'main:home' %}">    <span>Explore</span></a></li>
-                             {% if not loc and not pro %}
+
                             <li class="dropdown">
                         <a href="">Join Our Platform</a>
                         <div class="dropdown-content">
@@ -244,7 +244,7 @@
                             {% endif %}
                         </div>
                         </li>
-                            {% endif %}
+
                         <li><a href="{% url 'main:blog-post' %}"> The Brücke</a></li>
 
                      {% if request.user.is_staff == True or request.session.user_role %}

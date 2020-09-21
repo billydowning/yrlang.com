@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.views import View
-from django.views.generic import (CreateView, ListView)
+from django.views.generic import (CreateView, ListView, DetailView)
 from paypal.standard.forms import PayPalPaymentsForm
 
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
@@ -46,8 +46,8 @@ class InvoiceCreateView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, Cre
     def get_form_kwargs(self, **kwargs):
         kwargs = super(InvoiceCreateView, self).get_form_kwargs(**kwargs)
         kwargs['user'] = self.request.user
+        kwargs['object_id'] = self.kwargs.get('object_id')
         return kwargs
-
 
 class ProviderInvoiceCreateView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, CreateView):
     template_name = "provider_create_invoice.html"
@@ -72,6 +72,7 @@ class ProviderInvoiceCreateView(UserSessionAndLoginCheckMixing, UserPassesTestMi
     def get_form_kwargs(self, **kwargs):
         kwargs = super(ProviderInvoiceCreateView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
+        kwargs['object_id'] = self.kwargs.get('object_id')
         return kwargs
 
 
@@ -277,6 +278,11 @@ class CreateCheckoutSession(View):
                 cancel_url='http://yrlang.com/checkout-capture/',
             )
         return JsonResponse({'id': session.id})
+
+
+class InvoicePdfView(DetailView):
+    template_name = 'invoice_pdf.html'
+    model = Invoice
 
 
 class WebHook(View):

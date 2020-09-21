@@ -419,7 +419,7 @@
                                         {% check_booking_rating user=request.user booking_id=booking.id  as in_rating %}
                                             {% if not in_rating %}
                                             <span>OR</span>
-                                            <a href="{% url 'main:booking_review_and_rating' booking.id %}" class="cancel">Give a Rating</a>
+                                            <a href="{% url 'create-invoice' booking.id %}" class="cancel">Create Invoice</a>
                                             {% endif %}
 
                                     </li>
