@@ -224,7 +224,7 @@
 {#                        </div>#}
 {#                    </li>#}
                         <li><a href="{% url 'main:home' %}">    <span>Explore</span></a></li>
-                    {% if not pro and not loc %}
+                    {% if not pro or not loc %}
                     <li class="dropdown">
                         <a href="">Join Our Platform</a>
                         <div class="dropdown-content">

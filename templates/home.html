@@ -67,8 +67,9 @@
         <div class="container position_Re">
 
 			<ul class="join_locality">
-                {% comment %}
+
                 {% if client_checked %}
+                    {% comment %}
                     {% if not  pro %}
                         {% if not  provider_request_checked %}
                         <li> <a href="{% url 'become_provider_temp' %}">Join as a Provider</a></li>
@@ -84,6 +85,7 @@
                         {% endif %}
                     {%  endif  %}
                 {% endcomment %}
+
                       {% if not  lang_veri  %}
                         {% if not   lang_veri_request_checked  %}
                         <li><a href="{%  url 'request_for_language_verifier' %}" class="">Join as a Language Verifier</a></li>
