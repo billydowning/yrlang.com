@@ -272,7 +272,7 @@
                                                     </a>{% check_appointment_rating user=request.user appointment_id=appointment.id  as in_rating %}
                                                         {% if not in_rating %}--
                                                      <a href="{% url 'main:appointment_review_and_rating' appointment.id %}">
-                                                        <button class="btn theme_btn" type="button">rating</button>
+                                                        <button class="btn theme_btn" type="button">Give Rating</button>
                                                     </a>
                                                      {% endif %}
 

@@ -30,7 +30,7 @@ urlpatterns = [
     path('favorites_/<int:user_id>', views.AddLocOrProInUserFavoriteView.as_view(), name='add_loc_or_pro_in_favorite'),
     path('user-favorites/', views.UserFavoriteListView.as_view(), name='user_favorite_list'),
     #request for call
-    path('request-for-call', views.RequestForCallWithMailView.as_view(), name='request_for_call'),
+    path('request-for-call/<int:user_id>', views.RequestForCallWithMailView.as_view(), name='request_for_call'),
     #user Review
     path('reviews/<int:user_id>', views.UserReviewListView.as_view(), name='user_review_list'),
 

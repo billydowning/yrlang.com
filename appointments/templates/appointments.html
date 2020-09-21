@@ -329,6 +329,8 @@
                                         </a>
                                         <span>OR</span>
                                         <a href="" class="cancel">Cancel</a>
+                                        <span>OR</span>
+                                        <a href="{% url 'contact' booking.requestor.id %}"><i class="fa fa-comments-o fa-2x" aria-hidden="true">&nbsp</i>  </a>
                                     </li>
                                     {% elif client_checked %}
                                     {% if booking.localite_comment %}
