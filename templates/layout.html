@@ -224,8 +224,8 @@
 {#                        </div>#}
 {#                    </li>#}
                         <li><a href="{% url 'main:home' %}">    <span>Explore</span></a></li>
-
-                            <li class="dropdown">
+                    {% if not pro and not loc %}
+                    <li class="dropdown">
                         <a href="">Join Our Platform</a>
                         <div class="dropdown-content">
                             {% if not  loc  %}
@@ -244,6 +244,7 @@
                             {% endif %}
                         </div>
                         </li>
+                    {% endif %}
 
                         <li><a href="{% url 'main:blog-post' %}"> The Brücke</a></li>
 
