@@ -7,105 +7,394 @@
     font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
     font-size: 14px;
   }
-
-
-
-
-
-
-
 </style>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+    <style>
+    .invoice-box {
+        max-width: 100%;
+        margin: auto;
+        padding: 30px;
+        border: 1px solid #eee;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+        font-size: 16px;
+        line-height: 24px;
+        font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        color: #555;
+    }
+
+    .invoice-box table {
+        width: 100%;
+        line-height: inherit;
+        text-align: left;
+    }
+
+    .invoice-box table td {
+        padding: 5px;
+        vertical-align: top;
+    }
+
+    .invoice-box table tr td:nth-child(2) {
+        text-align: right;
+    }
+
+    .invoice-box .detail table tr td{
+        text-align: left;
+    }
+
+    .invoice-box table tr.top table td {
+        padding-bottom: 20px;
+    }
+
+    .invoice-box table tr.top table td.title {
+        font-size: 35px;
+        line-height: 35px;
+        color: #333;
+    }
+
+    .invoice-box table tr.information table td {
+        padding-bottom: 40px;
+    }
+
+    .invoice-box table tr.heading td {
+        background: #eee;
+        border-bottom: 1px solid #ddd;
+        font-weight: bold;
+    }
+
+    .invoice-box table tr.details td {
+        padding-bottom: 20px;
+    }
+
+    .invoice-box table tr.item td{
+        border-bottom: 1px solid #eee;
+    }
+
+    .invoice-box table tr.item.last td {
+        border-bottom: none;
+    }
+
+    .invoice-box table tr.total td:nth-child(2) {
+        border-top: 2px solid #eee;
+        font-weight: bold;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .invoice-box table tr.top table td {
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+
+        .invoice-box table tr.information table td {
+            width: 100%;
+            display: block;
+            text-align: center;
+        }
+    }
+
+    /** RTL **/
+    .rtl {
+        direction: rtl;
+        font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+    }
+
+    .rtl table {
+        text-align: right;
+    }
+
+    .rtl table tr td:nth-child(2) {
+        text-align: left;
+    }
+    </style>
+<style>
+    .mytext{
+    border:0;padding:10px;background:whitesmoke;
+}
+.text{
+    width:75%;display:flex;flex-direction:column;
+}
+.text > p:first-of-type{
+    width:100%;margin-top:0;margin-bottom:auto;line-height: 13px;font-size: 12px;
+}
+.text > p:last-of-type{
+    width:100%;text-align:right;color:silver;margin-bottom:-7px;margin-top:auto;
+}
+.text-l{
+    float:left;padding-right:10px;
+}
+.text-r{
+    float:right;padding-left:10px;
+}
+.avatar{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:25%;
+    float:left;
+    padding-right:10px;
+}
+.macro{
+    margin-top:5px;width:55%;border-radius:5px;padding:5px;display:flex;
+}
+.msj-rta{
+    float:right;background:whitesmoke;
+}
+.msj{
+    float:left;background:white;
+}
+.msg ul {
+    width:100%;
+    list-style-type: none;
+    padding:18px;
+    bottom:32px;
+    display:flex;
+    flex-direction: column;
+    background-color: #E7EBEE;
+}
+.msj:before{
+    width: 0;
+    height: 0;
+    content:"";
+    top:-5px;
+    left:-14px;
+    position:relative;
+    border-style: solid;
+    border-width: 0 13px 13px 0;
+    border-color: transparent #ffffff transparent transparent;
+}
+.msj-rta:after{
+    width: 0;
+    height: 0;
+    content:"";
+    top:-5px;
+    left:14px;
+    position:relative;
+    border-style: solid;
+    border-width: 13px 13px 0 0;
+    border-color: whitesmoke transparent transparent transparent;
+}
+input:focus{
+    outline: none;
+}
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #d4d4d4;
+}
+::-moz-placeholder { /* Firefox 19+ */
+    color: #d4d4d4;
+}
+:-ms-input-placeholder { /* IE 10+ */
+    color: #d4d4d4;
+}
+:-moz-placeholder { /* Firefox 18- */
+    color: #d4d4d4;
+}
+.sub-menu {
+    padding: 0;
+    border: 1px solid black;
+    max-height: 20em;
+    overflow-y: auto;
+}
+
+.sub-menu li {
+    font-size: 1em;
+    padding: .25em 1em;
+    line-height: 1em;
+}
+</style>
+
 {% endblock calendar_extras %}
 
 {% block content %}
 <!--container-->
 <div class="container">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="amit-black bolder montserrat page_main_header my-2">Invoices Detail </h1>
-            <div class="container py-5 px-5">
-                <h3 class="mt-5 mb-3 text-center"><b>Title : </b>{{ invoice.title }}</h3>
-                <div class="row">
-                    <div class="col-md-6 text-center">
-                        <p><b>Amount : </b>{{ invoice.amount }}</p>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <p><b>Currency : </b>{{ invoice.currency }}</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 text-center">
-                        <p><b>Payee : </b>{{ invoice.payee }}</p>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <p><b>Pater : </b>{{ invoice.payor }}</p>
-                    </div>
-                </div>
-                {% if invoice.is_paid %}
-                <div class="row">
-                    <div class="col-md-6 text-center">
-                        <p><b>Is Paid : </b>{{ invoice.is_paid }}</p>
-                    </div>
-                    <div class="col-md-6 text-center">
-                        <p><b>Payment Date : </b>{{ invoice.date_paid }}</p>
-                    </div>
-                </div>
-                {% endif %}
-                {% if invoice.stripe_payment_id %}
-                <h3 class="mt-5 mb-3 text-center"><b>Stripe Payment Id : </b>{{ invoice.stripe_payment_id }}</h3>
-                {% endif %}
+<h1 class="page_main_header my-3">Invoice Details.</h1>
+<div class="invoice-box">
+        <table cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td class="title">
+                                  {{ invoice.title }}
+                            </td>
+
+                            <td>
+                                Invoice #: {{ invoice.pk }}<br>
+                                Created: {{ invoice.date_created }}<br>
+                                {% if invoice.is_paid %}
+                                Paid
+                                {% else %}
+                                Pending
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <tr class="information">
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td>
+                                <b>Customer</b><br>
+                                {{ invoice.payor.username }}<br>
+                                {{ invoice.payor }}<br>
+                                {% if invoice.payor.phone_number %}
+                                {{ invoice.payor.phone_number }}<br>
+                                {% endif %}
+                                {% if invoice.payor.state and invoice.payor.country %}
+                                {{ invoice.payor.state }}, {{ invoice.payor.country }}<br>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if invoice.booking %}
+                                <b>Localite</b><br>
+                                {% else %}
+                                <b>Provider</b><br>
+                                {% endif %}
+                                {{ invoice.payee.username }}<br>
+                                {{ invoice.payee }}<br>
+                                {{ invoice.payee.phone_number }}<br>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+
+            <tr class="heading">
+                <td>
+                    Check Out
+                </td>
+
+                <td>
+                    Price
+                </td>
+            </tr>
+
+            <tr class="item">
+                <td>
+                    StandOut
+                </td>
+
+                <td>
+                    ${{ invoice.amount }}
+                </td>
+            </tr>
+
+            <tr class="item last">
+                <td>
+                    tex
+                </td>
+
+                <td>
+                    $00.00
+                </td>
+            </tr>
+
+            <tr class="total">
+                <td></td>
+
+                <td>
+                   Total: ${{ invoice.amount }}
+                </td>
+            </tr>
+        </table>
+
+    <table class="mt-3">
+        <tr class="heading">
+            <td style="text-align: center;">
                 {% if invoice.booking %}
-                <h3 class="mt-5 mb-3 text-center"><b>Booking : </b>{{ invoice.booking }}</h3>
+                Booking
+                {% else %}
+                Appointment
                 {% endif %}
-                {% if invoice.appointment %}
-                <h3 class="mt-5 mb-3 text-center"><b>Appointment : </b>{{ invoice.appointment }}</h3>
+            </td>
+        </tr>
+    </table>
+    <div class="detail">
+            <table class="table">
+                <thead class="thead-light">
+                {% if invoice.booking %}
+                <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Start</th>
+                    <th>End</th>
+                </tr>
+                {% else %}
+                <tr>
+                    <th>#</th>
+                    <th>Appointment Date</th>
+                    <th>Created On</th>
+                    <th>Approved On</th>
+                </tr>
                 {% endif %}
-            </div>
-            <!--collapse-->
-            <div id="accordion" class="my-5">
-                {% for room in rooms %}
-                <div class="card">
-                    <div class="card-header" id="heading_{{ forloop.counter }}">
-                        <h5 class="mb-0">
-                            <button class="btn btn-link collapsed" data-toggle="collapse"
-                                    data-target="#collapse_{{ forloop.counter }}"
-                                    aria-expanded="false" aria-controls="collapse_{{ forloop.counter }}">
-                                Show
-                            </button>
-                            <span class="mx-2">{{ room.creator }}</span>
-                            <span class="mx-2">{{ room.partner }}</span>
-                            <span class="mx-2">{{ room.date_created }}</span>
-                        </h5>
-                    </div>
-                    {% if forloop.counter == 1 %}
-                    <div id="collapse_{{ forloop.counter }}" class="collapse show"
-                         aria-labelledby="heading_{{ forloop.counter }}" data-parent="#accordion">
-                        {% else %}
-                        <div id="collapse_{{ forloop.counter }}" class="collapse"
-                             aria-labelledby="heading_{{ forloop.counter }}" data-parent="#accordion">
-                            {% endif %}
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-4"></div>
-                                    <div class="col-4 py-0 px-0 mx-0 my-0">
-                                        {% for msg in room.message_set.all %}
-                                        {% if room.creator == msg.author %}
-                                        <p>{{ msg }}</p>
-                                        {% else %}
-                                        <p class="text-right py-0 px-0 mx-0 my-0">{{ msg }}</p>
-                                        {% endif %}
-
-                                        {% endfor %}
-                                    </div>
-                                    <div class="col-3"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-
-                </div>
-            </div>
+                </thead>
+                <tbody>
+                {% if invoice.booking %}
+                {% for dates in invoice.booking.booking.all %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ dates.date }}</td>
+                    <td>{{ dates.start_time|time:"h:i a" }}</td>
+                    <td>{{ dates.end_time|time:"h:i a" }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td>1</td>
+                    <td>{{ invoice.appointment.request_date|date }}</td>
+                    <td>{{ invoice.appointment.created_date|date:"M. d, Y, h:i a" }}</td>
+                    <td>{{ invoice.appointment.approved_date|date:"M. d, Y, h:i a" }}</td>
+                </tr>
+                {% endif %}
+                </tbody>
+            </table>
         </div>
-        <!--container end-->
-        {% endblock content %}
+    </div>
+    {% if message %}
+    <h1 class="page_main_header my-3">Messages</h1>
+    <div class="msg my-3">
+        <ul class="sub-menu">
+            {% for msg in message %}
+            {% if msg.author == invoice.payor %}
+            <li style="width:100%;">
+                <div class="msj-rta macro">
+                    <div class="text text-r">
+                        <p>{{ msg.content }}</p>
+                        <p style="text-align: left;">
+                            <small>{{ msg.date_created|time:"h:i A" }} - {{ msg.author.username }}</small>
+                        </p>
+                    </div>
+                    <div class="avatar" style="padding:0px 0px 0px 0px !importat">
+
+                    </div>
+                </div>
+            </li>
+            {% else %}
+            <li style="width:100%">
+                <div class="msj macro">
+                    <div class="text text-l">
+                        <p>{{ msg.content }}</p>
+                        <p style="text-align: left;">
+                            <small>{{ msg.date_created|time:"h:i A" }} - {{ msg.author.username }}</small>
+                        </p>
+                    </div>
+                </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock content %}
