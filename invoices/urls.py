@@ -13,5 +13,5 @@ urlpatterns = [
     path('create-checkout-session/<int:invoice_id>/', views.CreateCheckoutSession.as_view(), name="checkout"),
     path('create-checkout-session', views.CreateCheckoutSession.as_view(), name="checkout"),
     path('checkout-capture/', views.WebHook.as_view(), name="checkout_capture"),
-    path('invoice-pdf/<pk:invoice_id>', views.InvoicePdfView.as_view(), name="checkout_capture"),
+    path('invoice-pdf/<int:pk>', views.InvoicePdfView.as_view(), name="invocie_pdf"),
 ]
