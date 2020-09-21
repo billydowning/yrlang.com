@@ -247,11 +247,6 @@
 
                         <li><a href="{% url 'main:blog-post' %}"> The Brücke</a></li>
 
-                     {% if request.user.is_staff == True or request.session.user_role %}
-
-                    <li><a href="{% url 'inbox' %}"><i class="fa fa-envelope "
-                                                           aria-hidden="true"></i>Messages</a></li>
-                    {% endif %}
 
                     {% if request.user.is_staff == True %}
 
@@ -277,6 +272,8 @@
                         <div class="dropdown-content">
 
                             <a href="/cms">CMS</a>
+                            <a href="{% url 'inbox' %}"><i class="fa fa-envelope "
+                                                           aria-hidden="true"></i>Messages</a>
                             <a href="{% url 'custom_admin:invoices' %}">Invoices</a>
                             <a href="{% url 'custom_admin:complins_list' %}">Complains</a>
                             <a href="{% url 'account_logout' %}">Logout</a>
@@ -310,6 +307,8 @@
 
                                 <i class="fa fa-heart" aria-hidden="true"></i><span>Favorites</span></a>
                             {% endif %}
+                            <a href="{% url 'inbox' %}"><i class="fa fa-envelope "
+                                                           aria-hidden="true"></i>Messages</a>
                             {% if provider_checked or client_checked %}
                             <a href="{% url 'provider_appointment' %}"><i class="fa fa-calendar"
                                                                           aria-hidden="true"> </i><span>Appointments</span></a>

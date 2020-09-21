@@ -283,6 +283,7 @@ class CreateCheckoutSession(View):
 class InvoicePdfView(DetailView):
     template_name = 'invoice_pdf.html'
     model = Invoice
+    context_object_name = "invoice"
 
 
 class WebHook(View):
