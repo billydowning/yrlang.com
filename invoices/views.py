@@ -13,6 +13,7 @@ from django.views import View
 from django.views.generic import (CreateView, ListView, DetailView)
 from paypal.standard.forms import PayPalPaymentsForm
 
+from django_weasyprint import WeasyTemplateResponseMixin
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 from invoices.models import Invoice
 from users.models import CustomUser
@@ -322,3 +323,7 @@ class WebHook(View):
                 raise AttributeError('stripe session metadata is None Payment is Not Paid')
 
         return redirect("invoice", invoice_id=invoice.id)
+
+
+class InvoiceDownloadAsPdfView(WeasyTemplateResponseMixin, InvoicePdfView):
+    pdf_filename = "invoice"+str(datetime.now().date())+'.pdf'
