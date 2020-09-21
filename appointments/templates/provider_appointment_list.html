@@ -361,6 +361,8 @@
                                                         <button class="btn theme_btn" type="button">rating</button>
                                                     </a>
                                                      {% endif %}
+                                                    <a href="{% url 'provider_create_invoice_with_id' appointment.id %}">
+                                                        <button class="btn theme_btn" type="button">Create Invoice</button>
 
                                                     {% elif client_checked %}
 
