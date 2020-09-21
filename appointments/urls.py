@@ -17,6 +17,6 @@ urlpatterns = [
     path('save-appointment/', views.SaveAppointments.as_view(), name='save_appointment'),
     path('booking-detail/<int:pk>', views.BookingDetailView.as_view(), name='booking_detail'),
     path('booking-log-detail/<int:pk>', views.BookingDetailForLogView.as_view(), name='booking_details_log'),
-    path('appointment-detail/<int:pk>', views.AppointmentDetailForLogView.as_view(), name='booking_details_log'),
+    path('appointment-detail/<int:pk>', views.AppointmentDetailForLogView.as_view(), name='appointment_details_log'),
 
 ]

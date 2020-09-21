@@ -94,4 +94,4 @@ class ProviderAppointment(models.Model):
         return reverse('provider_appointments_detail', args=[self.pk])
 
     def get_appointment_detail_url(self):
-        return reverse('provider_appointments_detail', args=[self.pk])
+        return reverse('appointment_details_log', args=[self.pk])

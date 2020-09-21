@@ -5,7 +5,7 @@ class NotificationToUser:
 
     def notifications_create_for_booking(self, instance, message_data):
         requestee_role = UserRole.objects.get(name=UserRole.CLIENT)
-        requestor_role = UserRole.objects.get(name=UserRole.PROVIDER)
+        requestor_role = UserRole.objects.get(name=UserRole.LOCALITE)
         Notification.objects.bulk_create([
             Notification(name='have booking', user=instance.requestee,
                          role=requestor_role, payload={'body': 'you have an booking with' + str(instance.requestor),
