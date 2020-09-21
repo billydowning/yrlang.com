@@ -23,40 +23,45 @@
     <div class="media">{% if request.user.profile_image %}
         <div class="profile_d row">
             <div class="col-12 col-md-3 col-lg-2">
+                 <label for="id_profile_image">
+                <i class="fa fa-camera upload-button"></i>
+                 </label>
                 <img class="uk-border-circle" width="40" height="40" src="{{ request.user.profile_image.url }}">
+
                 {% else %}
+                 <label for="id_profile_image">
+                <i class="fa fa-camera upload-button"></i>
+                 </label>
                 <img class="uk-border-circle" width="40" height="40" src="{{ avtar }}">
+
                 {% endif %}
             </div>
+
             <div class="col-12 col-md-9 col-lg-10">
                 <div class="media-body text-left w-100">
-                    <h2>{{ current_user.username }}</h2>
+                    <h2>{{ request.user.username }}</h2>
                     <div class="row">
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Profession: {% for profession in current_user.profession.all %}
-                                {{ profession }}
-                                {% endfor %}</p>
+                            <p></p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Bio: {{ current_user.bio }}</p>
+                            <p></p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>email: {{ current_user.email }}</p>
+                            <p></p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Phone: {{ current_user.phone_number }}</p>
+                            <p></p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Location: {{ current_user.state }} - {{ current_user.country }}</p>
+                            <p></p>
                         </div>
                         <div class="col-12  col-md-6 col-lg-4">
-                            <p>Speaks:
-                                {% for lang in current_user.language.all %}
-                                {{ lang }}</p>
+                            <p></p>
                         </div>
                     </div>
 
-                    {% endfor %}
+
                 </div>
             </div>
         </div>
@@ -108,8 +113,10 @@
                                 <span>{{ error }}</span>
                                 {% endfor %}
                             </div>
+                            {{ form.phone_number.help_text }}
                             {% else %}
                             {{ form.phone_number }}
+                            {{ form.phone_number.help_text }}
                             {% endif %}
                         </div>
                     </div>
@@ -192,9 +199,9 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-6" style="display:none;">
                         <div class="form-group">
-                            {{ form.profile_image.label }}
+
                             {% if form.profile_image.errors %}
                             <div class="invalid-feedback">
                                 {% for error in form.profile_image.errors %}
