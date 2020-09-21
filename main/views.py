@@ -218,8 +218,11 @@ class IndexView(TemplateView):
         elif self.request.user.is_authenticated and \
                 self.request.user.is_provider_user(self.request.session.get('user_role')):
             return self.get_provider_context()
-        elif self.request.user.is_authenticated:
+        elif self.request.user.is_authenticated and \
+            self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
             return self.get_language_verifier_context()
+        elif self.request.user.is_staff and self.request.user.is_authenticated:
+            return self.get_admin_context()
         return super(IndexView, self).get( request, *args, **kwargs)
 
     def get_customer_context(self):
@@ -301,6 +304,16 @@ class IndexView(TemplateView):
                                                             requested_for__name=UserRole.LOCALITE)[:4]
 
         return self.render_to_response(context=context)
+
+    def get_admin_context(self):
+        context = self.get_context_data()
+        users_data = CustomUser.objects.all()
+        context["active_localite_total"] = users_data.filter(is_private=False,
+                                                             user_role__name = UserRole.LOCALITE).count()
+        context["active_provider_total"] = users_data.filter(is_private=False,
+                                                             user_role__name=UserRole.PROVIDER).count()
+        return self.render_to_response(context=context)
+
 
 class BlogPostView(TemplateView):
     template_name = 'blogpost/brucke_page_home.html'

@@ -261,7 +261,11 @@
                           <li class="dropdown">
                         <a href="" class="user_links">
                             <div class="user_img">
-                                <img src="/media/profile_images/homepage_hero_XL2x.jpg">
+                                {% if request.user.profile_image %}
+                                <img src="{{ request.user.profile_image.url }}">
+                                {% else %}
+                                <img src="{% static 'images/avtar1.png' %}">
+                                {% endif %}
                             </div>
                             <div class="name_of_user">
                                 <h6>{{ request.user.email|title }}</h6>
@@ -596,7 +600,7 @@ $( document ).ready(function() {
             {
                 return this.nodeType === Node.TEXT_NODE;
             });
-console.log(textNodes)
+
             $('.skiptranslate goog-te-gadget').contents().filter(function() {
                   return this.nodeType === Node.TEXT_NODE;
                 }).remove();

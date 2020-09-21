@@ -39,7 +39,7 @@ class Appointment(models.Model):
         return reverse('appointments_detail', args=[self.pk])
 
     def booking_detail_url(self):
-        return reverse('booking_detail', args=[self.pk])
+        return reverse('booking_details_log', args=[self.pk])
 
 
 class BookingDates(models.Model):
@@ -91,4 +91,7 @@ class ProviderAppointment(models.Model):
         return '{} - {} - {}'.format(self.requestor.username, self.requestee.username, self.created_date.date())
 
     def get_absolute_url(self):
+        return reverse('provider_appointments_detail', args=[self.pk])
+
+    def get_appointment_detail_url(self):
         return reverse('provider_appointments_detail', args=[self.pk])

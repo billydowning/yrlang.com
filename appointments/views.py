@@ -354,3 +354,13 @@ class BookingDetailView(UserSessionAndLoginCheckMixing, DetailView):
     model = ProviderAppointment
     template_name = 'booking_detail.html'
     context_object_name = 'booking'
+
+class BookingDetailForLogView(UserSessionAndLoginCheckMixing, DetailView):
+    model = Appointment
+    template_name = 'details/booking_detail.html'
+    context_object_name = 'booking'
+
+class AppointmentDetailForLogView(UserSessionAndLoginCheckMixing,DetailView):
+    model = ProviderAppointment
+    template_name = 'details/appointment_detail.html'
+    context_object_name = 'appointment'

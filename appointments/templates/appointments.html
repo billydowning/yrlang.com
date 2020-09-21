@@ -329,6 +329,8 @@
                                         </a>
                                         <span>OR</span>
                                         <a href="" class="cancel">Cancel</a>
+                                        <span>OR</span>
+                                        <a href="{% url 'contact' booking.requestor.id %}"><i class="fa fa-comments-o fa-2x" aria-hidden="true">&nbsp</i>  </a>
                                     </li>
                                     {% elif client_checked %}
                                     {% if booking.localite_comment %}
@@ -608,6 +610,14 @@
                                         {{ booking.customer_comment }}
                                     </li>
                                     {% endif %}
+                                    <li class="li_flex">
+                                        {% check_booking_rating user=request.user booking_id=booking.id  as in_rating %}
+                                            {% if not in_rating %}
+
+                                            <a href="{% url 'main:booking_review_and_rating' booking.id %}" class="cancel">Give a Rating</a>
+                                            {% endif %}
+
+                                    </li>
                                     {% elif client_checked %}
                                     {% if booking.localite_comment %}
                                     <li>
@@ -615,6 +625,20 @@
                                         {{ booking.localite_comment }}
                                     </li>
                                     {% endif %}
+                                    <li class="li_flex">
+                                        {% check_booking_rating user=request.user booking_id=booking.id  as in_rating %}
+                                            {% if not in_rating %}
+
+                                            <a href="{% url 'main:booking_review_and_rating' booking.id %}" class="cancel">Give a Rating</a>
+                                            {% endif %}
+                                         {% check_booking_complain user=request.user booking_id=booking.id  as in_report %}
+                                        {% if not in_report %}
+                                        <span>OR</span>
+                                            <a href="{% url 'main:booking_complain' booking.id %}" class="cancel">Give report</a>
+                                        {% endif %}
+
+
+                                    </li>
                                     {% endif %}
                                 </ul>
                                 <div class="calander_div">

@@ -23,7 +23,7 @@ from yrlang.settings.development_example import EMAIL_HOST_USER
 from allauth.account.views import SignupView
 import stripe
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
-
+from .notification_and_mail import NotificationToUser
 from .forms import (
     ProfessionalAccountForm,
     UpdateProfessionalAccountForm,
@@ -599,14 +599,23 @@ class RequestForCallWithMailView(View):
     def post(self, request,  *args,**kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
+            data_mesg =form.cleaned_data['reason'] + ' requested by '+ form.cleaned_data['req_from']+\
+                       "To " + form.cleaned_data['to'] +' on date ' + str(datetime.datetime.today())
             send_mail(
                 'Request For Call',
-                form.cleaned_data['reason'] + ' requested by '+ form.cleaned_data['req_from']
-                + ' on date ' + str(datetime.datetime.today()),
+                data_mesg,
                 EMAIL_HOST_USER,
                 [form.cleaned_data['to']],
                 fail_silently=True,
             )
+            if self.request.user.is_authenticated:
+                reciver  = CustomUser.get(self.kwargs.get('user_id'))
+                notification = NotificationToUser()
+                notification.notification_for_call_request(
+                    message_data=data_mesg, sender=self.request.user,
+                    reciver= reciver
+                )
+
         messages.success(self.request, "Your Request For Call Successful !")
         return HttpResponseRedirect('/')
 

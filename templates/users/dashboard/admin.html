@@ -55,7 +55,13 @@
       <div class="w-col w-col-3">
         <div class="dash-div">
           <div class="w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Blythe-M-headshot-circle-crop.png" alt="" class="image-71"></div>
+            <div class="w-col w-col-3">
+              {% if request.user.profile_image %}
+                        <img src="{{ request.user.profile_image.url }}" alt="User Imgae" class="image-71">
+                    {% else %}
+                        <img src="{% static 'images/avtar1.png' %}" alt="image not found" class="image-71">
+                    {% endif %}
+              </div>
             <div class="w-col w-col-9">
               <ul role="list" class="w-list-unstyled">
                 <li>
@@ -72,12 +78,12 @@
       <div class="w-col w-col-6">
         <div class="dash-div">
           <div class="w-layout-grid grid-6">
-            <h1 class="dash-heading">1</h1>
-            <h1 class="dash-heading">0</h1>
-            <h1 class="dash-heading">0</h1>
-            <div class="dash-text">Upcoming Appts</div>
-            <div class="dash-text">Action Required</div>
-            <div class="dash-text">Active Packages</div>
+            <h1 class="dash-heading">{{active_provider_total|default:"0"}}</h1>
+            <h1 class="dash-heading">{{active_localite_total|default:'0'}}</h1>
+            <h1 class="dash-heading"></h1>
+            <div class="dash-text">Active Provider</div>
+            <div class="dash-text">Active Localite</div>
+            <div class="dash-text"></div>
           </div>
         </div>
       </div>
@@ -86,133 +92,133 @@
       </div>
     </div>
   </div>
-  <div class="w-container">
-    <h3 class="heading-65">My upcoming appointments</h3>
-    <div class="dash-line"></div>
-    <div class="w-row">
-      <div class="w-col w-col-6">
-        <div class="dash-div">
-          <div class="w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Bernard-P-headshot-circle-crop.png" alt="" class="image-72 dash-pic"></div>
-            <div class="column-9 w-col w-col-7">
-              <ul role="list" class="list-5 w-list-unstyled">
-                <li>
-                  <h4 class="heading-66">Dr. Ian Pringle</h4>
-                </li>
-                <li>
-                  <h5 class="heading-68">Psychotherapist</h5>
-                </li>
-                <li>
-                  <div>Verified languages: English, German,<br>Spanish</div>
-                </li>
-              </ul>
-            </div>
-            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-73"></div>
-          </div>
-        </div>
-      </div>
-      <div class="w-col w-col-6">
-        <div class="dash-div">
-          <ul role="list" class="list-4 w-list-unstyled">
-            <li>
-              <div class="text-block-73">Date: July 30, 2019</div>
-            </li>
-            <li>
-              <div>Time: 14:00 - 15:00 </div>
-            </li>
-            <li>
-              <div>Location: Remote chat via Skype</div>
-            </li>
-            <li>Status: Confirmed</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div>
-    <div class="w-container">
-      <h3 class="heading-69">My service professionals</h3>
-      <div class="dash-line"></div>
-      <div class="w-layout-grid grid-7">
-        <div class="dash-div">
-          <div class="dash-columns w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>
-            <div class="w-col w-col-7">
-              <ul role="list" class="w-list-unstyled">
-                <li>
-                  <h4 class="heading-72">Dr. Blythe McKay</h4>
-                </li>
-                <li>
-                  <h5 class="heading-74">Psychotherapist</h5>
-                </li>
-                <li>
-                  <div>Verified languages: English, German,<br>Spanish, Italian</div>
-                </li>
-              </ul>
-            </div>
-            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>
-          </div>
-        </div>
-        <div class="dash-div">
-          <div class="dash-columns w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>
-            <div class="w-col w-col-7">
-              <ul role="list" class="w-list-unstyled">
-                <li>
-                  <h4 class="heading-72">Dr. Blythe McKay</h4>
-                </li>
-                <li>
-                  <h5 class="heading-74">Psychotherapist</h5>
-                </li>
-                <li>
-                  <div>Verified languages: English, German,<br>Spanish, Italian</div>
-                </li>
-              </ul>
-            </div>
-            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>
-          </div>
-        </div>
-        <div class="dash-div">
-          <div class="dash-columns w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>
-            <div class="w-col w-col-7">
-              <ul role="list" class="w-list-unstyled">
-                <li>
-                  <h4 class="heading-72">Dr. Blythe McKay</h4>
-                </li>
-                <li>
-                  <h5 class="heading-74">Psychotherapist</h5>
-                </li>
-                <li>
-                  <div>Verified languages: English, German,<br>Spanish, Italian</div>
-                </li>
-              </ul>
-            </div>
-            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>
-          </div>
-        </div>
-        <div class="dash-div">
-          <div class="dash-columns w-row">
-            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>
-            <div class="w-col w-col-7">
-              <ul role="list" class="w-list-unstyled">
-                <li>
-                  <h4 class="heading-72">Dr. Blythe McKay</h4>
-                </li>
-                <li>
-                  <h5 class="heading-74">Psychotherapist</h5>
-                </li>
-                <li>
-                  <div>Verified languages: English, German,<br>Spanish, Italian</div>
-                </li>
-              </ul>
-            </div>
-            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<!--  <div class="w-container">-->
+<!--    <h3 class="heading-65">My upcoming appointments</h3>-->
+<!--    <div class="dash-line"></div>-->
+<!--    <div class="w-row">-->
+<!--      <div class="w-col w-col-6">-->
+<!--        <div class="dash-div">-->
+<!--          <div class="w-row">-->
+<!--            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Bernard-P-headshot-circle-crop.png" alt="" class="image-72 dash-pic"></div>-->
+<!--            <div class="column-9 w-col w-col-7">-->
+<!--              <ul role="list" class="list-5 w-list-unstyled">-->
+<!--                <li>-->
+<!--                  <h4 class="heading-66">Dr. Ian Pringle</h4>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <h5 class="heading-68">Psychotherapist</h5>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <div>Verified languages: English, German,<br>Spanish</div>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-73"></div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="w-col w-col-6">-->
+<!--        <div class="dash-div">-->
+<!--          <ul role="list" class="list-4 w-list-unstyled">-->
+<!--            <li>-->
+<!--              <div class="text-block-73">Date: July 30, 2019</div>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--              <div>Time: 14:00 - 15:00 </div>-->
+<!--            </li>-->
+<!--            <li>-->
+<!--              <div>Location: Remote chat via Skype</div>-->
+<!--            </li>-->
+<!--            <li>Status: Confirmed</li>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--  <div>-->
+<!--    <div class="w-container">-->
+<!--      <h3 class="heading-69">My service professionals</h3>-->
+<!--      <div class="dash-line"></div>-->
+<!--      <div class="w-layout-grid grid-7">-->
+<!--        <div class="dash-div">-->
+<!--          <div class="dash-columns w-row">-->
+<!--            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>-->
+<!--            <div class="w-col w-col-7">-->
+<!--              <ul role="list" class="w-list-unstyled">-->
+<!--                <li>-->
+<!--                  <h4 class="heading-72">Dr. Blythe McKay</h4>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <h5 class="heading-74">Psychotherapist</h5>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <div>Verified languages: English, German,<br>Spanish, Italian</div>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="dash-div">-->
+<!--          <div class="dash-columns w-row">-->
+<!--            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>-->
+<!--            <div class="w-col w-col-7">-->
+<!--              <ul role="list" class="w-list-unstyled">-->
+<!--                <li>-->
+<!--                  <h4 class="heading-72">Dr. Blythe McKay</h4>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <h5 class="heading-74">Psychotherapist</h5>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <div>Verified languages: English, German,<br>Spanish, Italian</div>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="dash-div">-->
+<!--          <div class="dash-columns w-row">-->
+<!--            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>-->
+<!--            <div class="w-col w-col-7">-->
+<!--              <ul role="list" class="w-list-unstyled">-->
+<!--                <li>-->
+<!--                  <h4 class="heading-72">Dr. Blythe McKay</h4>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <h5 class="heading-74">Psychotherapist</h5>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <div>Verified languages: English, German,<br>Spanish, Italian</div>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="dash-div">-->
+<!--          <div class="dash-columns w-row">-->
+<!--            <div class="w-col w-col-3"><img src="{{webflow_url}}/images/Caroline-M-headshot-circle-crop.png" alt="" class="image-75"></div>-->
+<!--            <div class="w-col w-col-7">-->
+<!--              <ul role="list" class="w-list-unstyled">-->
+<!--                <li>-->
+<!--                  <h4 class="heading-72">Dr. Blythe McKay</h4>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <h5 class="heading-74">Psychotherapist</h5>-->
+<!--                </li>-->
+<!--                <li>-->
+<!--                  <div>Verified languages: English, German,<br>Spanish, Italian</div>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--            <div class="w-col w-col-2"><img src="{{webflow_url}}/images/icons8-event-52-1.png" alt="" class="image-76"></div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
 
     </div>
 </div>

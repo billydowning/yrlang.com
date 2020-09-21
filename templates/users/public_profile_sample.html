@@ -250,7 +250,7 @@
         </button>
       </div>
       <div class="modal-body">
-          <form method="post" action="{% url 'request_for_call' %}">
+          <form method="post" action="{% url 'request_for_call' user.id %}">
               {% csrf_token %}
             {{form.as_p}}
               <input type="submit" value="send" class="btn btn-theme">

@@ -266,6 +266,38 @@
                                                 <li><span>Status:</span>{{ appointment.get_status_display }}
                                                 </li>
                                                 <li class="li_flex">
+                                                     {% if provider_checked %}
+
+
+                                                    </a>{% check_appointment_rating user=request.user appointment_id=appointment.id  as in_rating %}
+                                                        {% if not in_rating %}--
+                                                     <a href="{% url 'main:appointment_review_and_rating' appointment.id %}">
+                                                        <button class="btn theme_btn" type="button">Give Rating</button>
+                                                    </a>
+                                                     {% endif %}
+
+
+                                                    {% elif client_checked %}
+
+
+                                                          {% check_appointment_rating user=request.user appointment_id=appointment.id  as in_rating %}
+                                                        {% if not in_rating %}--
+                                                     <a href="{% url 'main:appointment_review_and_rating' appointment.id %}">
+                                                        <button class="btn theme_btn" type="button">Give Review</button>
+                                                    </a>
+                                                        {% endif %}
+                                                    {% check_appointment_complain user=request.user appointment_id=appointment.id  as in_report %}
+                                                    {% if not in_report %}
+                                                          --
+                                                     <a href="{% url 'main:appointment_complain' appointment.id %}">
+                                                        <button class="btn theme_btn" type="button">Give Report</button>
+                                                    </a>
+                                                    {% endif %}
+
+
+
+                                                     {% endif %}
+
                                                     <!--                                                        <button class="btn theme_btn" type="button">Confirm</button>-->
                                                     <!--                                                    <span>OR</span>-->
                                                     <!--                                                    <a href="" class="cancel">Cancel</a>-->
@@ -355,36 +387,19 @@
 
                                                     <a href="{% url 'edit_provider_appointment' appointment.id %}">
                                                         <button class="btn theme_btn" type="button">Edit</button>
-                                                    </a>{% check_appointment_rating user=request.user appointment_id=appointment.id  as in_rating %}
-                                                        {% if not in_rating %}--
-                                                     <a href="{% url 'main:appointment_review_and_rating' appointment.id %}">
-                                                        <button class="btn theme_btn" type="button">rating</button>
-                                                    </a>
-                                                     {% endif %}
+                                                     --
                                                     <a href="{% url 'provider_create_invoice_with_id' appointment.id %}">
-                                                        <button class="btn theme_btn" type="button">Create Invoice</button>
+                                                        <button class="btn theme_btn" type="button">Create Invoice</button></a>
 
                                                     {% elif client_checked %}
 
                                                     <a href="{% url 'edit_provider_appointment' appointment.id %}">
                                                         <button class="btn theme_btn" type="button">Detail</button>
                                                     </a>
-                                                    {% check_appointment_rating user=request.user appointment_id=appointment.id  as in_rating %}
-                                                        {% if not in_rating %}--
-                                                     <a href="{% url 'main:appointment_review_and_rating' appointment.id %}">
-                                                        <button class="btn theme_btn" type="button">Give Review</button>
-                                                    </a>
-                                                        {% endif %}
-                                                    {% check_appointment_complain user=request.user appointment_id=appointment.id  as in_report %}
-                                                    {% if not in_report %}
-                                                          --
-                                                     <a href="{% url 'main:appointment_complain' appointment.id %}">
-                                                        <button class="btn theme_btn" type="button">Give Report</button>
-                                                    </a>
-                                                    {% endif %}
 
 
-                                                {% endif %}
+
+                                                     {% endif %}
                                                 </li>
                                             </ul>
                                             <div class="calander_div">
