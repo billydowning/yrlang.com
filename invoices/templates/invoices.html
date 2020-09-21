@@ -46,7 +46,7 @@
                             {% if invoice.appointment.payment_method|is_payment_other_options %}
                                 <p><b>Payment Method : </b>{{ invoice.appointment.get_payment_method_display }}</p>
                             {% else %}
-                                <a class="btn btn-light" href="{% url 'invocie_pdf' invoice.id %}" target="_blank">Invoice </a>
+                                <a class="btn btn-light" href="{% url 'invoice_pdf_download' invoice.id %}">Download Invoice </a>
                             {% endif %}
 
                         </div>
