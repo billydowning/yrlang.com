@@ -1,8 +1,18 @@
 {% extends "layout.html" %}
 {% load check_status %}
+{% load check_role %}
 
 {% block content %}
+{% is_provider user_role=request.session.user_role as provider_checked %}
+                    {% is_localite user_role=request.session.user_role as localite_checked %}
 <div class="container">
+    <h1 class="page_main_header my-3">Invoices</h1>
+    {% if provider_checked  %}
+    <div class="  col-md-6 col-lg-4"> <a class="button secondaryAction  mb-5" href="{% url 'provider_create_invoice' %}"><span>Create New Invoice</span></a> </div>
+    {% endif %}
+    {% if localite_checked  %}
+    <div class="  col-md-6 col-lg-4"> <a class="button secondaryAction  mb-5" href="{% url 'create_invoice' %}"><span>Create New Invoice</span></a> </div>
+    {% endif %}
 {% if invoices %}
     <div uk-filter="target: .js-filter">
         <ul class="uk-subnav uk-subnav-pill">
@@ -33,6 +43,12 @@
                             <h3 class="uk-card-title">{{ invoice.title }}</h3>
                             <p>{{ invoice.amount }}</p>
                             <p>{{ invoice.date_paid }}</p>
+                            {% if invoice.appointment.payment_method|is_payment_other_options %}
+                                <p><b>Payment Method : </b>{{ invoice.appointment.get_payment_method_display }}</p>
+                            {% else %}
+                                <a class="btn btn-light" href="{% url 'invoice_pdf_download' invoice.id %}">Download Invoice </a>
+                            {% endif %}
+
                         </div>
                         <br>
                     </li>

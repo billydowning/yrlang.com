@@ -2,6 +2,7 @@
 {% load webpush_notifications %}
 {% load i18n %}
 {% load google_translate %}
+{% load check_request %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -170,7 +171,7 @@
     <nav class="uk-navbar-container ">
         <div class="container uk-navbar">
             <div class="uk-navbar-left">
-                {% if  request.path == '/home' and request.user.is_authenticated %}
+                {% if  request.path == '/' and request.user.is_authenticated %}
 
                 <ul class="uk-navbar-nav">
                     <li class="uk-active">
@@ -200,7 +201,12 @@
                     {% is_provider user_role=request.session.user_role as provider_checked %}
                     {% is_localite user_role=request.session.user_role as localite_checked %}
                     {% is_language_veri user_role=request.session.user_role as is_language_veri_checked %}
-
+                    {% provider user as pro %}
+                    {% localite user as loc %}
+                    {% language_verifer user as lang_veri %}
+                    {% provider_request_sent user as provider_request_checked %}
+                    {% localite_request_sent  user as localite_request_checked %}
+                    {% lang_verifier_request_sent user as lang_veri_request_checked %}
 {#                    <li><a href="{% url 'main:home' %}"> Explore</a></li>#}
 {#                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>#}
 {##}
@@ -218,27 +224,44 @@
 {#                        </div>#}
 {#                    </li>#}
                         <li><a href="{% url 'main:home' %}">    <span>Explore</span></a></li>
-                        <li class="dropdown">
+                    {% if not pro or not loc %}
+                    <li class="dropdown">
                         <a href="">Join Our Platform</a>
                         <div class="dropdown-content">
-                            <a href="{% url 'become_localite_temp' %}">Become a Localite</a>
+                            {% if not  loc  %}
+                                {% if not  localite_request_checked %}
+                                <a href="{% url 'become_localite_temp' %}">Become a Localite</a>
+                                {% else %}
+                                <a >Requested for Localite </a>
+                                {% endif %}
+                            {% endif %}
+                            {% if not  pro %}
+                                {% if not  provider_request_checked %}
                             <a href="{% url 'become_provider_temp' %}">Become a Provider</a>
+                             {% else %}
+                                 <a >Requested for Provider </a>
+                                {% endif %}
+                            {% endif %}
                         </div>
-                    </li>
+                        </li>
+                    {% endif %}
+
                         <li><a href="{% url 'main:blog-post' %}"> The Brücke</a></li>
-                        <li><a href="{% url 'about_us' %}"> About Us</a></li>
-                    <li><a href="{% url 'inbox' %}"><i class="fa fa-envelope "
-                                                           aria-hidden="true"></i>Messages</a></li>
+
 
                     {% if request.user.is_staff == True %}
 
                     <!-- aa jyare main adimn hase tyare show karse -->
 
 
-                    <li class="dropdown">
+                          <li class="dropdown">
                         <a href="" class="user_links">
                             <div class="user_img">
-                                <img src="/media/profile_images/homepage_hero_XL2x.jpg">
+                                {% if request.user.profile_image %}
+                                <img src="{{ request.user.profile_image.url }}">
+                                {% else %}
+                                <img src="{% static 'images/avtar1.png' %}">
+                                {% endif %}
                             </div>
                             <div class="name_of_user">
                                 <h6>{{ request.user.email|title }}</h6>
@@ -250,6 +273,8 @@
                         <div class="dropdown-content">
 
                             <a href="/cms">CMS</a>
+                            <a href="{% url 'inbox' %}"><i class="fa fa-envelope "
+                                                           aria-hidden="true"></i>Messages</a>
                             <a href="{% url 'custom_admin:invoices' %}">Invoices</a>
                             <a href="{% url 'custom_admin:complins_list' %}">Complains</a>
                             <a href="{% url 'account_logout' %}">Logout</a>
@@ -261,7 +286,7 @@
 
                     <!-- aa client hase tyare show karse  -->
 
-                    <li class="dropdown">
+                        <li class="dropdown">
                         <a href="" class="user_links">
                             <div class="user_img ">
                                 {% if request.user.profile_image %}
@@ -279,8 +304,12 @@
                         {% if request.session.user_role %}
                         <div class="dropdown-content custom-icons">
                             {% if client_checked %}
-                            <a href="{% url 'user_favorite_list' %}">Favorite</a>
+                            <a href="{% url 'user_favorite_list' %}">
+
+                                <i class="fa fa-heart" aria-hidden="true"></i><span>Favorites</span></a>
                             {% endif %}
+                            <a href="{% url 'inbox' %}"><i class="fa fa-envelope "
+                                                           aria-hidden="true"></i>Messages</a>
                             {% if provider_checked or client_checked %}
                             <a href="{% url 'provider_appointment' %}"><i class="fa fa-calendar"
                                                                           aria-hidden="true"> </i><span>Appointments</span></a>
@@ -299,15 +328,12 @@
                                 <i class="fa fa-archive" aria-hidden="true"></i>
                                 <span>Subscription</span>
                             </a>
-                            <a href="{% url 'provider_create_invoice' %}"><span>Create New Invoice</span></a>
+
                             {% endif %}
 
-                            {% if localite_checked %}
-                            <a href="{% url 'create_invoice' %}"><span>Create New Invoice</span></a>
-                            {% endif %}
                             {% if request.user.user_role.count > 1 %}
 
-                            <a href="{% url 'user-role-select' %}">Swich Role</a>
+                            <a href="{% url 'user-role-select' %}"><i class="fa fa-refresh" aria-hidden="true"></i><span> Swich Role</span></a>
 
                             {% endif %}
                             <a href="{% url 'account_logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Logout</span></a>
@@ -407,17 +433,17 @@
                 {% endfor %}
             </div>
         </li>
-            <li><a href="#">Become a Localite</a></li>
-            <li><a href="#">Become a Provider</a></li>
+            <li><a href="{% url 'become_localite_temp' %}">Become a Localite</a></li>
+            <li><a href="{% url 'become_provider_temp' %}">Become a Provider</a></li>
                 <li class="opn_submenu">
-            <a href="#" class="opned">My Dashboard</a>
-            <div class="submenu_links">
-                 <a href="#">Calender</a>
-                  <a href="#">Settings</a>
-                  <a href="#">Messages</a>
-            </div>
+            <a href="{% url 'main:index' %}" class="opned">My Dashboard</a>
+{#            <div class="submenu_links">#}
+{#                 <a href="#">Calender</a>#}
+{#                  <a href="#">Settings</a>#}
+{#                  <a href="#">Messages</a>#}
+{#            </div>#}
         </li>
-         <li><a href="#">The Brücke</a></li>
+         <li><a href="{% url 'main:blog-post' %}">The Brücke</a></li>
        </ul>
 
 {#        {% if request.session.user_role %}#}
@@ -574,7 +600,7 @@ $( document ).ready(function() {
             {
                 return this.nodeType === Node.TEXT_NODE;
             });
-console.log(textNodes)
+
             $('.skiptranslate goog-te-gadget').contents().filter(function() {
                   return this.nodeType === Node.TEXT_NODE;
                 }).remove();

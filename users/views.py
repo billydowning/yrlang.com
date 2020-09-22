@@ -1,14 +1,10 @@
 import datetime
-from decimal import Decimal
 from _collections import defaultdict
 from django.contrib import messages
 from django.shortcuts import redirect, get_object_or_404, reverse
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.contrib.contenttypes.models import ContentType
-from django.conf.urls import i18n
-from django.urls import reverse_lazy
-from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.template.loader import render_to_string
 from weasyprint import HTML
@@ -27,7 +23,7 @@ from yrlang.settings.development_example import EMAIL_HOST_USER
 from allauth.account.views import SignupView
 import stripe
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
-
+from .notification_and_mail import NotificationToUser
 from .forms import (
     ProfessionalAccountForm,
     UpdateProfessionalAccountForm,
@@ -213,7 +209,8 @@ class UserMultipleRoleView(TemplateView):
         if self.request.POST.get("role") == UserRole.PROVIDER:
             if self.request.user.phone_number is None \
                     or self.request.user.country is None \
-                    or self.request.user.state is None:
+                    or self.request.user.state is None\
+                    or not self.request.user.providercategories_set.exists():
                 self.request.session['user_role'] = UserRole.PROVIDER
                 url = reverse_lazy('profile')
             else:
@@ -222,7 +219,8 @@ class UserMultipleRoleView(TemplateView):
         elif self.request.POST.get("role") == UserRole.LOCALITE:
             if self.request.user.phone_number is None \
                     or self.request.user.country is None \
-                    or self.request.user.state is None:
+                    or self.request.user.state is None \
+                    or not self.request.user.language.exists():
                 self.request.session['user_role'] = UserRole.LOCALITE
                 url = reverse_lazy('profile')
             else:
@@ -601,14 +599,23 @@ class RequestForCallWithMailView(View):
     def post(self, request,  *args,**kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
+            data_mesg =form.cleaned_data['reason'] + ' requested by '+ form.cleaned_data['req_from']+\
+                       "To " + form.cleaned_data['to'] +' on date ' + str(datetime.datetime.today())
             send_mail(
                 'Request For Call',
-                form.cleaned_data['reason'] + ' requested by '+ form.cleaned_data['req_from']
-                + ' on date ' + str(datetime.datetime.today()),
+                data_mesg,
                 EMAIL_HOST_USER,
                 [form.cleaned_data['to']],
                 fail_silently=True,
             )
+            if self.request.user.is_authenticated:
+                reciver  = CustomUser.get(self.kwargs.get('user_id'))
+                notification = NotificationToUser()
+                notification.notification_for_call_request(
+                    message_data=data_mesg, sender=self.request.user,
+                    reciver= reciver
+                )
+
         messages.success(self.request, "Your Request For Call Successful !")
         return HttpResponseRedirect('/')
 
@@ -616,6 +623,7 @@ class UserReviewListView(ListView):
     user = None
     template_name = "users/reviews/user_review_list.html"
     context_object_name = 'reviews'
+
     def dispatch(self, request, *args, **kwargs):
         self.user = get_object_or_404(CustomUser, pk=kwargs.get('user_id'))
         return super(UserReviewListView, self).dispatch(request, *args, **kwargs)

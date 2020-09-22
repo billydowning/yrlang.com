@@ -1,5 +1,5 @@
+from datetime import datetime, timedelta
 from builtins import super
-from datetime import datetime
 import pytz
 from django.contrib import messages
 from _collections import defaultdict
@@ -33,8 +33,6 @@ class HomeView(TemplateView):
         localite_list = None
         provider_list = None
         search_form = UserSearchFrom(self.request.GET)
-
-
 
         if search_form.is_valid():
             if search_form.cleaned_data.get('country'):
@@ -192,6 +190,133 @@ class LocaliteListsView(ListView):
 
 class IndexView(TemplateView):
     template_name = 'explore.html'
+
+    def get_template_names(self):
+        if self.request.user.is_authenticated:
+            if self.request.user.is_staff:
+                self.template_name = 'users/dashboard/admin.html'
+            elif self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
+                self.template_name = 'users/dashboard/language_verifier.html'
+            elif self.request.user.is_localite_user(self.request.session.get('user_role')):
+                self.template_name = 'users/dashboard/localite.html'
+            elif self.request.user.is_provider_user(self.request.session.get('user_role')):
+                self.template_name = 'users/dashboard/provider.html'
+            elif self.request.user.is_client_user(self.request.session.get('user_role')):
+                self.template_name = 'users/dashboard/customer.html'
+            else:
+                return redirect('user-role-select')
+
+        else:
+            self.template_name = 'explore.html'
+        return self.template_name
+
+
+    def get(self, request, *args, **kwargs):
+        context = None
+        if self.request.user.is_authenticated and \
+            self.request.user.is_client_user(self.request.session.get('user_role')):
+            return self.get_customer_context()
+        elif self.request.user.is_authenticated and \
+            self.request.user.is_localite_user(self.request.session.get('user_role')):
+            return self.get_localite_context()
+        elif self.request.user.is_authenticated and \
+                self.request.user.is_provider_user(self.request.session.get('user_role')):
+            return self.get_provider_context()
+        elif self.request.user.is_authenticated and \
+            self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
+            return self.get_language_verifier_context()
+        elif self.request.user.is_staff and self.request.user.is_authenticated:
+            return self.get_admin_context()
+        return super(IndexView, self).get( request, *args, **kwargs)
+
+    def get_customer_context(self):
+        context = self.get_context_data()
+        appointments = self.request.user.client
+        bookings = self.request.user.requestor
+        some_day_next_week = datetime.now().date() + timedelta(days=7)
+        context['appointments_total'] = appointments.all().count()
+        context['booking_total'] = bookings.all().count()
+        context['upcoming_Task_total'] = appointments.filter(status=ProviderAppointment.REQUESTED,
+                                                             request_date__gt=datetime.now().date()).count() \
+                                         + bookings.filter(status__in=[Appointment.CREATED,
+                                                                       Appointment.RESCHEDULE_REQUESTED],
+                                                           booking__date__gt=datetime.now().date()).count()
+        context['upcoming_appointments'] = appointments.filter(status=ProviderAppointment.REQUESTED,
+                                                               request_date__gt=datetime.now().date(),
+                                                               request_date__lt= some_day_next_week)
+        context['upcoming_booking'] = bookings.filter(status__in=[Appointment.CREATED,
+                                                                Appointment.RESCHEDULE_REQUESTED],
+                                                    booking__date__gt=datetime.now().date(),
+                                                    booking__date__lt = some_day_next_week)
+        return self.render_to_response(context=context)
+
+    def get_localite_context(self):
+        context = self.get_context_data()
+        bookings = self.request.user.requestee
+        some_day_next_week = datetime.now().date() + timedelta(days=7)
+        context['booking_total'] = bookings.all().count()
+        context['pending_bookings_total'] = bookings.filter(status=Appointment.CREATED).count()
+        context['reschedule_bookings_total'] = bookings.filter(status=Appointment.RESCHEDULE_REQUESTED).count()
+        context['canceled_bookings_total'] = bookings.filter(status=Appointment.CANCELED).count()
+        context['upcoming_Task_total'] = bookings.filter(status__in=[Appointment.CREATED,
+                                                                       Appointment.RESCHEDULE_REQUESTED],
+                                                           booking__date__gt=datetime.now().date()).count()
+        context['upcoming_booking'] = bookings.filter(status__in=[Appointment.CREATED,
+                                                                  Appointment.RESCHEDULE_REQUESTED],
+                                                      booking__date__gt=datetime.now().date(),
+                                                      booking__date__lt=some_day_next_week)
+        return self.render_to_response(context=context)
+
+    def get_provider_context(self):
+        context = self.get_context_data()
+        some_day_next_week = datetime.now().date() + timedelta(days=7)
+        appointments = self.request.user.provider
+        context['appointment_total'] = appointments.all().count()
+        context['upcoming_appointments_total'] = appointments.filter(status=ProviderAppointment.REQUESTED,
+                                                               request_date__gt=datetime.now().date(),
+                                                               ).count()
+        context['pending_appointment_total'] = appointments.filter(status=ProviderAppointment.REQUESTED,
+                                                               ).count()
+        context['complated_appointment_total'] = appointments.filter(status=ProviderAppointment.COMPLETED,
+                                                                   ).count()
+        context['canceled_appointment_total'] = appointments.filter(status=ProviderAppointment.CANCELED,
+                                                                     ).count()
+
+        context['upcoming_appointments'] = appointments.filter(status=ProviderAppointment.REQUESTED,
+                                                      request_date__gt=datetime.now().date(),
+                                                      request_date__lt=some_day_next_week)
+
+        return self.render_to_response(context=context)
+
+    def get_language_verifier_context(self):
+        context = self.get_context_data()
+        role_requests = UserRoleRequest.objects.order_by('requested_on').exclude(user=self.request.user)
+        context['total_request'] = role_requests.filter(
+                    requested_for__name__in=[UserRole.PROVIDER,
+                                             UserRole.LOCALITE]).count()
+        context['pending_request_total'] = role_requests.filter(status = UserRoleRequest.REQUESTED,
+                                            requested_for__name__in=[UserRole.PROVIDER, UserRole.LOCALITE]).count()
+        context['canceled_request_total'] = role_requests.filter(status=UserRoleRequest.CANCELED,
+                            requested_for__name__in=[UserRole.PROVIDER, UserRole.LOCALITE]).count()
+        context['verified_request_total'] = role_requests.filter(status=UserRoleRequest.VERIFIED,
+                            requested_for__name__in=[UserRole.PROVIDER, UserRole.LOCALITE]).count()
+        context['approved_request_total'] = role_requests.filter(status=UserRoleRequest.APPROVED,
+                            requested_for__name__in=[UserRole.PROVIDER, UserRole.LOCALITE]).count()
+        context['provider_requests'] = role_requests.filter(status=UserRoleRequest.REQUESTED,
+                            requested_for__name=UserRole.PROVIDER)[:4]
+        context['localite_requests'] = role_requests.filter(status=UserRoleRequest.REQUESTED,
+                                                            requested_for__name=UserRole.LOCALITE)[:4]
+
+        return self.render_to_response(context=context)
+
+    def get_admin_context(self):
+        context = self.get_context_data()
+        users_data = CustomUser.objects.all()
+        context["active_localite_total"] = users_data.filter(is_private=False,
+                                                             user_role__name = UserRole.LOCALITE).count()
+        context["active_provider_total"] = users_data.filter(is_private=False,
+                                                             user_role__name=UserRole.PROVIDER).count()
+        return self.render_to_response(context=context)
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data()

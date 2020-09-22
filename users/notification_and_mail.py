@@ -5,15 +5,15 @@ class NotificationToUser:
 
     def notifications_create_for_booking(self, instance, message_data):
         requestee_role = UserRole.objects.get(name=UserRole.CLIENT)
-        requestor_role = UserRole.objects.get(name=UserRole.PROVIDER)
+        requestor_role = UserRole.objects.get(name=UserRole.LOCALITE)
         Notification.objects.bulk_create([
             Notification(name='have booking', user=instance.requestee,
                          role=requestor_role, payload={'body': 'you have an booking with' + str(instance.requestor),
-                                                       'url': str(instance.get_absolute_url())
+                                                       'url': str(instance.booking_detail_url())
                                                        }
                          ),
             Notification(name='booking created', user=instance.requestor,
-                         role=requestee_role, payload={'body': message_data, "url": str(instance.get_absolute_url())
+                         role=requestee_role, payload={'body': message_data, "url": str(instance.booking_detail_url())
                                                        }),
         ])
 
@@ -23,14 +23,28 @@ class NotificationToUser:
         Notification.objects.bulk_create([
             Notification(name='have appointment', user=instance.requestee,
                          role=requestor_role, payload= {'body':'you have an appointment with'+str(instance.requestor),
-                                                        'url':str(instance.get_absolute_url())
+                                                        'url':str(instance.get_appointment_detail_url())
                                                         }
                          ),
             Notification(name='appointment created', user=instance.requestor,
-                         role = requestee_role, payload={'body':message_data, "url":str(instance.get_absolute_url())
+                         role = requestee_role, payload={'body':message_data, "url":str(instance.get_appointment_detail_url())
                                                                 }),
         ])
 
-    def notification_for_chat(self):
-        pass
+    def notification_for_call_request(self,message_data, sender, reciver):
+        role = UserRole.objects.get(name=UserRole.CLIENT)
+
+        Notification.objects.bulk_create([
+            Notification(name='request for call', user=sender,
+                         role=role, payload={'body': message_data
+
+                                                       }
+                         ),
+            Notification(name='request for call', user=reciver,
+                         role=role,
+                         payload={'body': message_data
+                                  }),
+        ])
+
+
 

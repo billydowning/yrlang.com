@@ -90,10 +90,10 @@ p.turn-grey.small.footers_link {
                     <h1>Logs </h1>
                 </div>
               <input type="text" id="myInput" class="form-control" placeholder="Search your log here"  />
-            <div class="white z-depth-1  pb-0">
-                <div class="messages">
 
-                    <ul id="myList" >
+                <div class="messages" id="messgaes_div">
+
+                    <ul id="chat-log" >
                         {% for notification in notifications %}
                             <li >
 
@@ -101,6 +101,8 @@ p.turn-grey.small.footers_link {
                                 <p>{{notification.payload.body}}</p>
                                 {% if notification.payload.url %}
                                 <a href="{{notification.payload.url}}"> View </a>
+                                {% else %}
+                                <a href=""> </a>
                                 {% endif %}
                                 <span class="msg_time">{{notification.timestamp}}</span>
                             </li>
@@ -118,7 +120,7 @@ p.turn-grey.small.footers_link {
 <!--                                                                           aria-hidden="true"></i></button>-->
 <!--                    </div>-->
 <!--                </div>-->
-            </div>
+
 
         </div>
 
@@ -132,6 +134,10 @@ p.turn-grey.small.footers_link {
 
 <script>
 $(document).ready(function(){
+
+  $('#messgaes_div').animate({
+        scrollTop: $('#messgaes_div').get(0).scrollHeight
+    }, 1000);
 //person chat search
   $("#mysearchInp").on("keyup", function() {
     var value = $(this).val().toLowerCase();

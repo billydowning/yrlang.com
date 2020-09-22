@@ -10,9 +10,10 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, reverse
 from django.views import View
-from django.views.generic import (CreateView, ListView)
+from django.views.generic import (CreateView, ListView, DetailView)
 from paypal.standard.forms import PayPalPaymentsForm
 
+from django_weasyprint import WeasyTemplateResponseMixin
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
 from invoices.models import Invoice
 from users.models import CustomUser
@@ -46,8 +47,8 @@ class InvoiceCreateView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, Cre
     def get_form_kwargs(self, **kwargs):
         kwargs = super(InvoiceCreateView, self).get_form_kwargs(**kwargs)
         kwargs['user'] = self.request.user
+        kwargs['object_id'] = self.kwargs.get('object_id')
         return kwargs
-
 
 class ProviderInvoiceCreateView(UserSessionAndLoginCheckMixing, UserPassesTestMixin, CreateView):
     template_name = "provider_create_invoice.html"
@@ -72,6 +73,7 @@ class ProviderInvoiceCreateView(UserSessionAndLoginCheckMixing, UserPassesTestMi
     def get_form_kwargs(self, **kwargs):
         kwargs = super(ProviderInvoiceCreateView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
+        kwargs['object_id'] = self.kwargs.get('object_id')
         return kwargs
 
 
@@ -296,6 +298,12 @@ class CreateCheckoutSession(View):
         return JsonResponse({'id': session.id})
 
 
+class InvoicePdfView(DetailView):
+    template_name = 'invoice_pdf.html'
+    model = Invoice
+    context_object_name = "invoice"
+
+
 class WebHook(View):
     def get(self, request):
         session_id = request.GET['session_id']
@@ -332,3 +340,7 @@ class WebHook(View):
                 raise AttributeError('stripe session metadata is None Payment is Not Paid')
 
         return redirect("invoice", invoice_id=invoice.id)
+
+
+class InvoiceDownloadAsPdfView(WeasyTemplateResponseMixin, InvoicePdfView):
+    pdf_filename = "invoice"+str(datetime.now().date())+'.pdf'

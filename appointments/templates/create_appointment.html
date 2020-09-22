@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% load static check_status %}
-
+{% load check_role %}
 {% block calendar_extras %}
 
 <!-- Latest compiled and minified CSS -->
@@ -166,9 +166,17 @@
 {% endblock calendar_extras %}
 
 {% block content %}
-
+{% is_localite user_role=request.session.user_role as localite_checked %}
 <div class="container">
+    <h1 class="page_main_header my-3">Booking Detail</h1>
+    {%  if localite_checked %}
+    <div class="col-4">
+                <h3 class=" my-3">Contact With {{appointment.requestor.username}} <a href="{% url 'contact' appointment.requestor.id %}"> <i
+                            class="fa fa-comments-o fa-2x" aria-hidden="true">&nbsp</i></a></h3>
+            </div>
+    {% endif %}
     <div class="row">
+
     <div class="col-1">
     </div>
     <div class="col-10">

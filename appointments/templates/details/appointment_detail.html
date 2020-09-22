@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% load static check_status check_role %}
+
+{% block calendar_extras %}
+
+{% endblock calendar_extras %}
+
+{% block content %}
+{% is_provider user_role=request.session.user_role as provider_checked %}
+{% is_client user_role=request.session.user_role as client_checked %}
+
+
+<div class="container">
+    <div class="row">
+               <div class="col-12">
+                <h1 class=" page_main_header">Appointtment Detail </h1>
+                {% if provider_checked %}
+                   <p>Contact With {{ appointment.requestor.username}}&nbsp;&nbsp;<a href="{% url 'contact' appointment.requestor.id %}"><i class="fa fa-comments-o fa-2x" aria-hidden="true">&nbsp</i>  </a></p>
+                   {% else %}
+                   <p>Contact With {{ appointment.requestee.username}}&nbsp;&nbsp;<a href="{% url 'contact' appointment.requestee.id %}"><i class="fa fa-comments-o fa-2x" aria-hidden="true">&nbsp</i>  </a></p>
+                   {% endif  %}
+
+    <h2>Status :- {{ appointment.get_status_display }}</h2>
+
+
+    <hr>
+    <p>Appointment From :- {{ appointment.requestor }}</p>
+    <p>Appointment To :- {{ appointment.requestee }}</p>
+    <hr>
+
+    <p>client comment :- {{ appointment.client_comment|default:'Not Given' }}</p>
+    <p>localite comment :- {{ appointment.provider_comment|default:'Not Given' }}</p>
+    <hr>
+    <h2>created date :- {{ appointment.created_date }}</h2>
+
+    <p>Date :- {{ appointment.request_date }}</p>
+    <p>Approve Date :- {{ appointment.approved_date|default:'Not Approved Yet'  }}</p>
+
+
+</div>
+</div>
+</div>
+
+
+
+{% endblock content %}
