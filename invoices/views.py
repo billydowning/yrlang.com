@@ -211,11 +211,20 @@ class InvoiceCharge(View):
 
 class CreateCheckoutSession(View):
     def get(self, request, *args, **kwargs):
-        stripe.api_key = StripeKeys.objects.get(is_active=True).secret_key
-        stripe_pk = StripeKeys.objects.get(is_active=True).publishable_key
-        invoice_id = self.kwargs.get("invoice_id", None)
-        e = 'StripeKeys secret_key Not Exist'
-        # logger.error(self.__class__.__name__+" \n      ->"+e)
+        try:
+            stripe.api_key = StripeKeys.objects.get(is_active=True).secret_key
+        except Exception as e:
+            print(e)
+        try:
+            stripe_pk = StripeKeys.objects.get(is_active=True).publishable_key
+        except Exception as e:
+            stripe_pk = None
+            print(e)
+        try:
+            invoice_id = self.kwargs.get("invoice_id", None)
+        except Exception as e:
+            invoice_id = None
+            print(e)
 
         return render(request, 'checkout.html', {'stripe_pk': stripe_pk, 'invoice_id': invoice_id})
 
@@ -224,6 +233,7 @@ class CreateCheckoutSession(View):
 
         try:
             stripe.api_key = StripeKeys.objects.get(is_active=True).secret_key
+            stripe_keys = StripeKeys.objects.get(is_active=True)
         except exceptions.ObjectDoesNotExist as e:
             print("StripeKeys secret_key Not Exist\n", e)
 
@@ -235,49 +245,56 @@ class CreateCheckoutSession(View):
         try:
             customer_id = Invoice.objects.get(id=invoice_id).payor.stripe_id
         except exceptions.ObjectDoesNotExist as e:
+            print("Customer Is Not Exist\n", e)
             customer_id = None
 
         if customer_id:
-            session = stripe.checkout.Session.create(
-                customer=customer_id,
-                payment_method_types=['card'],
-                line_items=[{
-                    'price_data': {
-                        'currency': 'usd',
-                        'product_data': {
-                            'name': invoice.title,
+            try:
+                session = stripe.checkout.Session.create(
+                    customer=customer_id,
+                    payment_method_types=['card'],
+                    line_items=[{
+                        'price_data': {
+                            'currency': 'usd',
+                            'product_data': {
+                                'name': invoice.title,
+                            },
+                            'unit_amount': int(invoice.amount),
                         },
-                        'unit_amount': int(invoice.amount),
+                        'quantity': 1,
+                    }],
+                    mode='payment',
+                    metadata={
+                        'invoice_id': str(invoice_id),
                     },
-                    'quantity': 1,
-                }],
-                mode='payment',
-                metadata={
-                    'invoice_id': str(invoice_id),
-                },
-                success_url='http://yrlang.com/checkout-capture/?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url='http://yrlang.com/checkout-capture/',
-            )
+                    success_url=str(stripe_keys.success_url) + '?session_id={CHECKOUT_SESSION_ID}',
+                    cancel_url=str(stripe_keys.cancel_url),
+                )
+            except Exception as e:
+                print(e)
         else:
-            session = stripe.checkout.Session.create(
-                payment_method_types=['card'],
-                line_items=[{
-                    'price_data': {
-                        'currency': 'usd',
-                        'product_data': {
-                            'name': invoice.title,
+            try:
+                session = stripe.checkout.Session.create(
+                    payment_method_types=['card'],
+                    line_items=[{
+                        'price_data': {
+                            'currency': 'usd',
+                            'product_data': {
+                                'name': invoice.title,
+                            },
+                            'unit_amount': int(invoice.amount * 100),
                         },
-                        'unit_amount': int(invoice.amount * 100),
+                        'quantity': 1,
+                    }],
+                    mode='payment',
+                    metadata={
+                        'invoice_id': str(invoice_id),
                     },
-                    'quantity': 1,
-                }],
-                mode='payment',
-                metadata={
-                    'invoice_id': str(invoice_id),
-                },
-                success_url='http://yrlang.com/checkout-capture/?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url='http://yrlang.com/checkout-capture/',
-            )
+                    success_url=str(stripe_keys.success_url) + '?session_id={CHECKOUT_SESSION_ID}',
+                    cancel_url=str(stripe_keys.cancel_url),
+                )
+            except Exception as e:
+                print(e)
         return JsonResponse({'id': session.id})
 
 
@@ -309,7 +326,7 @@ class WebHook(View):
             if ses_re.payment_status == 'paid':
                 invoice.is_paid = True
                 invoice.date_paid = datetime.today()
-                invoice.payment_id = session_id
+                invoice.stripe_payment_id = session_id
                 if invoice.booking:
                     invoice.booking.status = Appointment.COMPLETED
                 elif invoice.appointment:

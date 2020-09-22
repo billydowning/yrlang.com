@@ -34,8 +34,4 @@ urlpatterns = [
     #report a problem
     path('booking-complain/<int:bookoing_id>', views.BookingComplainView.as_view(), name='booking_complain'),
     path('appointment-complain/<int:appointment_id>', views.AppointmentComplainView.as_view(), name='appointment_complain'),
-
-
-
-
 ]

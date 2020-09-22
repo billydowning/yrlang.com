@@ -30,10 +30,12 @@
                 <th scope="row">{{ invoice.pk }}</th>
                 <td>{{ invoice.title }}</td>
                 <td>
-                    {% if invoice.is_paid %}
-                    Paid
+                    {% if invoice.is_paid == False and invoice.current_month == False  %}
+                    <a href="#" class="btn btn-success">Make Payment</a>
+                    {% elif invoice.current_month %}
+                    <a href="#" class="btn text-dark disabled">Current Month</a>
                     {% else %}
-                    Pending
+                    <a href="#" class="btn text-dark disabled">Paid</a>
                     {% endif %}
                 </td>
                 <td>{{ invoice.appointment_count.all|length }}</td>

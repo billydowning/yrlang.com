@@ -71,3 +71,5 @@ class StripeKeys(models.Model):
     publishable_key = models.CharField(max_length=255)
     secret_key = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
+    success_url = models.CharField(max_length=255)
+    cancel_url = models.CharField(max_length=255)
