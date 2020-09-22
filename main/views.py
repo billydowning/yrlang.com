@@ -195,8 +195,10 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(IndexView, self).get_context_data()
-        context['insta'] = 'Instagtam Object'
-        context['feed'] = Post.objects.all().order_by('?')[:3]
+        try:
+            context['feed'] = Post.objects.all().order_by('?')[:3]
+        except Exception as e:
+            print(e)
         context['MEDIA_URL'] = settings.MEDIA_URL
         return context
 

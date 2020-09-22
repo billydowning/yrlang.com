@@ -14,4 +14,6 @@ logs/*
 
 media/videos
 *temp/
+*instagram/
+media/instagram
 media/chat_data
