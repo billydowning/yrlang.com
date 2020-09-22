@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     'invoices',
     'payment',
     'custom_admin',
+    'instagram_profile',
     #for user rating
     'star_ratings',
 

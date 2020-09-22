@@ -1,3 +1,4 @@
+from builtins import super
 from datetime import datetime
 import pytz
 from django.contrib import messages
@@ -6,6 +7,7 @@ from django.views.generic import (TemplateView, View, ListView,
                                   DetailView, RedirectView, CreateView)
 
 from django.db.models import Q
+from django.conf import settings
 from django.shortcuts import redirect, get_object_or_404
 from .constant import *
 from users.models import CustomUser, UserRole, UserRoleRequest, State
@@ -20,6 +22,8 @@ from .models import Review, ReportAProblem
 from appointments.models import (Appointment as BookingModel,
                                  ProviderAppointment as AppointmentModel)
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
+from instagram_profile.models import Post
+
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -188,6 +192,13 @@ class LocaliteListsView(ListView):
 
 class IndexView(TemplateView):
     template_name = 'explore.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data()
+        context['insta'] = 'Instagtam Object'
+        context['feed'] = Post.objects.all().order_by('?')[:3]
+        context['MEDIA_URL'] = settings.MEDIA_URL
+        return context
 
 
 class BlogPostView(TemplateView):

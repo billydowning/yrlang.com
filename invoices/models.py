@@ -33,6 +33,7 @@ class MonthlySubscriptionInvoice(models.Model):
     amount = models.DecimalField(decimal_places=2, max_digits=10, blank=True, null=True)
     currency = models.CharField(max_length=10, default='USD')
     is_paid = models.BooleanField(default=False)
+    current_month = models.BooleanField(default=True)
     date_paid = models.DateTimeField(blank=True, null=True)
     provider = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     stripe_payment_id = models.CharField(max_length=150, blank=True, null=True)
@@ -41,7 +42,8 @@ class MonthlySubscriptionInvoice(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.title = str(datetime.now().year) + ' ' + datetime.now().strftime("%B")
+        if self.title == "":
+            self.title = str(datetime.now().year) + ' ' + datetime.now().strftime("%B")
         super(MonthlySubscriptionInvoice, self).save(*args, **kwargs)
 
 

@@ -1,6 +1,6 @@
 {% load static check_role %}
 <!--wagtail tags-->
-{% load wagtailcore_tags wagtailimages_tags %}
+{% load wagtailcore_tags wagtailimages_tags anonymoususer_favorite %}
 {% is_provider user_role=request.session.user_role as provider_checked %}
 {% is_localite user_role=request.session.user_role as localite_checked %}
 {% is_client user_role=request.session.user_role as client_checked %}
@@ -23,7 +23,9 @@
 	<!-- custom styles-->
 	<link href="{% static 'css/style.css' %}" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+	<style>
 
+	</style>
 </head>
 <body>
 	<div id="wrapper">
@@ -573,6 +575,52 @@
 									</section>
 
 									<!-- testimonial -->
+<!--			instagram-->
+			<section class="instagram my-5 py-2 px-2">
+				<div class="container">
+					<div class="row">
+						<div class="col-12 mb-5">
+							<h4 class="page_title_st text-center">Instagram Feeds <span class="bottom_border"></span></h4>
+						</div>
+					</div>
+					<div class="row">
+						{% if feed %}
+						{% for post in feed %}
+						<div class="col-lg-4 col-sm-6 portfolio-item">
+							<div class="card h-100">
+								<a href="https://www.instagram.com/yrlangdotcom/" target="_blank">
+									<img class="card-img-top" src="{{ MEDIA_URL }}instagram/{{ post.thumbnail }}" alt="">
+								</a>
+								<div class="card-body">
+									<h4 class="card-title">
+										<a href="https://www.instagram.com/yrlangdotcom/" target="_blank">
+											{{ post.created|date:'Y-m-d' }}
+										</a>
+									</h4>
+									{% if post.caption|length > 221 %}
+									<p class="card-text">
+										{% see_more post.caption as caption %}
+										{{ caption.caption1 }}
+										<span id="dots{{ forloop.counter }}">...</span>
+										<span id="more{{ forloop.counter }}" style="display: none;">{{ caption.caption2 }}</span>
+
+									<a class="text-success" onclick="myFunction('dots{{ forloop.counter }}', 'more{{ forloop.counter }}', 'myBtn{{ forloop.counter }}')"
+											id="myBtn{{ forloop.counter }}">
+										Read more
+									</a>
+									</p>
+									{% else %}
+									<p>{{ post.caption }}</p>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+						{% endif %}
+					</div>
+				</div>
+			</section>
+<!--			End instagram-->
 
 									<!-- join us today -->
 {#									<section class="our_solution_section">#}
@@ -670,6 +718,23 @@
 										fade:true
 									});
 								</script>
+	<script>
+function myFunction(dot, mor, Btn) {
+  var dots = document.getElementById(dot);
+  var moreText = document.getElementById(mor);
+  var btnText = document.getElementById(Btn);
+
+  if (dots.style.display === "none") {
+    dots.style.display = "inline";
+    btnText.innerHTML = "Read more";
+    moreText.style.display = "none";
+  } else {
+    dots.style.display = "none";
+    btnText.innerHTML = "Read less";
+    moreText.style.display = "inline";
+  }
+}
+</script>
 
 								<script>
 			//set content bottom padding
