@@ -15,6 +15,7 @@
 
 
 
+
 </style>
 {% endblock calendar_extras %}
 
@@ -37,8 +38,13 @@
                 </div>
                 <div class="row">
                     <div class="col-md-6 text-center">
-                        <p><b>See Chat between them : </b> <a href="{% url 'chat_log' room_id=room.id from_date=complain.date_posted.date author_id=complain.reporter.id  %}"> <i class="fa fa-comments-o fa-2x"
-                                                                          aria-hidden="true"></i></a></p>
+                        <p><b>See Chat between them : </b> <a
+                                href="{% url 'chat_log' room_id=room.id from_date=complain.date_posted.date author_id=complain.reporter.id  %}">
+                            <i class="fa fa-comments-o fa-2x"
+                               aria-hidden="true"></i></a> OR <a
+                                href="{% url 'chat_log_download' room_id=room.id from_date=complain.date_posted.date author_id=complain.reporter.id  %}">
+                            Download
+                            </a></p>
                     </div>
                     <div class="col-md-12 text-center">
                         <p><b>Description : </b>{{ complain.description }}</p>
@@ -64,14 +70,17 @@
                         <p><b>Date of request : </b>{% if complain.content_object.request_date %}
                             {{complain.content_object.request_date }}
                             {% else %}
-                            {% for dates in complain.content_object.booking.all %} {{dates}}<br> {% endfor %}{% endif%}</p>
+                            {% for dates in complain.content_object.booking.all %} {{dates}}<br> {% endfor %}{% endif%}
+                        </p>
                     </div>
                     <div class="col-md-6 text-center">
                         <p><b>Status : </b>{{ complain.content_object.status }}</p>
                     </div>
                 </div>
                 {% if complain.problem_status|is_complain_unsolved %}
-                <a href="{% url  'custom_admin:complain_updater_solve' complain.id %}" ><button class="btn btn-theme">Make Solve</button></a>
+                <a href="{% url  'custom_admin:complain_updater_solve' complain.id %}">
+                    <button class="btn btn-theme">Make Solve</button>
+                </a>
                 {% endif %}
             </div>
             <!--collapse-->

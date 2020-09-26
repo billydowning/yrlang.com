@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% load static %}
-
+{% load file_type %}
 {% block link_css %}
 <link rel="stylesheet" href="{% static 'custome_CSS/messages_inbox.css' %}">
 <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
@@ -43,13 +43,33 @@ p.turn-grey.small.footers_link {
                         {% for mesg in chat_messages %}
                         {% if mesg.author.id == author_id %}
                             <li class="sent">
+                                  {% if mesg.content %}
                                 <p>{{mesg.content}}</p>
-                                <span class="msg_time">{{date_created}}</span>
+                                {% elif mesg.file %}
+                                        {% if mesg.extension|is_img_type %}<a href="{{mesg.file.url}}">
+                                        <img src="{{mesg.file.url}}" height="300px" width="300px"/></a>
+                                        {% else %}
+                                         <video controls>
+                                                <source src="{{mesg.file.url}}" type="video/mp4"/>
+                                         </video>
+                                        {% endif %}
+                                {% endif %}
+                                <span class="msg_time">{{mesg.date_created}}</span>
                                 <span class="float-left">from {{mesg.author}}  -- ></span>
                             </li>{% else %}
                             <li class="replies">
+                                {% if mesg.content %}
                                 <p>{{mesg.content}}</p>
-                                <span class="msg_time">{{date_created}}</span>
+                                {% elif mesg.file %}
+                                     {% if mesg.extension|is_img_type %}<a href="{{mesg.file.url}}">
+                                        <img src="{{mesg.file.url}}" height="300px" width="300px"/></a>
+                                        {% else %}
+                                            <video controls>
+                                                <source src="{{mesg.file.url}}" type="video/mp4"/>
+                                            </video>
+                                        {% endif %}
+                                {% endif %}
+                                <span class="msg_time">{{mesg.date_created}}</span>
                                 <span class="float-right" > < --from from {{mesg.reciepent}}</span>
                             </li>{% endif %}
                         {% endfor %}
