@@ -35,6 +35,7 @@ urlpatterns = [   re_path(r'^tellme/', include("tellme.urls")),
                   path('', include('blogpost.urls')),
                   path('', include('invoices.urls')),
                   path('payment/', include('payment.urls')),
+                  path('instagram/', include('instagram_profile.urls')),
                   re_path(r'^ratings/', include('star_ratings.urls', namespace='ratings' )),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

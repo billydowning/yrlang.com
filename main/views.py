@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from builtins import super
 import pytz
 from django.contrib import messages
 from _collections import defaultdict
@@ -6,6 +7,7 @@ from django.views.generic import (TemplateView, View, ListView,
                                   DetailView, RedirectView, CreateView)
 
 from django.db.models import Q
+from django.conf import settings
 from django.shortcuts import redirect, get_object_or_404
 from .constant import *
 from users.models import CustomUser, UserRole, UserRoleRequest, State
@@ -20,6 +22,8 @@ from .models import Review, ReportAProblem
 from appointments.models import (Appointment as BookingModel,
                                  ProviderAppointment as AppointmentModel)
 from customemixing.session_and_login_mixing import UserSessionAndLoginCheckMixing
+from instagram_profile.models import Post
+
 
 class HomeView(TemplateView):
     template_name = "home.html"
@@ -205,7 +209,7 @@ class IndexView(TemplateView):
         else:
             self.template_name = 'explore.html'
         return self.template_name
-    
+
 
     def get(self, request, *args, **kwargs):
         context = None
@@ -313,6 +317,15 @@ class IndexView(TemplateView):
         context["active_provider_total"] = users_data.filter(is_private=False,
                                                              user_role__name=UserRole.PROVIDER).count()
         return self.render_to_response(context=context)
+
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data()
+        try:
+            context['feed'] = Post.objects.all().order_by('?')[:3]
+        except Exception as e:
+            print(e)
+        context['MEDIA_URL'] = settings.MEDIA_URL
+        return context
 
 
 class BlogPostView(TemplateView):

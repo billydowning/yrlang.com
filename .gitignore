@@ -5,6 +5,7 @@ static/profile_pics
 media/profile_images
 media/images
 media/original_images
+media/instagram
 yrlang/settings/development.py
 yrlang/settings/production.py
 yrlang/settings/my_devlopment.py
@@ -14,4 +15,5 @@ logs/*
 
 media/videos
 *temp/
+*instagram/
 media/chat_data
