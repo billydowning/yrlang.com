@@ -240,14 +240,14 @@ class IndexView(TemplateView):
                                                              request_date__gt=datetime.now().date()).count() \
                                          + bookings.filter(status__in=[Appointment.CREATED,
                                                                        Appointment.RESCHEDULE_REQUESTED],
-                                                           booking__date__gt=datetime.now().date()).count()
+                                                           booking__date__gt=datetime.now().date()).distinct('booking__date').count()
         context['upcoming_appointments'] = appointments.filter(status=ProviderAppointment.REQUESTED,
                                                                request_date__gt=datetime.now().date(),
                                                                request_date__lt= some_day_next_week)
         context['upcoming_booking'] = bookings.filter(status__in=[Appointment.CREATED,
                                                                 Appointment.RESCHEDULE_REQUESTED],
                                                     booking__date__gt=datetime.now().date(),
-                                                    booking__date__lt = some_day_next_week)
+                                                    booking__date__lt = some_day_next_week).distinct('booking__date')
         return self.render_to_response(context=context)
 
     def get_localite_context(self):
@@ -260,11 +260,11 @@ class IndexView(TemplateView):
         context['canceled_bookings_total'] = bookings.filter(status=Appointment.CANCELED).count()
         context['upcoming_Task_total'] = bookings.filter(status__in=[Appointment.CREATED,
                                                                        Appointment.RESCHEDULE_REQUESTED],
-                                                           booking__date__gt=datetime.now().date()).count()
+                                                           booking__date__gt=datetime.now().date()).distinct('booking__date').count()
         context['upcoming_booking'] = bookings.filter(status__in=[Appointment.CREATED,
                                                                   Appointment.RESCHEDULE_REQUESTED],
                                                       booking__date__gt=datetime.now().date(),
-                                                      booking__date__lt=some_day_next_week)
+                                                      booking__date__lt=some_day_next_week).distinct('booking__date')
         return self.render_to_response(context=context)
 
     def get_provider_context(self):

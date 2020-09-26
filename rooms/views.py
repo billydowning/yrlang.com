@@ -11,8 +11,8 @@ from users.models import CustomUser, Language, UserRole
 import json
 from .models import *
 from .forms import MessageForm
-
-
+from django_weasyprint import WeasyTemplateResponseMixin
+from django_weasyprint.views import CONTENT_TYPE_PNG
 class ContactPersonView(UserSessionAndLoginCheckMixing, FormView):
     form_class = MessageForm
     template_name = "create_chatroom.html"
@@ -177,3 +177,31 @@ class ChatLogView(UserSessionAndLoginCheckMixing, ListView):
         context['author_id'] = self.kwargs.get('author_id')
         return context
 
+
+class ChatLogPDFView(UserSessionAndLoginCheckMixing, ListView):
+    template_name = 'log/pdf_template_for_log.html'
+    model = Message
+    context_object_name = 'chat_messages'
+
+    def get_queryset(self):
+        date_str = self.kwargs.get('from_date')
+        date_obj = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+        from_date = date_obj - datetime.timedelta(days=30)
+        return self.model.objects.filter(room_id = self.kwargs.get('room_id'), date_created__gt = from_date)
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        context = super(ChatLogPDFView, self).get_context_data(*args, object_list=None, **kwargs)
+        context['author_id'] = self.kwargs.get('author_id')
+        return context
+
+
+
+
+
+
+class ChatlogDownloadAsPdfView(WeasyTemplateResponseMixin, ChatLogPDFView):
+    pdf_attachment = False
+
+
+    def get_pdf_filename(self):
+        return "chatlog"+str(datetime.datetime.now().date())+'.pdf'
