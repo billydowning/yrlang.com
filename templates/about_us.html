@@ -46,8 +46,11 @@
 						 				</div>
 						 				<div class="video_section">
 						 					<div class="embed-responsive embed-responsive-16by9">
-												<iframe class="embed-responsive-item" src="{% static 'videos/YrLang_HD_Promo.mp4' %}"></iframe>
-											</div>
+{#												<iframe class="embed-responsive-item"  src="{% static 'videos/YrLang_HD_Promo.mp4' %}?autoplay=false&muted=1"></iframe>#}
+											<video id="show" class="chance embed-responsive-item" controls muted>
+                                                 <source src="{% static 'videos/Become_a_Localite.mp4' %}" type="video/mp4">
+                                             </video>
+                                            </div>
 						 				</div>
 					 				</div>
 					 			</div>
