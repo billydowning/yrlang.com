@@ -72,6 +72,65 @@ class HomeView(TemplateView):
         return context
 
 
+class SearchResultView(TemplateView):
+    template_name = "search_result.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchResultView, self).get_context_data(**kwargs)
+
+        search_form = UserSearchFrom(self.request.GET)
+
+        if search_form.is_valid():
+
+            if search_form.cleaned_data.get('country'):
+                localite_list = CustomUser.objects.filter(Q(country=search_form.cleaned_data.get('country'))).\
+                                    filter(is_private=False, user_role__name__in=[UserRole.LOCALITE]). \
+                                    exclude(id=self.request.user.id, state__isnull=True, country__isnull=True).order_by('?')[:3]
+                provider_list = CustomUser.objects.filter(Q(country=search_form.cleaned_data.get('country'))).\
+                                    filter(is_private=False,user_role__name__in=[UserRole.PROVIDER]). \
+                                    exclude(id=self.request.user.id, state__isnull=True, country__isnull=True).order_by('?')[:3]
+
+            else:
+                localite_list = CustomUser.objects.filter(is_private=False,
+                                                          user_role__name__in=[UserRole.LOCALITE]). \
+                                    exclude(id=self.request.user.id).exclude(state__isnull=True,
+                                                                             country__isnull=True).order_by('?')[:3]
+                provider_list = CustomUser.objects.filter(is_private=False,
+                                                          user_role__name__in=[UserRole.PROVIDER]). \
+                                    exclude(id=self.request.user.id).exclude(state__isnull=True,
+                                                                             country__isnull=True).order_by('?')[:3]
+
+        banner = ""
+        if self.request.user.is_authenticated:
+            if self.request.user.is_staff:
+                banner = "Logged in as Admin"
+                context["requests"] = UserRoleRequest.objects.order_by('requested_on').filter(
+                    status__in=[UserRoleRequest.REQUESTED, UserRoleRequest.VERIFIED],
+                    requested_for__name=UserRole.LANGUAGE_VERIFIER).exclude(user=self.request.user)[:3]
+            elif self.request.user.is_client_user(self.request.session.get('user_role')):
+                banner = "Logged in as Client"
+            elif self.request.user.is_provider_user(self.request.session.get('user_role')):
+                context['appointments'] = ProviderAppointment.objects.filter(requestee=self.request.user,
+                                                                             status=ProviderAppointment.REQUESTED).order_by(
+                    '-created_date')[:3]
+                banner = "Logged in as Provider"
+            elif self.request.user.is_localite_user(self.request.session.get('user_role')):
+                context["bookings"] = Appointment.objects.filter(requestee=self.request.user).order_by('-date_created')[
+                                      :3]
+                banner = "Logged in as Localite"
+            elif self.request.user.is_language_verifier_user(self.request.session.get('user_role')):
+                context["requests"] = UserRoleRequest.objects.order_by('requested_on').filter(
+                    status__in=[UserRoleRequest.REQUESTED, UserRoleRequest.VERIFIED],
+                    requested_for__name__in=[UserRole.PROVIDER, UserRole.LOCALITE]).exclude(user=self.request.user)[:3]
+        elif self.request.user.is_anonymous:
+            banner = "You Are not logged in "
+        context["banner"] = banner
+        context["localites"] = localite_list
+        context['providers'] = provider_list
+        context['search_form'] = search_form
+        return context
+
+
 class Search(View):
 
     def get(self, request, *args, **kwargs2):
