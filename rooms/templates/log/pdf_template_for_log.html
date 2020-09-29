@@ -1,0 +1,57 @@
+{% load static %}
+{% load file_type %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Chat log </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+
+
+
+                <div class="contact-profile">
+                    <h1>Chat Log Beetween Users </h1>
+                </div>
+            <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>From</th>
+        <th>Message </th>
+        <th>Time</th>
+      </tr>
+
+    </thead>
+                 {% if chat_messages %}
+            <tbody>
+             {% for mesg in chat_messages %}
+             <tr>
+        <td>{{mesg.author}}</td>
+        <td>{% if mesg.content %}
+                                <p>{{mesg.content}}</p>
+                                {% elif mesg.file %}
+                                        {% if mesg.extension|is_img_type %}<a href="{{mesg.file.url}}">
+                                        <img src="{{mesg.file.url}}" height="100px" width="100px"/></a>
+                                        {% else %}
+                                         <video controls>
+                                                <source src="{{mesg.file.url}}" type="video/mp4"/>
+                                         </video>
+                                        {% endif %}
+                                {% endif %}</td>
+        <td>{{mesg.date_created}}</td>
+                 {% endfor %}
+      </tr>
+            </tbody>
+                {% endif %}
+            </table>
+
+
+
+
+</body>
+</html>
