@@ -60,79 +60,94 @@
 {% endif %}
 
 
-<div class="">
-
-{% if not request.user.is_anonymous %}
-    <div class="logged_block">
-        <div class="container position_Re">
-
-			<ul class="join_locality">
-
-                {% if client_checked %}
-                    {% comment %}
-                    {% if not  pro %}
-                        {% if not  provider_request_checked %}
-                        <li> <a href="{% url 'become_provider_temp' %}">Join as a Provider</a></li>
-                        {% else %}
-                        <li> <a >Requested for Provider </a></li>
-                        {% endif %}
-                    {% endif %}
-                    {% if not  loc  %}
-                        {% if not   localite_request_checked  %}
-                        <li><a href="{%  url 'become_localite_temp' %}" class="">Join as a Localite</a></li>
-                         {% else %}
-                        <li> <a >Requested for Localite </a></li>
-                        {% endif %}
-                    {%  endif  %}
-                {% endcomment %}
-
-                      {% if not  lang_veri  %}
-                        {% if not   lang_veri_request_checked  %}
-                        <li><a href="{%  url 'request_for_language_verifier' %}" class="">Join as a Language Verifier</a></li>
-                         {% else %}
-                        <li> <a >Requested for Language verifier </a></li>
-                        {% endif %}
-                    {%  endif  %}
-                {% endif %}
-			</ul>
-            <div class="row align-items-center">
-            <!-- <div class="col-12 col-md-7">
-                {%if request.user.is_authenticated %}
-                <h1 style="font-size:38px;"
-                                                         class="amit-black bolder montserrat page_main_header">{{ banner }} - {{ request.user.username|title }}</h1>{%endif%}
-            </div> -->
-			<div class="col-12 text-right"></div>
-            <div class="col-12 col-md-5 m-auto">
-                <div class="search_person img_banner_padding">
-                    <input id="search" type="text" placeholder="Search">
-                    <button id="btn_search" type="submit">Search</button>
-                </div>
-                <div class="list-group" id="result">
-                </div>
-            </div>
+{#<<<<<<< HEAD#}
+{#<div class="">#}
+{##}
+{#{% if not request.user.is_anonymous %}#}
+{#    <div class="logged_block">#}
+{#        <div class="container position_Re">#}
+{##}
+{#			<ul class="join_locality">#}
+{##}
+{#                {% if client_checked %}#}
+{#                    {% comment %}#}
+{#                    {% if not  pro %}#}
+{#                        {% if not  provider_request_checked %}#}
+{#                        <li> <a href="{% url 'become_provider_temp' %}">Join as a Provider</a></li>#}
+{#                        {% else %}#}
+{#                        <li> <a >Requested for Provider </a></li>#}
+{#                        {% endif %}#}
+{#                    {% endif %}#}
+{#                    {% if not  loc  %}#}
+{#                        {% if not   localite_request_checked  %}#}
+{#                        <li><a href="{%  url 'become_localite_temp' %}" class="">Join as a Localite</a></li>#}
+{#                         {% else %}#}
+{#                        <li> <a >Requested for Localite </a></li>#}
+{#                        {% endif %}#}
+{#                    {%  endif  %}#}
+{#                {% endcomment %}#}
+{##}
+{#                      {% if not  lang_veri  %}#}
+{#                        {% if not   lang_veri_request_checked  %}#}
+{#                        <li><a href="{%  url 'request_for_language_verifier' %}" class="">Join as a Language Verifier</a></li>#}
+{#                         {% else %}#}
+{#                        <li> <a >Requested for Language verifier </a></li>#}
+{#                        {% endif %}#}
+{#                    {%  endif  %}#}
+{#                {% endif %}#}
+{#			</ul>#}
+{#            <div class="row align-items-center">#}
+{#            <!-- <div class="col-12 col-md-7">#}
+{#                {%if request.user.is_authenticated %}#}
+{#                <h1 style="font-size:38px;"#}
+{#                                                         class="amit-black bolder montserrat page_main_header">{{ banner }} - {{ request.user.username|title }}</h1>{%endif%}#}
+{#            </div> -->#}
+{#			<div class="col-12 text-right"></div>#}
+{#            <div class="col-12 col-md-5 m-auto">#}
+{#                <div class="search_person img_banner_padding">#}
+{#                    <input id="search" type="text" placeholder="Search">#}
+{#                    <button id="btn_search" type="submit">Search</button>#}
+{#                </div>#}
+{#                <div class="list-group" id="result">#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#=======#}
+<header id="hero-overlay" class="hero-overlay-2">
+    <div class="centered-container-5 w-container">
+      <h1 class="heading-104">Get to know your <br>new home</h1>
+      <p class="paragraph-35">There&#x27;s a lot to take in and a lot <br>to learn. Let us help you get to <br>know your new home <br>a little better.</p>
+      <div class="div-block-97">
+        <div data-hover="" data-delay="0" class="dropdown-6 w-dropdown">
+          <div class="dropdown-toggle-11 w-dropdown-toggle">
+            <div class="icon-5 w-icon-dropdown-toggle"></div>
+            <div class="text-block-81">Which city would you like to explore?</div>
+          </div>
+          <nav class="dropdown-list w-dropdown-list"><a href="#" id="Berlin" class="w-dropdown-link">Berlin</a><a href="#" class="w-dropdown-link">Paris</a><a href="#" class="w-dropdown-link">Milan</a></nav>
         </div>
-        </div>
+      </div>
     </div>
-    {% endif %}
+{#<<<<<<< HEAD#}
+{#    {% endif %}#}
+{##}
+{#    {% if request.user.is_anonymous %}#}
+{#    {% include 'client_home.html' %}#}
+{#    {% endif %}#}
+{#    {% if client_checked %}#}
+{#    {% include 'client_home.html' %}#}
+{#    {% endif %}#}
+{#      {% if provider_checked %}#}
+{#    {% include 'provider_home.html' %}#}
+{#    {% endif %}#}
+{#      {% if localite_checked %}#}
+{#    {% include 'localite_home.html' %}#}
+{#    {% endif %}#}
+{#      {% if request.user.is_staff or lang_veri_checked %}#}
+{#    {% include 'admin_home.html' %}#}
+{#    {% endif %}#}
+{#        {{ne_data}}#}
 
-    {% if request.user.is_anonymous %}
-    {% include 'client_home.html' %}
-    {% endif %}
-    {% if client_checked %}
-    {% include 'client_home.html' %}
-    {% endif %}
-      {% if provider_checked %}
-    {% include 'provider_home.html' %}
-    {% endif %}
-      {% if localite_checked %}
-    {% include 'localite_home.html' %}
-    {% endif %}
-      {% if request.user.is_staff or lang_veri_checked %}
-    {% include 'admin_home.html' %}
-    {% endif %}
-        {{ne_data}}
 
-</div>
 <script>
 
     if ("geolocation" in navigator){ //check geolocation available
@@ -171,4 +186,74 @@
 	console.log("Browser doesn't support geolocation!");
 }
 </script>
+  </header>
+
+{#{% if not request.user.is_anonymous %}#}
+{#    <div class="logged_block">#}
+{#        <div class="container position_Re">#}
+{##}
+{#			<ul class="join_locality">#}
+{#                {% if client_checked %}#}
+{#                    {% if not  pro %}#}
+{#                        {% if not  provider_request_checked %}#}
+{#                        <li> <a href="{% url 'become_provider_temp' %}">Join as a Provider</a></li>#}
+{#                        {% else %}#}
+{#                        <li> <a >Requested for Provider </a></li>#}
+{#                        {% endif %}#}
+{#                    {% endif %}#}
+{#                    {% if not  loc  %}#}
+{#                        {% if not   localite_request_checked  %}#}
+{#                        <li><a href="{%  url 'become_localite_temp' %}" class="">Join as a Localite</a></li>#}
+{#                         {% else %}#}
+{#                        <li> <a >Requested for Localite </a></li>#}
+{#                        {% endif %}#}
+{#                    {%  endif  %}#}
+{#                      {% if not  lang_veri  %}#}
+{#                        {% if not   lang_veri_request_checked  %}#}
+{#                        <li><a href="{%  url 'request_for_language_verifier' %}" class="">Join as a Language Verifier</a></li>#}
+{#                         {% else %}#}
+{#                        <li> <a >Requested for Language verifier </a></li>#}
+{#                        {% endif %}#}
+{#                    {%  endif  %}#}
+{#                {% endif %}#}
+{#			</ul>#}
+{#            <div class="row align-items-center">#}
+{#            <!-- <div class="col-12 col-md-7">#}
+{#                {%if request.user.is_authenticated %}#}
+{#                <h1 style="font-size:38px;"#}
+{#                                                         class="amit-black bolder montserrat page_main_header">{{ banner }} - {{ request.user.username|title }}</h1>{%endif%}#}
+{#            </div> -->#}
+{#			<div class="col-12 text-right"></div>#}
+{#            <div class="col-12 col-md-5 m-auto">#}
+{#                <div class="search_person img_banner_padding">#}
+{#                    <input id="search" type="text" placeholder="Search">#}
+{#                    <button id="btn_search" type="submit">Search</button>#}
+{#                </div>#}
+{#                <div class="list-group" id="result">#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        </div>#}
+{#    </div>#}
+{#    {% endif %}#}
+{##}
+{#    {% if request.user.is_anonymous %}#}
+{#    {% include 'client_home.html' %}#}
+{#    {% endif %}#}
+{#    {% if client_checked %}#}
+{#    {% include 'client_home.html' %}#}
+{#    {% endif %}#}
+{#      {% if provider_checked %}#}
+{#    {% include 'provider_home.html' %}#}
+{#    {% endif %}#}
+{#      {% if localite_checked %}#}
+{#    {% include 'localite_home.html' %}#}
+{#    {% endif %}#}
+{#      {% if request.user.is_staff or lang_veri_checked %}#}
+{#    {% include 'admin_home.html' %}#}
+{#    {% endif %}#}
+{##}
+{##}
+{#</div>#}
+
 {% endblock %}
