@@ -18,14 +18,15 @@ class Instagram(object):
 
 try:
     obj = InstagramConfiguration.objects.filter(active=True).last()
+
+    INSTAGRAM_ACCOUNT = obj.instagram_account or 'instagram_account_name'
+    INSTAGRAM_AUTH_URL = obj.instagram_auth_url
+    INSTAGRAM_ACCESS_TOKEN_URL = obj.instagram_access_token_url
+    INSTAGRAM_APP_ID = obj.instagram_app_id
+    INSTAGRAM_SECRET = obj.instagram_app_secret
+    INSTAGRAM_REDIRECT_URL = obj.instagram_redirect_url
+    INSTAGRAM_MEDIA_URL = obj.instagram_media_url
 except Exception as e:
     obj = Instagram()
     print(e)
 
-INSTAGRAM_ACCOUNT = obj.instagram_account or 'instagram_account_name'
-INSTAGRAM_AUTH_URL = obj.instagram_auth_url
-INSTAGRAM_ACCESS_TOKEN_URL = obj.instagram_access_token_url
-INSTAGRAM_APP_ID = obj.instagram_app_id
-INSTAGRAM_SECRET = obj.instagram_app_secret
-INSTAGRAM_REDIRECT_URL = obj.instagram_redirect_url
-INSTAGRAM_MEDIA_URL = obj.instagram_media_url
