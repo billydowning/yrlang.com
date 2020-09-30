@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+{% load static check_role check_request %}
+{% block calendar_extras %}
+<script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}">
+
+</script>
+<script>
+    $(document).ready(function(){
+        var func = function (){
+            var q = $('#search').val();
+            $.ajax({
+                url:'search/',
+                data:{
+                        q: q
+                },
+                success:function(response){
+                    var str = '';
+                    $.each(response.professionals, function(key, value) {
+                        str = str + '<p><a href="/users/user-detail/'+ value.id +'" class="list-group-item list-group-item-action"><b class="text-primary ml-5"> Localite -- </b><b class="text-primary"> '+ value.username +' </b><b class="text-primary ml-5"> '+ value.email  +' </b></a></p>';
+                    });
+                    $.each(response.posts, function(key, value) {
+                        str = str + '<p><a href="/post/'+ value.id +'" class="list-group-item list-group-item-action"><b class="text-primary ml-5"> Blog -- </b><b class="text-primary  ml-5"> '+ value.id +' </b><b class="text-primary  ml-5"> '+ value.title +' </b></a></p>';
+                    });
+                    $.each(response.cities, function(key, value) {
+                        str = str + '<p><a href="'+ value.slug +'" class="list-group-item list-group-item-action"><b class="text-primary ml-5"> City -- </b><b class="text-primary  ml-5"> '+ value.title +' </b></a></p>';
+                    });
+                    $('#result').html(str);
+                    if (q == "")
+                    {
+                        $('#result').html('');
+
+                    }
+                }
+            });
+        };
+
+        $("#search").keyup(func);
+        $("#btn_search").click(func);
+    });
+
+
+</script>
+{% endblock calendar_extras %}
+{% block content %}
+{% if not request.user.is_anonymous %}
+    <div class="logged_block">
+        <div class="container position_Re">
+
+			<ul class="join_locality">
+                {% if client_checked %}
+                    {% if not  pro %}
+                        {% if not  provider_request_checked %}
+                        <li> <a href="{% url 'become_provider_temp' %}">Join as a Provider</a></li>
+                        {% else %}
+                        <li> <a >Requested for Provider </a></li>
+                        {% endif %}
+                    {% endif %}
+                    {% if not  loc  %}
+                        {% if not   localite_request_checked  %}
+                        <li><a href="{%  url 'become_localite_temp' %}" class="">Join as a Localite</a></li>
+                         {% else %}
+                        <li> <a >Requested for Localite </a></li>
+                        {% endif %}
+                    {%  endif  %}
+                      {% if not  lang_veri  %}
+                        {% if not   lang_veri_request_checked  %}
+                        <li><a href="{%  url 'request_for_language_verifier' %}" class="">Join as a Language Verifier</a></li>
+                         {% else %}
+                        <li> <a >Requested for Language verifier </a></li>
+                        {% endif %}
+                    {%  endif  %}
+                {% endif %}
+			</ul>
+            <div class="row align-items-center">
+            <!-- <div class="col-12 col-md-7">
+                {%if request.user.is_authenticated %}
+                <h1 style="font-size:38px;"
+                                                         class="amit-black bolder montserrat page_main_header">{{ banner }} - {{ request.user.username|title }}</h1>{%endif%}
+            </div> -->
+			<div class="col-12 text-right"></div>
+            <div class="col-12 col-md-5 m-auto">
+                <div class="search_person img_banner_padding">
+                    <input id="search" type="text" placeholder="Search">
+                    <button id="btn_search" type="submit">Search</button>
+                </div>
+                <div class="list-group" id="result">
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if request.user.is_anonymous %}
+    {% include 'client_home.html' %}
+    {% endif %}
+    {% if client_checked %}
+    {% include 'client_home.html' %}
+    {% endif %}
+      {% if provider_checked %}
+    {% include 'provider_home.html' %}
+    {% endif %}
+      {% if localite_checked %}
+    {% include 'localite_home.html' %}
+    {% endif %}
+      {% if request.user.is_staff or lang_veri_checked %}
+    {% include 'admin_home.html' %}
+    {% endif %}
+
+{% endblock %}
