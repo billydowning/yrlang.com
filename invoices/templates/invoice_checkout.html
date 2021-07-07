@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <div>
+    <h2>Invoice creaded by {{ payee.name }} for {{ invoice.title }} in the amount of {{ invoice.amount }}</h2>
+    <p>Created on {{ invoice.date_created }}</p>
+    <!-- <button type="button" class="btn btn-primary" id="custom-button">Pay with Card</button> -->
+  </div>
+
+  <div class="row">
+  {% if invoice.booking %}
+  {% for date in invoice.booking.booking.all %}
+  <div class="card col-3 my-2 mx-2">
+    <h5 class="card-header">{{ date.date }} - {{ invoice.booking.requestor.username }}</h5>
+    <div class="card-body">
+      <p class="card-text">start :- {{ date.start_time|time:'h:i a' }}</p>
+      <p class="card-text">end :- {{ date.end_time|time:'h:i a' }}</p>
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+
+  {% if invoice.appointment %}
+  <div class="card col-3 my-2 mx-2">
+    <h5 class="card-header">{{ invoice.appointment.requestor.username }}</h5>
+    <div class="card-body">
+      <p class="card-text"><b>Date :- </b>{{ invoice.appointment.request_date|date:'Y-M-d  D' }}</p>
+      <p><b>Amount :- </b>{{ invoice.amount }}</p>
+      <p>{{ invoice.appointment.get_payment_method_display }}</p>
+    </div>
+  </div>
+  {% endif %}
+  </div>
+  <br>
+  
+  {% if request.user.id == invoice.payor.id and invoice.is_paid == False %}
+  <form action="{% url 'charge' invoice.id %}" method="post">
+  {% csrf_token %}
+  <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+          data-key="{{ key }}"
+          data-description="A Django Charge"
+          data-amount="{{amount}}"
+          data-locale="auto"></script>
+</form>
+<h4>Pay with PayPal</h4>
+    {{ form.render }}
+{% endif %}
+</div>
+{% endblock content %}

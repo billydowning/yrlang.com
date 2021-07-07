@@ -1,0 +1,532 @@
+{% load static wagtailcore_tags check_role %}
+{% load webpush_notifications %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Import CSS & JS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.25/css/uikit.min.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=DM+Serif+Display|Darker+Grotesque|Lexend+Deca&display=swap"
+          rel="stylesheet">
+
+    <!-- Master JS -->
+    <script href="{% static 'javascript/master.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.25/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-rc.25/js/uikit-icons.min.js"></script>
+
+    <!--    fa fa icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/regular.min.css"
+          integrity="sha256-xhLSlzXTxex6fzNDBzh5DkYvf95P9Dpfv9LpTfq4D1E=" crossorigin="anonymous"/>
+
+<!--    rating CSS and JS-->
+    <link rel="stylesheet" href="{% static 'star-ratings/css/star-ratings.css' %}">
+
+<!--    &#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+    {% if title %}
+    <title>{{ title }}</title>
+    {% else %}
+    <title>YRLang</title>
+    {% endif %}
+    <style>
+    {% block extra_css %}
+
+      {% endblock extra_css %}
+</style>
+    <!-- jQuery -->
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+    <!-- XDSoft DateTimePicker -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
+          integrity="sha256-DOS9W6NR+NFe1fUhEE0PGKY/fubbUCnOfTje2JMDw3Y=" crossorigin="anonymous"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"
+            integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{% static 'custome_CSS/layout.css' %}">
+    <link href="{% static 'tellme/feedback.min.css' %}" rel="stylesheet">
+
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <script>
+        function set_message_count(n) {
+            $('#message_count').text(n);
+            $('#message_count').css('visibility', n ? 'visible' : 'hidden');
+        }
+        {% if reuest.user.is_authenticated %}
+        $(function() {
+            var since = 0;
+            setInterval(function() {
+                $.ajax('{{ main.notifications }}?since=' + since).done(
+                    function(notifications) {
+                        for (var i = 0; i < notifications.length; i++) {
+                            if (notifications[i].name == 'unread_message_count')
+                                set_message_count(notifications[i].data);
+                            since = notifications[i].timestamp;
+                        }
+                    }
+                );
+            }, 10000);
+        });
+        {% endif %}
+
+    </script>
+
+    {# dropdown CSS #}
+    <link rel="stylesheet" href="{% static 'custome_CSS/dropdown_menu.css' %}">
+    <!--    customr Js-->
+    <script type="text/javascript" src="{% static 'custom_JS/change_role.js' %}"></script>
+    <script type="text/javascript" src="{% static 'star-ratings/js/dist/star-ratings.min.js' %}"></script>
+    <!--  Bootstrap for POPup  -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="{% static 'css/sideNev.css' %}">
+    <script src="{% static 'js/sideNev.js' %}"></script>
+    {% block link_css %}
+    {% endblock link_css %}
+
+    {% block calendar_extras %}
+    {% endblock calendar_extras %}
+<style>
+    .sidebar_links{padding: 0;margin: 0;}
+.sidenav a
+{
+    position: relative;
+}
+.sidenav a i
+{
+    color: #fff !important;
+    position: absolute;
+    top: 10px !important;
+    left: 8px;
+}
+.sidebar_links li{list-style: none;}
+.submenu_links {
+    display: none;
+    background: #63b63c;
+    padding-left: 15px;
+}
+.vertical-right-aligned {
+    transform: rotate(-90deg);
+    transform-origin: 100% 100%;
+    position: fixed;
+    right: 0;
+    top: 50%;
+    z-index: 100;
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+    <nav class="uk-navbar-container ">
+        <div class="container uk-navbar">
+            <div class="uk-navbar-left">
+
+
+                <ul class="uk-navbar-nav">
+                    <li class="uk-active">
+                        <span style="font-size:30px;cursor:pointer" onmouseover="openNav()" onclick="openNav()">&#9776;</span>
+                    </li>
+                </ul>
+                <ul class="uk-navbar-nav logo_container">
+                    <li class="uk-active"><a href="/" class="logo_font"><img
+                            src="https://i0.wp.com/yr-lang.com/wp-content/uploads/2019/12/YRLANGBLACK.png?fit=583%2C596&ssl=1"></a>
+                    </li>
+                    <li class="lang_drop_down"><span>Language</span><div class="dropdown show">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">English</button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 38px, 0px);">
+                        <a class="dropdown-item" href="#">French</a>
+                        <a class="dropdown-item" href="#">Spanish</a>
+                        <a class="dropdown-item" href="#">Italian</a>
+                      </div>
+                    </div></li>
+                </ul>
+
+
+            </div>
+
+            <div class="uk-navbar-right">
+                <ul class="uk-navbar-nav">
+                    {% if request.user.is_authenticated %}
+
+                    {% is_client user_role=request.session.user_role as client_checked %}
+                    {% is_provider user_role=request.session.user_role as provider_checked %}
+                    {% is_localite user_role=request.session.user_role as localite_checked %}
+                    {% is_language_veri user_role=request.session.user_role as is_language_veri_checked %}
+
+{#                    <li><a href="{% url 'main:home' %}"> Explore</a></li>#}
+{#                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>#}
+{##}
+{#                    <li class="dropdown">#}
+{#                        <a href="">Top City</a>#}
+{#                        <div class="dropdown-content">#}
+{#                            {% for city in city_list %}#}
+{##}
+{#                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>#}
+{##}
+{#                            {% endfor %}#}
+{#                             {% if  city_list.count > 3 %}#}
+{#                            <a href="{% slugurl city_parent.slug %}">View All.</a>#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                    </li>#}
+                        <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+                        <li class="dropdown">
+                        <a href="">Join Our Platform</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'become_localite_temp' %}">Become a Localite</a>
+                            <a href="{% url 'become_provider_temp' %}">Become a Provider</a>
+                        </div>
+                    </li>
+                        <li><a href="{% url 'main:blog-post' %}"> The Brucke</a></li>
+                        <li><a href="{% url 'about_us' %}"> About Us</a></li>
+                    <li><a href="{% url 'inbox' %}"><i class="fa fa-envelope "
+                                                           aria-hidden="true"></i>Messages</a></li>
+
+                    {% if request.user.is_staff == True %}
+
+                    <!-- aa jyare main adimn hase tyare show karse -->
+
+
+                    <li class="dropdown">
+                        <a href="" class="user_links">
+                            <div class="user_img">
+                                <img src="/media/profile_images/homepage_hero_XL2x.jpg">
+                            </div>
+                            <div class="name_of_user">
+                                <h6>{{ request.user.email|title }}</h6>
+                                <font color="red"> Admin</font>
+                            </div>
+
+
+                        </a>
+                        <div class="dropdown-content">
+
+                            <a href="/cms">CMS</a>
+                            <a href="{% url 'account_logout' %}">Logout</a>
+
+                        </div>
+
+                    </li>
+                    {% else %}
+
+                    <!-- aa client hase tyare show karse  -->
+
+                    <li class="dropdown">
+                        <a href="" class="user_links">
+                            <div class="user_img ">
+                                {% if request.user.profile_image %}
+                                <img src="{{ request.user.profile_image.url }}">
+                                {% else %}
+                                <img src="{{ avtar }}">
+                                {% endif %}
+                            </div>
+                            <div class="name_of_user">
+                                <h6>{{ request.user.username|title }}</h6>
+                                <font color="red">{% if request.session.user_role %}{{request.session.user_role|title}}{% endif %}</font>
+                            </div>
+
+                        </a>
+                        {% if request.session.user_role %}
+                        <div class="dropdown-content custom-icons">
+                            {% if client_checked %}
+                            <a href="{% url 'user_favorite_list' %}">Favorite</a>
+                            {% endif %}
+                            {% if provider_checked or client_checked %}
+                            <a href="{% url 'provider_appointment' %}"><i class="fa fa-calendar"
+                                                                          aria-hidden="true"> </i><span>Appointments</span></a>
+                            {% endif %}
+                            {% if localite_checked or client_checked  %}
+                            <a href="{% url 'appointments' %}"><i class="fa fa-calendar"
+                                                                  aria-hidden="true"> </i><span>Booking </span></a>
+
+                            {% endif %}
+
+                            <a href="{% url 'account' %}"><i class="fa fa-user"
+                                                             aria-hidden="true"> </i><span>Account</span></a>
+                            <a href="{% url 'invoices' %}"><i class="fa fa-files-o" aria-hidden="true"> </i><span>Invoices</span></a>
+                            {% if provider_checked %}
+                            <a href="{% url 'provider_create_invoice' %}"><span>Create New Invoice</span></a>
+                            {% endif %}
+
+                            {% if localite_checked %}
+                            <a href="{% url 'create_invoice' %}"><span>Create New Invoice</span></a>
+                            {% endif %}
+                            {% if request.user.user_role.count > 1 %}
+
+                            <a href="{% url 'user-role-select' %}">Swich Role</a>
+
+                            {% endif %}
+                            <a href="{% url 'account_logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i><span>Logout</span></a>
+                        </div>
+                        {% endif %}
+
+                    </li>
+
+                    {% endif %}
+
+                    {% else %}
+                        <li><a href="{% url 'main:home' %}">    <span>Expore</span></a></li>
+                        <li class="dropdown">
+                        <a href="">Join Our Platform</a>
+                        <div class="dropdown-content">
+                            <a href="{% url 'become_localite_temp' %}">Become a Localite</a>
+                            <a href="{% url 'become_provider_temp' %}">Become a Provider</a>
+                        </div>
+                    </li>
+                        <li><a href="{% url 'main:blog-post' %}"> The Brucke</a></li>
+                        <li><a href="{% url 'about_us' %}"> About Us</a></li>
+
+
+{#                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>#}
+{#                    <li class="dropdown">#}
+{#                        <a href="">Top Cities</a>#}
+{#                        <div class="dropdown-content">#}
+{#                            {% for city in city_list %}#}
+{#                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>#}
+{#                            {% endfor %}#}
+{#                            {% if  city_list.count > 3 %}#}
+{#                            <a href="{% slugurl city_parent.slug %}">View All.</a>#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                    </li>#}
+{#                    <li><a href="{% url 'main:anon_favorite_list' %}">Favorite</a> </li>                     <li><a href="{% url 'about_us' %}"> About Us</a></li>#}
+{#                    <li><a href="{% url 'main:blog-post' %}">The Brucke</a></li>#}
+{#                    <li><a href="{% url 'main:our_cities' %}">Our Cities</a></li>#}
+{#                    <li class="dropdown">#}
+{#                        <a href="">Top Cities</a>#}
+{#                        <div class="dropdown-content">#}
+{#                            {% for city in city_list %}#}
+{#                            <a href="{% slugurl city.slug %}">{{ city.title }}</a>#}
+{#                            {% endfor %}#}
+{#                            {% if  city_list.count > 3 %}#}
+{#                            <a href="{% slugurl city_parent.slug %}">View All.</a>#}
+{#                            {% endif %}#}
+{#                        </div>#}
+{#                    </li>#}
+{#                    <li><a href="{% url 'account_login' %}"><i class="fa fa-sign-in top_0"#}
+{#                                                               aria-hidden="true"> </i><span>Login</span></a></li>#}
+{#                    <li><a href="{% url 'client_signup_view' %}"><i class="fa fa-user-plus top_0"#}
+{#                                                                    aria-hidden="true"> </i><span>Register</span></a>#}
+{#                    </li>#}
+                        <li><a href="{% url 'account_login' %}" class="login_signup_btn"><span>Sign Up/Login</span></a></li>
+
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="mySidenav" class="sidenav" onmouseleave="closeNav()">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <div class="mx-5 my-5 overflow-auto">
+            <h3 id="word">Namaskar</h3>
+            <h3>{{ request.user.username }}</h3>
+        </div>
+
+        {% if request.user.is_authenticated %}
+        <div class="row my-5 mx-5">
+            <div class="user_img">
+                {% if request.user.profile_image %}
+                <img src="{{ request.user.profile_image.url }}">
+                {% else %}
+                <img src="{{ avtar }}">
+                {% endif %}
+            </div>
+            <div class="name_of_user">
+                <h6>{{ request.user.username|title }}</h6>
+                <font color="green">
+                    {% if request.session.user_role %}
+                    {{request.session.user_role|title}}
+                    {% endif %}
+                </font>
+            </div>
+        </div>
+        {% endif %}
+
+        <hr class="my-3">
+        <ul class="sidebar_links">
+            <li class="opn_submenu">
+            <a href="#" class="opned">Our Cities</a>
+            <div class="submenu_links">
+                 <a href="#">Berlin</a>
+                  <a href="#">Milan</a>
+                  <a href="#">Paris</a>
+            </div>
+        </li>
+            <li><a href="#">Become a Localite</a></li>
+            <li><a href="#">Become a Provider</a></li>
+            {% if request.user.is_authenticated %}
+                <li class="opn_submenu">
+            <a href="#" class="opned">My Dashboard</a>
+            <div class="submenu_links">
+                 <a href="#">Calender</a>
+                  <a href="#">Settings</a>
+                  <a href="#">Messages</a>
+            </div>
+        </li>
+            {% endif %}
+         <li><a href="#">The Brucke</a></li>
+       </ul>
+
+{#        {% if request.session.user_role %}#}
+{#        <div>#}
+{#            <a href="{% url 'account' %}"><span>Account</span></a>#}
+{#            {% if provider_checked or client_checked %}#}
+{#            <a href="{% url 'provider_appointment' %}"><span>Appointments</span></a>#}
+{#            <a href="{% url 'inbox' %}"><span>Messages</span></a>#}
+{#            {% endif %}#}
+{##}
+{#            {% if localite_checked or client_checked %}#}
+{#            <a href="{% url 'appointments' %}"><span>Booking </span></a>#}
+{#            {% endif %}#}
+{##}
+{#            {% if localite_checked or client_checked %}#}
+{#            <a href="{% url 'invoices' %}"><span>Invoices</span></a>#}
+{#            {% endif %}#}
+{##}
+{#            {% if localite_checked %}#}
+{#            <a href="{% url 'create_invoice' %}"><span>Create New Invoice</span></a>#}
+{#            {% endif %}#}
+{##}
+{#            {% if provider_checked %}#}
+{#            <a href="{% url 'provider_create_invoice' %}"><span>Create New Invoice</span></a>#}
+{#            {% endif %}#}
+{##}
+{#            {% if request.user.user_role.count > 1 %}#}
+{#            <a href="{% url 'user-role-select' %}">Swich Role</a>#}
+{#            {% endif %}#}
+{##}
+{#            <a href="{% url 'account_logout' %}"><span>Logout</span></a>#}
+{#        </div>#}
+{#        {% else %}#}
+{#        <a href="{% url 'main:home' %}"> <span>Expore</span></a>#}
+{##}
+{#        <a href="{% url 'account_login' %}">#}
+{#            <i class="fa fa-sign-in top_0" aria-hidden="true"> </i>#}
+{#            <span>Login</span>#}
+{#        </a>#}
+{#        <a href="{% url 'client_signup_view' %}">#}
+{#            <i class="fa fa-user-plus top_0" aria-hidden="true"> </i>#}
+{#            <span>Register</span>#}
+{#        </a>#}
+{#        {% endif %}#}
+
+        <div class="my-3 mx-5">
+            <p class="text-center white_text">Yrlang</p>
+        </div>
+
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 m-auto p-0">
+
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="uk-alert-{{ message.tags }}" uk-alert>
+                        <a class="uk-alert-close" uk-close></a>
+                        <p>{{ message }}</p>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+
+                    <!-- site content block -->
+                    <div style="" class="uk-width-2-3@m uk-width-1-1@s uk-padding uk-container">
+
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+
+
+        <!-- Main Footer -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 m-auto">
+                    <div class="uk-width-1-1@s uk-width-2-3@m uk-container turn-bg-white">
+                        <img src="https://uploads-ssl.webflow.com/5d2f9334e480cd760d273d52/5d30e566e9af515a05fd982a_yr_lang_bubble_1.png"
+                             width="45px" alt="">
+                        <hr class="divider-grey">
+                        <div class="row">
+
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <p class="bolder">Languages</p>
+                                <p class="turn-grey small footers_link">
+                                    <a href="">English</a>
+                                    <a href="">French</a>
+                                    <a href="">Spanish</a>
+                                    <a href="">Italian</a>
+                                </p>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <p class="bolder">Location</p>
+                                <p class="turn-grey small footers_link">
+                                    <a href="">Berlin</a>
+                                    <a href="">Hamburg</a>
+                                    <a href="">Munich</a>
+                                </p>
+                            </div>
+                             <div class="col-12 col-md-6 col-lg-3">
+                                <p class="bolder">The Bruck</p>
+                                <p class="turn-grey small footers_link">
+                                    {% for blog in blog_list %}
+                                    <a href="{% slugurl blog.slug %}">{{blog.title}}</a>
+                                        {% endfor %}
+                                </p>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-3">
+                                <p class="bolder">Company</p>
+                                <p class="turn-grey small footers_link">
+                                    <a href="{%  url 'about_us' %}">Abuot Us</a>
+                                    <a href="{% url 'main:join_our_team' %}">Joim Our Team</a>
+                                    <a href="{% url 'main:faqs' %}">Localite/Provider FAQs</a>
+                                    <a href="{% url 'main:terms-condition' %}">Term & Condition</a>
+                                    <a href="{% url 'main:trust_and_saftey' %}">Trust & Safety</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<button type="button" id="feedback-btn" class="btn btn-info vertical-right-aligned">
+    Feedback <span class="glyphicon glyphicon-bullhorn" aria-hidden="true"></span>
+</button>
+{%  include 'tellme/js_inc_2.html' %}
+{% block feedback_btn %}
+
+{% endblock %}
+</body>
+{% block bottom_js %}{% endblock %}
+
+<script>
+$(".content").css("padding-bottom", $("footer").outerHeight()+'px');
+
+   $('.opn_submenu > a.opned').hover(function() {
+    $(this).next('.submenu_links').slideToggle();
+});
+</script>
+</html>

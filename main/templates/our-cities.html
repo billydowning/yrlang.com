@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+{% load static %}
+
+{% block calendar_extras %}
+<script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+<script>
+    $(document).ready(function(){
+        var func = function (){
+            var q = $('#sear').val();
+            $.ajax({
+                url:'{% url 'main:search' %}',
+                data:{
+                        q: q
+                },
+                success:function(response){
+                    var str = '';
+                    $.each(response.professionals, function(key, value) {
+                        str = str + '<p><a href="/users/user-detail/'+ value.id +'" class="list-group-item list-group-item-action"><b class="text-primary ml-5"> Localite -- </b><b class="text-primary"> '+ value.username +' </b></a></p>';
+                    });
+                    $.each(response.posts, function(key, value) {
+                        str = str + '<p><a href="/post/'+ value.id +'" class="list-group-item list-group-item-action"><b class="text-primary ml-5"> Blog -- </b><b class="text-primary  ml-5"> '+ value.id +' </b><b class="text-primary  ml-5"> '+ value.title +' </b></a></p>';
+                    });
+                    $.each(response.cities, function(key, value) {
+                        str = str + '<p><a href="'+ value.slug +'" class="list-group-item list-group-item-action"><b class="text-primary ml-5"> City -- </b><b class="text-primary  ml-5"> '+ value.title +' </b></a></p>';
+                    });
+                    $('#result').html(str);
+                    if (q == "")
+                    {
+                        $('#result').html('');
+
+                    }
+                }
+            });
+        };
+
+        $("#sear").keyup(func);
+        $("#btn_sear").click(func);
+    });
+
+</script>
+{% endblock calendar_extras %}
+
+{% block content %}
+
+<div class="container">
+    <h1 class="page_main_header my-3">Our Cities</h1>
+    <div class="row">
+        <div class="col-3 my-5">
+            <h3>Know where you’re headed?</h3>
+
+            <div class="input-group">
+                <input type="text" id="sear" class="form-control" placeholder="Search">
+                <div class="input-group-append">
+                    <button class="btn btn-secondary" id="btn_sear" type="button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="list-group mt-2" id="result">
+            </div>
+
+            <h3 class="mt-5">MOST POPULAR CITIES</h3>
+            <div class="my-2 ml-2">
+                <ul>
+                    {% for obj in cities %}
+                    <li><a href="{{ obj.get_absolute_url }}">{{ obj }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-6 my-5">
+            <h1>{{ city }}</h1>
+            <img src="{% static 'images/city_banner.jpg' %}" alt="">
+
+            <hr class="my-3">
+
+            <div class="row">
+                <div class="col-8">
+                    {% with images=city.gallery_image.all %}
+                    {% if images %}
+                    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                        <div class="carousel-inner">
+                            {% for pictures in images %}
+                            {% if forloop.counter == 1 %}
+                            <div class="carousel-item active">
+                                {% image pictures.image max-540x320 class="d-block w-100" %}
+                            </div>
+                            {% else %}
+                            <div class="carousel-item">
+                                {% image pictures.image max-540x320 class="d-block w-100" %}
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExampleControls" role="button"
+                           data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExampleControls" role="button"
+                           data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="col-4">
+                    {{ city }}<br>
+                    {{ city.introduction }}<br>
+
+                    <a class="my-2" href="{% pageurl city %}">{{ city }}</a>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-3 my-5">
+            <h4>FIND THE PROVIDER YOU NEED- WHEREVER YOU ARE!</h4>
+            <h5 class="my2">Localites</h5>
+            {% for obj in localites %}
+            <li><a href="{{ obj.get_public_profile }}">{{ obj.username }}</a></li>
+            {% endfor %}
+
+            <h5 class="my2">Providers</h5>
+            {% for obj in providers %}
+            <li><a href="{{ obj.get_public_profile }}">{{ obj.username }}</a></li>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

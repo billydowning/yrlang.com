@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+
+    {% if providers %}
+
+    <div class="col-12 my-3">
+        <div class="search_person img_banner_padding">
+            {% if request.get_full_path == "/provider/" %}
+        <input id="search" type="text" placeholder="Search By City">
+                    <button id="btn_search" type="submit" onclick="getInputValue();">Search</button>
+            {% else %}
+             <button id="btn_view_all" class="btn btn-theme" type="submit" onclick="viewAll();" >View All</button>
+            {% endif %}
+        </div>
+        <h1 class="page_main_header mb-3"> Providers</h1>
+        {% if providers %}
+        {% for professional in providers %}
+        <div class="profile_main_outer">
+            <div class="user_img_details_sec">
+                <div class="user_profile_rating">
+                    <div class="profile_im">
+                        {% if professional.profile_image %}
+                        <img src="{{ professional.profile_image.url }}">
+                        {% else %}
+                        <img src="{{ avtar}}">
+                        {% endif %}
+                    </div>
+                    <div class="name_rate">
+                        <a href="{% url 'public_profile' professional.id %}"><h5>{{ professional.username|title }}</h5></a>
+                        <p>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star-o" aria-hidden="true"></i>
+                        </p>
+                    </div>
+                </div>
+                <div class="price_hire">
+                    {%if request.user.is_authenticated %}
+                    <a href="{% url 'create_provider_appointments' professional.id %}">
+                        <button class="btn theme_btn" type="button">Book Appointment!</button>
+                    </a>
+                    {% else %}
+                    <a href="{% url 'account_login'  %}">
+                        <button class="btn theme_btn" type="button">Book Appointment!</button>
+                    </a>
+                    {%endif%}
+                </div>
+            </div>
+            <ul class="about_user_pro">
+                <li>
+                    <span>City:</span>{{ professional.state }} - {{ professional.country }}
+                    <div class="div_sp pl-5">
+                        <span>Categories:</span> {% for profession in professional.providercategories_set.all %}
+                        {{ profession.category }},{%endfor%}
+                    </div>
+                </li>
+                <li><span>Bio:</span>{{ professional.bio }}</li>
+            </ul>
+        </div>
+        {% endfor %}
+        {% else %}
+        <h3>No Provider Found .</h3>
+        {% endif %}
+
+    </div>
+    {% else %}
+    <h3>No Providers Found .</h3>
+    <div class="profile_listing_outer mt-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="profile_main_outer">
+                    <div class="user_img_details_sec">
+                        <div class="user_profile_rating">
+                            <div class="profile_im">
+                                <img src="/media/profile_images/homepage_hero_XL2x.jpg">
+                            </div>
+                            <div class="name_rate">
+                                <h5>Jon Doe</h5>
+                                <p>
+                                    Australia
+                                </p>
+                            </div>
+                        </div>
+                        <div class="price_hire">
+                            <h5>Request on<span>Jun 16th, 202</span></h5>
+                        </div>
+                    </div>
+                    <div class="right_details_sec">
+                        <ul class="about_user_pro">
+                            <li>
+                                <span>Preferred Language:</span>English
+                            </li>
+                            <li><span>Message:</span>Lorem Ipsum is simply dummy text of the printing and typesetting
+                                industry.
+                            </li>
+                            <li class="li_flex">
+                                <button class="btn theme_btn" type="button">Confirm</button>
+                                <span>OR</span>
+                                <a href="" class="cancel">Cancel</a>
+                            </li>
+                        </ul>
+                        <div class="calander_div">
+                            <a href=""><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile_main_outer">
+                    <div class="user_img_details_sec">
+                        <div class="user_profile_rating">
+                            <div class="profile_im">
+                                <img src="/media/profile_images/homepage_hero_XL2x.jpg">
+                            </div>
+                            <div class="name_rate">
+                                <h5>Jon Doe</h5>
+                                <p>
+                                    Australia
+                                </p>
+                            </div>
+                        </div>
+                        <div class="price_hire">
+                            <h5>Request on<span>Jun 16th, 202</span></h5>
+                        </div>
+                    </div>
+                    <div class="right_details_sec">
+                        <ul class="about_user_pro">
+                            <li>
+                                <span>Preferred Language:</span>English
+                            </li>
+                            <li><span>Message:</span>Lorem Ipsum is simply dummy text of the printing and typesetting
+                                industry.
+                            </li>
+                            <li class="li_flex">
+                                <button class="btn theme_btn" type="button">Confirm</button>
+                                <span>OR</span>
+                                <a href="" class="cancel">Cancel</a>
+                            </li>
+                        </ul>
+                        <div class="calander_div">
+                            <a href=""><i class="fa fa-calendar-o" aria-hidden="true"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-5">
+                    <a href="" class="view_all_link"> View All</a>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-12 text-right">
+                <nav aria-label="Page navigation " class="pagination_section">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        <li class="page-item"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+<script>
+        function getInputValue(){
+            // Selecting the input element and get its value
+            var inputVal = document.getElementById("search").value;
+
+           if(inputVal){ window.location = "/provider/"+inputVal}
+
+
+        }
+          function viewAll(){
+          window.location = "/provider/"
+         }
+</script>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "layout.html" %}
+{% load check_role %}
+{% block content %}
+{% load webpush_notifications %}
+ {% block link_css %}
+    {% webpush_header %}
+    {% endblock link_css %}
+
+<div class="content-section container mt-5">
+   <div class="padding_top_ch">
+     <a class="button secondaryAction" href="{% url 'account_change_password' %}">Change Password?</a>
+    {% webpush_button with_class="btn btn-theme"  %}
+   </div>
+   <div class="profile_flex_direction">
+     <div class="media mr-5">
+        {% if request.user.profile_image %}
+        <img class="uk-border-circle" width="40" height="40" src="{{ request.user.profile_image.url }}">
+        {% else %}
+        <img class="uk-border-circle" width="40" height="40" src="{{ avtar }}">
+        {% endif %}
+
+        <div class="media-body">
+            <h4 class="">{{ request.user.username }}</h4>
+        </div>
+    </div>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="form-group mt-0">
+            <legend class="border-bottom mb-4">Account Info</legend>
+            <div class="form-group">
+                {{ form.username.label }}
+                {% if form.username.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.name.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.username }}
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.email.label }}
+                {% if form.email.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.email }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.role.label }}
+                {% if form.role.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.role.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.role }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.phone_number.label }}
+                {% if form.phone_number.errors %}
+                    <span>{{ form.phone_number.errors }}</span>
+                {% else %}
+                {{ form.phone_number }}
+                 {{ form.phone_number.help_text }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.profile_image.label }}
+                {% if form.profile_image.errors %}
+                <div class="invalid-feedback">
+                    {% for error in form.profile_image.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.profile_image }}
+                {% endif %}
+            </div>
+            {% provider user as p %}
+            {% if p is False %}
+                <div class="form-group">
+                    {{ form.provider.label }}
+                    {% if form.provider.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.provider.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.provider }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </fieldset>
+        <div class="form-group">
+            <button class="btn" type="submit">Update</button>
+        </div>
+    </form>
+   </div>
+</div>
+{% endblock content %}

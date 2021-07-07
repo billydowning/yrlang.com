@@ -1,0 +1,425 @@
+{% extends "layout.html" %}
+{% load wagtailcore_tags wagtailimages_tags favorite_check %}
+{% load static %}
+{% load leaflet_tags %}
+
+{% block link_css %}
+{% leaflet_css %}
+{% leaflet_js %}
+{% endblock link_css %}
+{% block extra_css %}
+ul.menu li {
+display:inline;
+}
+
+{% endblock extra_css %}
+
+{% block calendar_extras %}
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+      integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp"
+      crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+<script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+
+<link href="{% static 'calender_assets/fullcalendar.min.css' %}" rel='stylesheet'/>
+<link href="{% static 'calender_assets/fullcalendar.print.min.css' %}" rel='stylesheet' media='print'/>
+<script src="{% static 'calender_assets/moment.min.js' %}"></script>
+<script src="{% static 'calender_assets/jquery.min.js' %}"></script>
+<script src="{% static 'calender_assets/fullcalendar.min.js' %}"></script>
+
+
+<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    var initialTimeZone = 'UTC';
+    var data = {} ;
+
+    $('#calendar').fullCalendar({
+      header: {
+        left: 'prev',
+        center: 'title',
+        right: 'next'
+      },
+      dayClick: function(date, jsEvent, view) {
+        //$(this).css('background-color', 'red');
+        $('#cal').prop('hidden', true);
+        $('#slot').prop('hidden', false);
+
+        data.date = date.format();
+        data.full_date = date.format('dddd-DD-MMMM-yyyy');
+
+        $('#day').html(date.format('dddd'));
+        $('#date').html(date.format('DD-MMMM-yyyy'));
+
+        var q = initialTimeZone;
+        $.ajax({
+            url:'/time-zone/',
+            data:{
+                    q: q
+            },
+            success:function(response){
+                $("#btn1").prop('disabled', response.slots.s1);
+                $("#btn2").prop('disabled', response.slots.s2);
+            }
+        });
+      }
+    });
+
+    $('#back_to_calendar').click(function () {
+        $('#cal').prop('hidden', false);
+        $('#slot').prop('hidden', true);
+
+        $("#slot1_div1").prop('hidden', false);
+        $("#slot1_div2").prop('hidden', true);
+
+        $("#slot2_div1").prop('hidden', false);
+        $("#slot2_div2").prop('hidden', true);
+      });
+
+    $("#btn1").click(function () {
+        $("#slot1_div1").prop('hidden', true);
+        $("#slot1_div2").prop('hidden', false);
+
+        $("#slot2_div1").prop('hidden', false);
+        $("#slot2_div2").prop('hidden', true);
+    });
+
+    $("#btn2").click(function () {
+        $("#slot2_div1").prop('hidden', true);
+        $("#slot2_div2").prop('hidden', false);
+
+        $("#slot1_div1").prop('hidden', false);
+        $("#slot1_div2").prop('hidden', true);
+    });
+
+    $('#confirm1').click(function () {
+        $('#cal').prop('hidden', true);
+        $('#slot').prop('hidden', true);
+
+        data.time = '12:00';
+        $('#booking_time').text(data.time);
+        $('#booking_full_date').text(data.full_date);
+
+        $('#booking').prop('hidden', false);
+      });
+
+      $('#confirm2').click(function () {
+        $('#cal').prop('hidden', true);
+        $('#slot').prop('hidden', true);
+
+        data.time = '06:00';
+        $('#booking_time').text(data.time);
+        $('#booking_full_date').text(data.full_date);
+        $('#booking_timezone').text(initialTimeZone);
+
+        $('#booking').prop('hidden', false);
+      });
+
+      $('#back_to_slot').click(function () {
+        $('#booking').prop('hidden', true);
+        $('#cal').prop('hidden', true);
+        $('#slot').prop('hidden', false);
+
+        data.time = '00:00';
+      });
+
+      // load the list of available timezones, build the <select> options
+      $.getJSON('https://fullcalendar.io/demo-timezones.json', function(timezones) {
+        $.each(timezones, function(i, timezone) {
+          if (timezone != 'UTC') { // UTC is already in the list
+            $('#timezone-selector').append(
+              $("<option/>").text(timezone).attr('value', timezone)
+            );
+          }
+        });
+      });
+
+      // when the timezone selector changes, dynamically change the calendar option
+      $('#timezone-selector').on('change', function() {
+        initialTimeZone = this.value
+        $('#calendar').fullCalendar('option', 'timezone', this.value || false);
+      });
+
+
+
+      $('.gallary_images').slick({
+          infinite: true,
+          slidesToShow: 1,
+          arrows: false,
+          slidesToScroll: 1,
+          margin:0,
+          autoplay:true,
+          autoplaySpeed:4000,
+          fade:true
+        });
+
+
+  });
+</script>
+<style>
+
+  body {
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+  #calendar {
+    max-width: auto;
+    margin: 0 auto;
+  }
+  .uk-navbar-item, .uk-navbar-nav>li>a, .uk-navbar-toggle{font-size:14px}
+
+</style>
+{% endblock calendar_extras %}
+
+
+{% block content %}
+ {%if request.user.is_authenticated %}
+{% is_city_in_fav id=page.id current_u_id=request.user.id  as city_checked %}
+{% endif %}
+
+        {% with images=page.gallery_image.all %}
+        {% if images %}
+       <div class="container-fluid">
+             <div class="row ">
+            <div class="col-12 pl-0 pr-0">
+                <div class="gallary_images">
+                    {% for pictures in images %}
+                    {% image pictures.image original %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+       </div>
+        {% endif %}
+        {% endwith %}
+<div class="container mt-5">
+    <div class="">
+        <div class="row">
+            <div class="col-12">
+
+                <h1 class="page_main_header galarry_header">{{ page.title }} </h1>
+                <h5> {% firstof distance 'No Location' %}</h5>
+                <h5> {% firstof localite_total 'No Localite' %}</h5>
+                {%if request.user.is_authenticated %}
+                {% if city_checked  %}
+                <h5>Already in Favorite</h5>
+                {% else %}
+                <h5 class=""><a href="{% url 'add_city_in_favorite' page.id %}">Add to Favorite</a></h5>
+                {% endif %}
+                {% else %}
+                <h5 class=""><a href="{% url 'main:add_anon_favorite' 'city' page.id %}">Add to Favorite</a></h5>
+                {% endif %}
+
+                {% if page.introduction %}
+                <div class="intro_div">
+                    <h3>introduction</h3>
+                    <p>{{ page.introduction }}</p>
+                </div>
+
+                {% endif %}
+            </div>
+        </div>
+</div></div>
+<div class="container mt-5">
+        {% if page.things_to_do %}
+        <div class="row w-100">
+            <div class="col-12">
+        <h3 class="gallary_title">Things to do !</h3>
+            {{ page.things_to_do|richtext }}
+        </div>
+    </div>
+        {% endif %}
+
+
+<div class="">
+
+        <div class="row w-100">
+            <div class="col-12">
+            {% with language=page.language.all %}
+            {% if language %}
+             
+
+        
+            <h3 class="gallary_title">Languages</h3>
+            <ul>
+                {% for lang in language %}
+                <li>
+                    {{ lang.name }}
+                </li>
+                {% endfor %}
+            </ul>
+       
+
+
+            {% endif%}
+            {% endwith %}
+        </div>
+ </div>
+
+        {% if page.currency %}
+        <hr size="2">
+        <h3 class="gallary_title">Currency</h3>
+        <div>
+            {{ page.currency }}
+        </div>
+        {% endif %}
+
+
+        {% if localites %}
+        <h3 class="gallary_title">Localite in Citys</h3>
+        <div class="row">
+
+            {% for user in localites %}
+
+            <div class="col-12 col-md-4 col-lg-3">
+                <div class="card card_view" style="">
+                    {% if user.profile_image %}
+                    <img class="card-img-top" src="{{  user.profile_image.url }}"
+                         alt="Card image cap">
+                    {% else %}
+                    <img class="card-img-top" src="{{avtar}}"
+                         alt="Card image cap">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title"> <a href="{{ user.get_public_profile }}">{{ user.username }}</a></h5>
+                        <p class="card-text">
+                            {% if user.language %}
+                            Languge :{% for language in user.language.all %} {{ language }}, {% endfor %}
+                            {% endif %}
+                        </p>
+                        <a href="{% url 'user-detail' user.id %}" class="btn theme_btn">Detail</a>
+                    </div>
+                </div>
+            </div>
+
+            {% empty %}
+            <p>No Localite Found</p>
+            {% endfor %}
+
+
+        </div>
+        <div>
+        <a href="{% url 'main:localite_list' page.state  %}" class=" btn theme_btn">View All </a>
+        </div>
+        {% endif %}
+        {% if providers %}
+        <h3 class="gallary_title">Providers in Citys</h3>
+        <div class="row">
+
+            {% for user in providers %}
+
+            <div class="col-12 col-md-4 col-lg-3">
+                <div class="card card_view" style="">
+                    {% if user.profile_image %}
+                    <img class="card-img-top" src="{{  user.profile_image.url }}"
+                         alt="Card image cap">
+                    {% else %}
+                    <img class="card-img-top" src="{{avtar}}"
+                         alt="Card image cap">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title"> <a href="{{ user.get_public_profile }}">{{ user.username }}</a></h5>
+                        <p class="card-text">
+                            {% if user.language %}
+                                Languge :{% for language in user.language.all %} {{ language }}, {% endfor %}
+                            {% endif  %}
+                        </p>
+                        <a href="{% url 'provider_detail' user.id %}" class="btn theme_btn">Detail</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No Provider Found</p>
+            {% endfor %}
+
+
+        </div>
+        <div>
+        <a href="{% url 'main:provider_list' page.state  %}" class=" btn theme_btn">View All </a>
+        </div>
+        {% endif %}
+
+        <div class="">
+            <div class="row mt-4">
+
+
+
+
+                <div class="col-md-6" id="" hidden>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button id="back_to_slot" class="theme_btn">Back</button>
+                            <hr>
+                            <h3>Half</h3>
+                            <h3>Day</h3>
+                            <h3>Localite</h3>
+                            <p>6 Hover</p><br>
+                            <p>$1 USD</p><br>
+                            <p id="booking_time"></p><br>
+                            <p id="booking_full_date"></p><br>
+                            <p id="booking_timezone">Not Defined</p><br>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row my-5">
+        {% for bruke in brukes %}
+            <div class="col-4">
+
+                <h5 class="page_main_header">
+                    <a href="{% pageurl bruke %}">
+                        {{ bruke }}
+                        <div class="my-2">{% image bruke.image width-400 %}</div>
+                    </a>
+                </h5>
+            </div>
+        {% endfor %}
+    </div>
+                {% if page.state.location %}
+
+                        <div class="">
+
+                            <div class="">   {% leaflet_map "main" callback="map_init" %}</div>
+                        </div>
+                        {% endif %}
+    <h2 class="mt-5"><a href="{{ page.get_parent.url }}" class="theme_btn">Back</a></h2>
+</div>
+
+
+<script type="text/javascript">
+{% if page.state.location %}
+    function map_init(map, options) {
+        // get point lat and lon
+        var lon = "{{ page.state.location.x }}";
+        var lat = "{{ page.state.location.y }}";
+
+        // zoom to point & add it to map
+        map.setView([lat, lon], 12);
+        L.marker([lat, lon]).addTo(map);
+    }
+    {% endif %}
+</script>
+
+
+
+{% endblock%}

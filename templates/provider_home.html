@@ -1,0 +1,109 @@
+{% load static check_role check_status %}
+{% is_provider user_role=request.session.user_role as provider_checked %}
+{% is_localite user_role=request.session.user_role as localite_checked %}
+{% is_client user_role=request.session.user_role as client_checked %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="amit-black bolder montserrat page_main_header">Manage Appointments</h1>
+
+
+            <div class="profile_listing_outer mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        {% if appointments %}
+                        {% for appointment in appointments %}
+                        <div class="profile_main_outer">
+                            <div class="user_img_details_sec">
+                                <div class="user_profile_rating">
+                                    <div class="profile_im">
+                                         {% if appointment.requestor.profile_image %}
+                                                    <img src="{{ appointment.requestor.profile_image.url }}">
+                                                    {% else %}
+                                                    <img src="{{ avtar}}">
+                                                    {%endif %}
+                                    </div>
+                                    <div class="name_rate">
+                                        <h5>{{ appointment.requestor.username|title}}</h5>
+                                        <p>
+
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="price_hire">
+                                    <h5>Request on<span>{{ appointment.request_date }}</span></h5>
+                                </div>
+                            </div>
+                            <div class="right_details_sec">
+                                <ul class="about_user_pro">
+                                    <li>
+                                        <span>Preferred Language:</span>{% for laguage in appointment.requestor.language.all %} {{laguage}}, {%endfor%}
+                                    </li>
+                                    <li><span>Message:</span>{{ appointment.client_comment }}
+                                    </li>
+                                    <li><span>Status:</span>{{ appointment.get_status_display }}
+                                     </li>
+                                    {% if appointment.status|is_approved %}
+                                    <li class="li_flex">
+                                       <a href=""> <button class="btn theme_btn" type="button">Edit</button></a>
+                                        <span>OR</span>
+                                        <a href="" class="cancel">Cancel</a>
+                                    </li>
+                                    {% elif appointment.status|is_requested  %}
+                                    <li class="li_flex">
+                                        <a href="{{ appointment.get_absolute_url }}"> <button class="btn theme_btn" type="button">Confirm</button></a>
+                                        <span>OR</span>
+                                        <a href="" class="cancel">Cancel</a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                                <div class="calander_div">
+<!--                                    <a href=""><i class="fa fa-calendar-o" aria-hidden="true"></i></a>-->
+                                    <div class="stacked-icons">
+                                                          <span class="fa-stack fa-3x">
+                                                            <i class="fa fa-calendar-o fa-stack-2x"></i>
+                                                            <strong class="fa-stack-1x calendar-text">{{ appointment.request_date.day }}  </strong>
+                                                          </span>
+                                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor%}
+                        <div class="text-center mt-5">
+                            <a href="{% url 'provider_appointment' %}" class="view_all_link"> View All</a>
+                        </div>
+                        {% else %}
+                        <h3>No New Appointment Found </h3>
+                        <div class="text-center mt-5">
+                            <a href="{% url 'provider_appointment' %}" class="view_all_link"> View All</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+<!--                <div class="row ">-->
+<!--                    <div class="col-12 text-right">-->
+<!--                        <nav aria-label="Page navigation " class="pagination_section">-->
+<!--                            <ul class="pagination">-->
+<!--                                <li class="page-item">-->
+<!--                                    <a class="page-link" href="#" aria-label="Previous">-->
+<!--                                        <span aria-hidden="true">&laquo;</span>-->
+<!--                                        <span class="sr-only">Previous</span>-->
+<!--                                    </a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item"><a class="page-link" href="#">1</a></li>-->
+<!--                                <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+<!--                                <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+<!--                                <li class="page-item">-->
+<!--                                    <a class="page-link" href="#" aria-label="Next">-->
+<!--                                        <span aria-hidden="true">&raquo;</span>-->
+<!--                                        <span class="sr-only">Next</span>-->
+<!--                                    </a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </nav>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+</div>

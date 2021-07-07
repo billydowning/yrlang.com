@@ -1,0 +1,262 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block link_css %}
+<link rel="stylesheet" href="{% static 'custome_CSS/messages_inbox.css' %}">
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
+<link rel='stylesheet prefetch'
+      href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/locale/af.min.js"></script>-->
+<style type="text/css">
+    footer
+{
+    bottom: 0;
+    left: 0;
+    background: #000;
+    padding: 20px 0 10px;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+    border-top: 4px solid #3dbb3d;  
+}
+p.turn-grey.small.footers_link {
+    margin-top: 24px;
+}
+
+.footers_link a{        padding-bottom: 10px;}
+</style>
+{% endblock link_css %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+
+      <div class="col-12 col-md-4 col-lg-3">
+           <h6 class="font-weight-bold mb-3 text-center text-lg-left font_z20">Chat</h6>
+          <input type="text" id="mysearchInp" class="form-control" placeholder="Search by name"  />
+            <div class="white z-depth-1  pb-0">
+          <ul class="list-unstyled friend-list">
+              {% for msg in unread_messages %}
+            <li class=" p-1 unread_msg">
+              <a href="{% url 'chatroom' msg.message.room.id %}" class="d-flex justify-content-between">
+                    {% if  msg.chat_partner.profile_image %}
+                  <img src="{{ msg.chat_partner.profile_image.url }}" style="width:100px;height:100px;"  alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                  {% else %}
+                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-8.jpg"  style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                  {% endif %}
+                <div class="text-small">
+                  <strong>{% if msg.chat_partner.is_staff %} Yr-Admin{% else %}{{ msg.chat_partner.username|truncatechars:7 }}{% endif %}</strong>
+                  <p class="last-message text-muted">{{ msg.message.content|truncatechars:7 }}</p>
+                </div>
+                <div class="chat-footer">
+                  <p class="text-smaller text-muted mb-0">{{ msg.message.date_created |date:"SHORT_DATE_FORMAT"  }}</p>
+                  <span class="badge badge-danger float-right"> {{ msg.message.room.created_for }} Chat</span>
+                    <span class="badge badge-danger float-right">Unread </span>
+                </div>
+              </a>
+            </li>
+            {% endfor %}
+              {% for msg in read_messages %}
+            <li class=" p-1">
+              <a href="{% url 'chatroom' msg.message.room.id %}" class="d-flex justify-content-between">
+                    {% if  msg.chat_partner.profile_image %}
+                  <img src="{{ msg.chat_partner.profile_image.url }}" style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                  {% else %}
+                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-8.jpg"  style="width:100px;height:100px;" alt="avatar" class="avatar rounded-circle d-flex align-self-center mr-2 z-depth-1">
+                  {% endif %}
+                <div class="text-small">
+                  <strong>{% if msg.chat_partner.is_staff %} Yr-Admin{% else %}{{ msg.chat_partner.username|truncatechars:7 }}{% endif %}</strong>
+                  <p class="last-message text-muted">{{ msg.message.content|truncatechars:7 }}</p>
+                </div>
+                <div class="chat-footer">
+                  <p class="text-smaller text-muted mb-0">{{ msg.message.date_created|date:"SHORT_DATE_FORMAT"  }}</p>
+                  <span class="badge badge-danger float-right"> {{ msg.message.room.created_for }} Chat</span>
+                </div>
+              </a>
+            </li>
+            {% endfor %}
+
+
+          </ul>
+        </div>
+      </div>
+
+    <div class="col-12 col-md-8 col-lg-9">
+        ￼￼￼￼
+        <div id="frame">
+            <div class="content chat_room_width" >
+                <div class="contact-profile">
+                    <h1>You are Chatting With {{ chatpartner.username }}</h1>
+                </div>
+                <div class="messages" id="messgaes_div">
+                    <ul id="chat-log">
+
+                <li class="sent">
+<!--                    <p>How the hell am I supposed to get a jury to believe you when I am not even sure that I do?!</p>-->
+<!--                    <span class="msg_time">10:00 PM</span>-->
+                </li>
+
+                
+
+                    </ul>
+                </div>
+                <div class="message-input">
+                    <div class="wrap">
+                        <input type="text" id="chat-message-input" placeholder="Write your message..."/>
+                        <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                        <button id="chat-message-submit" class="submit"><i class="fa fa-paper-plane"
+                                                                           aria-hidden="true"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+<script>
+$(document).ready(function(){
+
+  $('#messgaes_div').animate({
+        scrollTop: $('#messgaes_div').get(0).scrollHeight
+    }, 1000);
+        const roomId = {{ request.resolver_match.kwargs.room_id }};
+           var a = 0;
+         var roomUrl = "{% url 'chatroom_ajax' request.resolver_match.kwargs.room_id %}";
+        function fetchApi(){
+                  $.ajax({
+                    url : roomUrl,
+                    method: 'GET',
+                    dataType: 'JSON',
+                    success: function (payload) {
+
+
+                        for ( a=0 ;a<payload['room'].length; a++)
+                        {
+
+                            createMessages(payload['room'][a])
+                        }
+                    },
+
+                    error: function (payload) {
+
+
+                    }
+                })
+
+            }
+        var loc = window.location, new_uri;
+        if (loc.protocol === "https:") {
+            new_uri = "wss:";
+        } else {
+            new_uri = "ws:";
+        }
+
+        const chatSocket = new WebSocket(
+             new_uri
+            +'//'
+            + window.location.host
+            + '/ws/chat/'
+            + roomId
+            + '/'
+        );
+
+
+        chatSocket.onopen = function(e){
+            fetchApi();
+        }
+
+     chatSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+
+              if(data['command'] === 'new_message') {
+
+                    createMessages(data['message'])
+                }
+            };
+
+        chatSocket.onclose = function(e) {
+            console.error('Chat socket closed unexpectedly');
+        };
+
+        document.querySelector('#chat-message-input').focus();
+        document.querySelector('#chat-message-input').onkeyup = function(e) {
+            if (e.keyCode === 13) {  // enter, return
+                document.querySelector('#chat-message-submit').click();
+            }
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.value.trim();
+             if (message === ''){
+                window.location.reload()
+            }
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                 'command':'new_message',
+                'author':'{{ request.user.id }}',
+                'reciepent': '{{ chatpartner.id }}',
+            }));
+            messageInputDom.value = '';
+        };
+
+
+    function convert(str) {
+    var date = new Date(str),
+        mnth = ("0" + (date.getMonth()+1)).slice(-2),
+        day  = ("0" + date.getDate()).slice(-2);
+        hours  = ("0" + date.getHours()).slice(-2);
+        minutes = ("0" + date.getMinutes()).slice(-2);
+    return [ date.getFullYear(), mnth, day, hours+':' +minutes ].join("/");
+};
+     function createMessages(data){
+
+            var author = data['author'];
+            var msgListTag = document.createElement('li');
+            var msgTimeTag = document.createElement('span');
+
+            msgTimeTag.className = 'msg_time';
+            var pTag = document.createElement('p');
+            pTag.textContent = data.content ;
+            var localdate = new Date(data.date_created+' UTC');
+            msgTimeTag.textContent = convert(localdate);
+
+
+
+            if (author == '{{ request.user.id }}' ){
+                msgListTag.className = 'sent';
+            }else{
+                msgListTag.className = 'replies';
+            }
+
+            msgListTag.appendChild(pTag)
+            msgListTag.appendChild(msgTimeTag)
+
+            document.querySelector('#chat-log').appendChild(msgListTag);
+
+        };
+});
+
+</script>
+
+<script>
+    $('#mysearchInp').keyup(function(){
+
+    var that = this;
+    var all_list = $('ul > li');
+
+    var matching_list = all_list.filter(function(i, li){
+        var list_item_text = $(li).text().toUpperCase();
+        var search_text = that.value.toUpperCase();
+        return ~list_item_text.indexOf(search_text);
+    });
+
+    all_list.hide();
+    matching_list.show();
+
+});
+</script>
+
+
+{% endblock content %}

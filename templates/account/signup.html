@@ -1,0 +1,105 @@
+{% extends "layout.html" %}
+{% load socialaccount static %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Client Signup" %}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 col-md-6 m-auto">
+
+            <h1>{% trans "Customer Sign Up" %}</h1>
+
+            <p>{% blocktrans %}Already have an account ? Then please <a href="{{ login_url }}">sign in</a>.
+                {% endblocktrans %}
+            </p>
+            <p>
+                <ui>
+                    <li class="fa fa-google" aria-hidden="true"><a
+                            href="{% provider_login_url 'google' process='login' %}">&nbsp Signup With Google</a></li>
+                    <br>
+                    <li class="fa fa-facebook-square" aria-hidden="true"><a href="#">&nbsp Signup With Facebook</a></li>
+                </ui>
+
+            <center>
+                <div class="login-or">{% trans 'or' %}</div>
+            </center>
+            </p>
+            <form class="signup" id="signup_form" method="POST" action="{% url 'client_signup_view' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.email.label }}
+                    <div class="dd">
+                        {% for error in form.email.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {{ form.email }}
+                </div>
+                <div class="form-group">
+                    {{ form.username.label }}
+                    <div class="dd">
+                        {% for error in form.username.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {{ form.username }}
+                </div>
+                <div class="form-group">
+                    {{ form.password1.label }}
+                    <div class="dd">
+                        {% for error in form.password1.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {{ form.password1 }}
+                </div>
+                <div class="form-group">
+                    {{ form.password2.label }}
+                    <div class="dd">
+                        {% for error in form.password2.errors %}
+                        <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                    {{ form.password2 }}
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-3">
+                            {{ form.terms.label }}
+                            {% if form.terms.errors %}
+                            <div class="dd">
+                                {% for error in form.terms.errors %}
+                                <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            {{ form.terms }}
+                            {% endif %}
+                        </div>
+                        <div class="col-8">
+                            <object data="myfile.pdf" type="application/pdf" width="100%" height="100%">
+                                <p class="mt-3">
+                                    Terms & Conditions
+                                    <a href="{% static 'files/terms_and_conditions_docs/sample.pdf' %}" target="_blank">
+                                        View
+                                    </a>
+                                    --
+                                    <a href="{% static 'files/terms_and_conditions_docs/sample.pdf' %}" download>
+                                        Download
+                                    </a>
+                                </p>
+                            </object>
+                        </div>
+                    </div>
+                </div>
+                {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                {% endif %}
+                <button type="submit">{% trans "Sign Up" %} &raquo;</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

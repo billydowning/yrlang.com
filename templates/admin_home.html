@@ -1,0 +1,103 @@
+{% load static check_role check_status %}
+{% is_provider user_role=request.session.user_role as provider_checked %}
+{% is_localite user_role=request.session.user_role as localite_checked %}
+{% is_client user_role=request.session.user_role as client_checked %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="amit-black bolder montserrat page_main_header">Manage Requests .</h1>
+
+            <div class="profile_listing_outer mt-3">
+                <div class="row">
+                    <div class="col-12">
+                        {% if requests %}
+                        {% for req in requests %}
+                        <div class="profile_main_outer">
+                            <div class="user_img_details_sec">
+                                <div class="user_profile_rating">
+                                    <div class="profile_im">
+                                        {% if req.user.profile_image %}
+                                        <img src="{{ req.user.profile_image.url }}">
+                                        {% else %}
+                                        <img src="{{ avtar}}">
+                                        {% endif %}
+                                    </div>
+                                    <div class="name_rate">
+                                        <h5>{{ req.user.username}}</h5>
+                                        <p>
+                                            <span>Requested For :</span> {{req.requested_for}}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="price_hire">
+                                    <h5>Request on<span>{{ req.requested_on }}</span></h5>
+                                </div>
+                            </div>
+                            <div class="right_details_sec">
+                                <ul class="about_user_pro">
+                                    <li>
+
+                                    </li>
+                                    <li>
+                                        <span>Status:</span>{{req.get_status_display}}
+                                    </li>
+<!--                                    <li><span>Message:</span>Lorem Ipsum is simply dummy text of the printing and-->
+<!--                                        typesetting-->
+<!--                                        industry.-->
+<!--                                    </li>-->
+
+
+                                    <li class="li_flex">
+                                        <a href="{{ req.get_detail }}"> <button class="btn theme_btn" type="button">Detail</button></a>
+                                    </li>
+
+                                </ul>
+                                <div class="calander_div">
+                                      <div class="stacked-icons">
+                                                          <span class="fa-stack fa-3x">
+                                                            <i class="fa fa-calendar-o fa-stack-2x"></i>
+                                                            <strong class="fa-stack-1x calendar-text">{{ req.requested_on.date.day }}  </strong>
+                                                          </span>
+                                                </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor%}
+                        <div class="text-center mt-5">
+                            <a href="{% url 'client_request_list' %}" class="view_all_link"> View All</a>
+                        </div>
+                        {% else %}
+                        <h3>No New Requests Found </h3>
+                        <div class="text-center mt-5">
+                            <a href="{% url 'client_request_list' %}" class="view_all_link"> View All</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+<!--                <div class="row ">-->
+<!--                    <div class="col-12 text-right">-->
+<!--                        <nav aria-label="Page navigation " class="pagination_section">-->
+<!--                            <ul class="pagination">-->
+<!--                                <li class="page-item">-->
+<!--                                    <a class="page-link" href="#" aria-label="Previous">-->
+<!--                                        <span aria-hidden="true">&laquo;</span>-->
+<!--                                        <span class="sr-only">Previous</span>-->
+<!--                                    </a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item"><a class="page-link" href="#">1</a></li>-->
+<!--                                <li class="page-item"><a class="page-link" href="#">2</a></li>-->
+<!--                                <li class="page-item"><a class="page-link" href="#">3</a></li>-->
+<!--                                <li class="page-item">-->
+<!--                                    <a class="page-link" href="#" aria-label="Next">-->
+<!--                                        <span aria-hidden="true">&raquo;</span>-->
+<!--                                        <span class="sr-only">Next</span>-->
+<!--                                    </a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </nav>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+</div>

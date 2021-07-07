@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% load static %}
+ {% block link_css %}
+<link href="{% static 'custome_CSS/become_provider_CSS/style.css' %}" rel="stylesheet">
+{% endblock link_css %}
+
+	 {% block content %}
+
+{#				<section class="earn_section about_us_page">#}
+{#					<div class="container">#}
+{#						<div class="row">#}
+{#							<div class="col-12">#}
+{#								<div class="earned_text">#}
+{#									<h4>ABOUT US </h4>#}
+{#								</div>#}
+{#							</div>#}
+{#						</div>#}
+{#					</div>#}
+{#				</section>#}
+            <section style="float: right; margin-right: 20px; margin-top: 20px;">
+                        </section>
+				<section class="about_us_content">
+					 <div class="container">
+                         <div class="about_video_section">
+					 		<div class="row">
+					 			<div class="col-12">
+					 				<div class="video_header">
+					 					<h1>About Us</h1>
+					 				</div>
+					 				<div class="video_inner_section">
+					 					<div class="social_icons_left">
+					 						<ul class="social_icons_listing">
+					 							<li><a href="https://www.facebook.com/yrlangdotcom/"><img src="{% static 'images/facebook.png' %}"></a></li>
+					 							<li><a href="https://www.instagram.com/yrlangdotcom/"><img src="{% static 'images/instagram.png' %}"></a></li>
+					 							<li><a href="https://www.pinterest.com/yrlangdotcom/"><img src="{% static 'images/pinterest.png' %}"></a></li>
+					 							<li><a href="https://www.youtube.com/channel/UCzNHoOOOrG3fiajJ38A3ttA"><img src="{% static 'images/youtube.png' %}"></a></li>
+					 						</ul>
+						 				</div>
+						 				<div class="video_section">
+						 					<div class="embed-responsive embed-responsive-16by9">
+												<iframe class="embed-responsive-item" src="{% static 'videos/YrLang_HD_Promo.mp4' %}"></iframe>
+											</div>
+						 				</div>
+					 				</div>
+					 			</div>
+					 		</div>
+					 	</div>
+					 	<div class="row">
+					 		<div class="col-12">
+					 			<div class="about_us_main_container">
+					 				<h4>Our goal is to make connecting with individuals in foreign cities who speak your language easier!</h4>
+					 				<p>In 2017, we became dismayed by the US political climate along with the complacency of our lives in the city where we had met, so we decided to move to Europe to start anew. After doing our research on remote-able cities, we decided on Berlin, Germany. </p>
+
+					 				<p>We planned for almost a year, studied Deutsch, got rid of so many things, prepared/packed up our pets, said goodbye to friends and family, and then left in the fall of 2018. </p>
+
+					 				<p>The dream ended up not fitting the reality though, as we ended up having a really tough time adjusting to our new life in Berlin. A multitude of circumstances and situations eventually added up to a not-so-great fit for our little family, as every attempt we made in living a normal life posed new communication challenges, even with one us being reasonably fluent in the language. </p>
+
+					 				<p>One dreary afternoon in late November, post-language class and over a Moroccan sampler plate with mint tea, we talked about building a tool that would make finding and scheduling with English-speaking service providers easier. We knew that if we had access to English-speaking pet sitters, massage therapists, and so much more to make our day-to-day enriching, that it would have made our life in Berlin so much more comfortable. We didn’t want other nomads to have their dreams of living abroad dampened down with communication and accessibility barriers, so we created YrLang (You’re Speaking My Language). </p>
+
+					 				<p>With our new-found understanding and empathy for the committed traveler, we became determined to build a bridge we believe should have already been built long before our travels...thus YrLang was born. </p>
+					 			</div>
+					 		</div>
+					 	</div>
+					 </div>
+				</section>
+				<section class="details_section">
+					<div class="container">
+						<div class="row">
+							<div class="col-12 col-lg-12 m-auto">
+								<div class="details_texts">
+									<h4 class="page_title_st">Join us today and see how easy life can be when you know where to start! <span class="bottom_line"></span></h4>
+									<ul class="benefit_ul">
+									<li> Need a travel companion that takes the guesswork out of speaking to locals? 	</li>
+									<li>Need help scheduling an appointment quickly and easily with a service provider near you who speaks your language fluently? </li>
+									
+									</ul>
+									<div class="btn_sec mt-5">
+										<button class="btn theme_btn" type="button">Get Started</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+
+		 <!-- wrapper_end -->
+			<script>
+			//set content bottom padding
+			$("#content").css("padding-bottom", $(".footer").outerHeight()+'px');
+
+			// height
+			// var highestBox = 0;
+			// jQuery('.start_inner').each(function() {
+			//   if (jQuery(this).height() > highestBox) {
+			//     highestBox = jQuery(this).height();
+			//   }
+			// });
+
+			// jQuery('.start_inner').height(highestBox);
+		</script>
+{% endblock %}

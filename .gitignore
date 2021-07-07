@@ -1,0 +1,15 @@
+**/__pycache__
+**/*.pyc
+.idea
+static/profile_pics
+media/profile_images
+media/images
+media/original_images
+yrlang/settings/development.py
+yrlang/settings/production.py
+yrlang/settings/my_devlopment.py
+yrlang/settings/development.py
+
+logs/*
+
+media/videos

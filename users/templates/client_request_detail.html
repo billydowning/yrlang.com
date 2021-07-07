@@ -1,0 +1,189 @@
+{% extends "layout.html" %}
+{% load check_role js_tag %}
+{% block content %}
+<div class="content-section container mt-5">
+    <div class="media">
+        <div class="profile_d ">
+            <div class="row">
+            <div class="col-12">
+               <div class="req_flex_sec">
+                   <div class="req_profile">
+                        {% if req.user.profile_image %}
+                        <img class="uk-border-circle" width="40" height="40" src="{{ req.user.profile_image.url }}">
+                        {% else %}
+                        <img class="uk-border-circle" width="40" height="40" src="{{ avtar }}">
+                        {% endif %}
+                       </div>
+                    <div class="media-body text-left w-100">
+                   <div class="media_bottom_line">
+                        <h2 class="profile_main_title">{{ req.user.username }} &nbsp;&nbsp; <a href="{% url 'contact' req.user.id %}"> <i
+                            class="fa fa-comments-o fa-2x" aria-hidden="true">&nbsp;Chat with requestor</i></a></h2>
+                    <h2 class="req_itle">Requested For : {{ req.requested_for }}</h2>
+                    <div class="row">
+                        <div class="col-12  col-md-6 col-lg-4">
+                            <p class="tag_color">Requested For : {{ req.requested_for }}</p>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-4">
+                            <p class="tag_color">Requested Date : {{req.requested_on.date}} </p>
+                        </div>
+                        <div class="col-12  col-md-6 col-lg-4">
+                            <p class="tag_color">Requested Time : {{req.requested_on.time}} </p>
+                        </div>
+
+                    </div>
+                   </div>
+                    <div class="row">
+                         <div class="col-12  col-md-6 col-lg-3">
+                            <div class="video_outer">
+                                {% for clip in videos %}
+                                <p>Language :{{clip.language}}</p>
+
+                                    <video width="530" height="440" controls>
+                                        <source src="{{clip.files.url}}" type="video/mp4"/>
+                                    </video>
+                                {%endfor%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               </div>
+                    </div>
+
+
+        </div>
+</div>
+    </div>
+    {% if req.status == 'requested' %}
+    <a style="background:#008CBA; color: white; " href="{% url 'verify_client_request' req.id %}" class="btn btn-theme">Verify</a>
+    {% elif req.status == 'verified' or req.status == 'approved' %}
+    <form action="{{req.get_detail}}" method="post" class="mt-5">
+        {% csrf_token %}
+
+            {% if req.meeting_on %}
+            <p class="mb-2">You already scheuled ones with : {{req.meeting_on}}</p>
+            {% endif %}
+
+
+            {% if form.meeting_on  %}
+            <h4 class="date_select_gallary_title mb-0">Schedule Your Meeting :</h4>
+            <p class="date_section mt-2"><span class="pb-2">Select Date:</span>
+                <span>{{ form.meeting_on.errors }}</span>
+                {{ form.meeting_on }}
+
+            </p>
+
+            <button type="submit" class="btn btn-theme">{% if req.status == 'approved'%}Update{% else %}Approved{% endif %}</button>
+        <a style="background:red; color: white; " class="btn mx-2  btn-danger" data-toggle="modal"
+            data-target="#exampleModal"
+            data-btn="cancel"
+            data-title="Cancel">Cancel
+    </a>
+            {% endif %}
+
+
+    </form>
+
+
+    {% endif %}
+
+</div>
+ <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form method="POST">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Cancel Request</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                        {% csrf_token %}
+                        <div class="form-group" id="approved_date_div">
+                            {{ form.reason.label }}
+                            {% if form.approved_date.errors %}
+                            <span>{{ form.reason.errors }}</span>
+
+                            {% else %}
+                            {{ form.reason }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" id="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+<script>
+     $(document).ready(function() {
+
+        $('#id_reason').prop('required', true);
+        {% if req.status == 'verified' %}
+        $('#id_meeting_on').prop('required', true);
+        {% endif %}
+
+     });
+
+</script>
+<script>
+ $(document).ready(function() {
+
+
+var arrayDates = {}
+    {% for date,time in disabled_dates.items %}
+
+            arrayDates["{{date}}"] = {{time | js }};
+    {% endfor  %}
+
+
+var selectedDate = ''
+var availableTimes = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00']
+     $(function () {
+            $("#id_meeting_on").datetimepicker({
+                        'minDate':'+1970/01/02',
+                        format:'Y.m.d H:i',
+                        defaultTime:'00:00',
+                        inline:true,
+                         allowTimes: availableTimes,
+                        onSelectDate:function(ct,$i){
+                                    selectedDate= $i.val().split(" ");
+                                    var matchedDate =  arrayDates[selectedDate[0]];
+                                     this.setOptions({
+                                          defaultTime:'09:00',
+
+                                        });
+
+                                      if (matchedDate) {
+
+                                            myArray = availableTimes.filter( function( el ) {
+                                                        return matchedDate.indexOf( el ) < 0;
+                                                    });
+
+                                              if(JSON.stringify(myArray) === JSON.stringify(availableTimes)){
+                                                      this.setOptions({
+                                                      disabledDates: [selectedDate[0]]
+                                                    });
+                                              }else{
+                                            this.setOptions({
+                                              allowTimes: myArray
+                                            });}
+
+                                      } else {
+                                        this.setOptions({
+                                          allowTimes:availableTimes
+                                        });}
+                           }
+
+            });
+  });
+
+
+});
+</script>
+
+{% endblock content %}

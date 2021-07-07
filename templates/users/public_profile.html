@@ -1,0 +1,237 @@
+{% extends "layout.html" %}
+{% load static check_role %}
+
+{% load leaflet_tags %}
+
+{% block link_css %}
+{% leaflet_css %}
+{% leaflet_js %}
+{% endblock link_css %}
+
+
+{% block content %}
+{% localite user=user as loc %}
+{% provider user=user as pro %}
+<div class="content-section container mt-5">
+
+    <div class="profile_d row">
+        <div class="col-12 col-md-3 col-lg-2">
+
+            <!--           profile_image-->
+            {% if user.profile_image %}
+            <img src="{{ user.profile_image.url }}" alt="" class="mb-3">
+            {% else %}
+            <img src="{% static 'images/avtar1.png' %}" alt="" class="mb-3">
+            {% endif %}
+
+            <!--           social links-->
+            <div class="social_lins">
+                <a class="mb-2" href="#">Facebook Link</a>
+                <br>
+                <a class="mb-2" href="#">Instagram Link</a>
+                <br>
+                <a href="#">Twitter Link</a>
+            </div>
+        </div>
+        <div class="col-12 col-md-9 col-lg-10">
+            <div class="row">
+                <div class="col-8">
+                    <h2>{{ user.email }} </h2>
+                    {% if loc %}
+                    <div class="row">
+                        {% for obj in user.profession.all %}
+                        <div class="col-4">
+                            <p>  {{ obj }} |</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if pro %}
+                    <div class="row">
+                        {% for obj in user.providercategories_set.all %}
+                        <div class="col-4">
+                            <p>  {{ obj.category }} |</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="col-4 text-right">
+                    {% if pro and request.user.is_authenticated %}
+                    <a href="{% url 'create_provider_appointments' user.id %}">
+                        <button class="btn btn-secondary my-2">Book Appointment</button>
+                    </a>
+                    {% endif %}
+                    {% if loc and request.user.is_authenticated %}
+                    <a href="{% url 'request_appointment' user.id %}">
+                        <button class="btn btn-secondary my-2" type="button">Book Visit!</button>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!--            ratings-->
+            <div class="mb-5">
+                <div><h4><b>Ratings :</b> 000/000</h4></div>
+            </div>
+
+            <!--            tabs-->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                       aria-controls="home" aria-selected="true">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                       aria-controls="profile" aria-selected="false">Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                       aria-controls="contact" aria-selected="false">Extras</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel"
+                     aria-labelledby="home-tab">
+
+                    <!--                    About-->
+                    <div class="contact_usform">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <div class="row mt-3">
+                                    <div class="col-6"><h4><b>City</b></h4></div>
+                                    <div class="col-6">{{ user.state }}, {{ user.country }}</div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="row mt-3">
+                                    <div class="col-6"><h4><b>Name</b></h4></div>
+                                    <div class="col-6 ">{% firstof user.first_name "No name" %} {{ user.last_name }}</div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                 <div class="row mt-3">
+                                    <div class="col-6"><h4><b>Email</b></h4></div>
+                                    <div class="col-6 ">{{ user.email }}</div>
+                                </div>
+                            </div>
+                              <div class="col-12 col-lg-6">
+                                 <div class="row mt-3">
+                                    <div class="col-6 col-lg-6"><h4><b>Phone</b></h4></div>
+                                    <div class="col-6 col-lg-6">{{ user.phone_number }}</div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                  {% if loc %}
+                                    <div class="row mt-3">
+                                        <div class="col-6 col-lg-6"><h4><b>Profession</b></h4></div>
+                                        <div class="col-6 col-lg-6">
+                                            {% for obj in user.profession.all %}
+                                            {{ obj }} |
+                                            {% empty %}
+                                            No data
+                                            {% endfor %}
+
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                            </div>
+                        </div>
+
+                        {% if pro %}
+                        <div class="row mt-3">
+                            <div class="col-6 col-lg-3"><h4><b>Services</b></h4></div>
+                            <div class="col-6 col-lg-4">
+                                {% for obj in user.providercategories_set.all %}
+                                 {{ obj.category }} |
+                                {% empty %}
+                                No data
+                                {% endfor %}
+
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if user.last_location %}
+                        <div class="row mt-3">
+                            <div class="col-6"><h4 class="mb-3"><b>User Last Locatin</b></h4></div>
+                            <div class="col-12">   {% leaflet_map "main" callback="map_init" %}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel"
+                     aria-labelledby="profile-tab">
+
+                    <!--   Profile-->
+                    <div class="contact_usform">
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <div class="row mt-3">
+                                    <div class="col-6"><h4><b>Experience</b></h4></div>
+                                    <div class="col-6">Expert</div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                 <div class="row mt-3">
+                                    <div class="col-6"><h4><b>Hourly Rate</b></h4></div>
+                                    <div class="col-6">10$/hr</div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                 <div class="row mt-3">
+                                    <div class="col-6"><h4><b>Total Bookings</b></h4></div>
+                                    <div class="col-6">0000</div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                 <div class="row mt-3">
+                                    <div class="col-6"><h4><b>Language Level</b></h4></div>
+                                    <div class="col-6">Expert</div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                   <div class="row mt-3">
+                                        <div class="col-6"><h4><b>Availability</b></h4></div>
+                                        <div class="col-6">{{ user.date_joined }}</div>
+                                    </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="row mt-3">
+                                     <div class="col-6"><h4><b>Bio</b></h4></div>
+                        <div class="col-6 ">{{ user.bio }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="contact" role="tabpanel"
+                     aria-labelledby="contact-tab">
+
+                    <!--                    Extras-->
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+{% if user.last_location %}
+    function map_init(map, options) {
+        // get point lat and lon
+        var lon = "{{ user.last_location.x }}";
+        var lat = "{{ user.last_location.y }}";
+
+        // zoom to point & add it to map
+        map.setView([lat, lon], 12);
+        L.marker([lat, lon]).addTo(map);
+    }
+    {% endif %}
+</script>
+{% endblock content %}
